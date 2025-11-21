@@ -13,4 +13,24 @@ import SwiftUI
 
 class AuthViewModel {
     
+    //MARK: - DataUser
+    
+    var errorMessage: String? = "Mot de passe incorrect. Veuillez réessayer."
+    var nomUtilisateur: String = ""
+    var motDePasse: String = ""
+    var motDePasseConfirm: String = ""
+    var email: String = ""
+    
+    //MARK: - Etats d'affichage
+    
+    var isPasswordVisible: Bool = false
+    var rememberMe: Bool = false
+    var showLanding : Bool = true
+    var showLogin : Bool = true
+    var showSignIn : Bool = true
+    
+    //MARK: - Etats d'authentification
+    
+    var isAuthenticated: Bool = false
+    var firstConnection: Bool = false
 }

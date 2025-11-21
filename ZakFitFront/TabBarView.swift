@@ -8,8 +8,24 @@
 import SwiftUI
 
 struct TabBarView: View {
+    
     var body: some View {
-        Text("TabBarView")
+        
+        TabView {
+            Tab("Tableau de bord", systemImage: "heart.text.clipboard") {
+                Dashboard()
+            }
+            Tab("Repas", systemImage: "fork.knife") {
+                RepasList()
+            }
+            Tab("Activites", systemImage: "figure.run") {
+                ActivitesList()
+            }
+            Tab("Tableau de bord", systemImage: "chart.line.uptrend.xyaxis") {
+                Stats()
+            }
+        }
+        .padding(.horizontal, 10)
     }
 }
 

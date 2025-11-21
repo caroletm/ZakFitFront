@@ -10,7 +10,10 @@ import SwiftUI
 struct Objectifs : View {
     
     var body: some View {
-        Text("Objectifs")
+        
+        VStack {
+            Text("Objectifs")        }
+
     }
 }
 
