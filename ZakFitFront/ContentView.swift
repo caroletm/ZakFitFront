@@ -13,25 +13,24 @@ struct ContentView: View {
     
     var body: some View {
         
-        Group {
+        
+        NavigationStack(path: $navigationVM.path) {
+            
             if authVM.isAuthenticated {
                 
-                NavigationStack(path: $navigationVM.path) {
-                    
-                    TabBarView()
-                    
-                        .navigationDestination(for: AppRoute.self) { route in
-                            switch route {
-                            case .logIn:
-                                Login()
-                            case .signIn:
-                                SignIn()
-                            case .profilOnboarding (let user) :
-                                ProfilOnboarding(user: user)
-                            }
+                TabBarView()
+                
+                    .navigationDestination(for: AppRoute.self) { route in
+                        switch route {
+                        case .logIn:
+                            Login()
+                        case .signIn:
+                            SignIn()
+                        case .profilOnboarding (let user) :
+                            ProfilOnboarding(user: user)
                         }
-                }
-            }else{
+                    }
+            } else {
                 if authVM.showLogin {
                     Login()
                 }else if authVM.showSignIn {
@@ -39,8 +38,8 @@ struct ContentView: View {
                 }
             }
         }
-        .environment(authVM)
-        .environment(navigationVM)
+            .environment(authVM)
+            .environment(navigationVM)
     }
 }
 

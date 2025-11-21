@@ -37,6 +37,7 @@ struct SignIn : View {
                 TextFieldPasswordConfirm()
                 
                 BoutonOrange(text: "S'inscrire", width: 280, height: 47) {
+                    authVM.isAuthenticated = true
                     navigationVM.path.append(AppRoute.profilOnboarding(user: firstUser))
                 }
                 
