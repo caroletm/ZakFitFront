@@ -23,7 +23,7 @@ struct ProfilOnboarding: View {
     
     var body: some View {
         
-        
+   
             VStack {
                 VStack {
                     Button {
@@ -158,8 +158,13 @@ struct ProfilOnboarding: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding([.horizontal, .top], 10)
                 }
+            }
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Mon profil")
+                    .font(.system(size: 24, weight: .bold))
+            }
         }
-            .navigationBarBackButtonHidden(true)
     }
 }
 
