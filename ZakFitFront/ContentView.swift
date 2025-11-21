@@ -8,17 +8,43 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var authVM = AuthViewModel()
+    @State private var navigationVM = NavigationViewModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, Carole!")
+        
+        
+        NavigationStack(path: $navigationVM.path) {
+            
+            if authVM.isAuthenticated {
+                
+                TabBarView()
+                
+                    .navigationDestination(for: AppRoute.self) { route in
+                        switch route {
+                        case .logIn:
+                            Login()
+                        case .signIn:
+                            SignIn()
+                        case .profilOnboarding (let user) :
+                            ProfilOnboarding(user: user)
+                        }
+                    }
+            } else {
+                if authVM.showLogin {
+                    Login()
+                }else if authVM.showSignIn {
+                    SignIn()
+                }
+            }
         }
-        .padding()
+            .environment(authVM)
+            .environment(navigationVM)
     }
 }
 
 #Preview {
     ContentView()
+        .environment(AuthViewModel())
+        .environment(NavigationViewModel())
 }
