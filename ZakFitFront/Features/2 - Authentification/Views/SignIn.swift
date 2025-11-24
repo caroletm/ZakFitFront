@@ -10,9 +10,9 @@ import SwiftUI
 struct SignIn : View {
     @Environment(AuthViewModel.self) var authVM
     @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(UserViewModel.self) var userVM
     
     var body: some View {
-//        @Bindable var authVM = authVM
         
         ZStack {
             LinearGradient(
@@ -38,7 +38,7 @@ struct SignIn : View {
                 
                 BoutonOrange(text: "S'inscrire", width: 280, height: 47) {
                     authVM.isAuthenticated = true
-                    navigationVM.path.append(AppRoute.profilOnboarding(user: firstUser))
+                    navigationVM.path.append(AppRoute.profilOnboarding)
                 }
                 
                 Text("Déjà un compte?")
@@ -60,6 +60,7 @@ struct SignIn : View {
     SignIn()
         .environment(AuthViewModel())
         .environment(NavigationViewModel())
+        .environment(UserViewModel())
 }
 
 

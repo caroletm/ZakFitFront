@@ -9,11 +9,12 @@ import SwiftUI
 
 struct TextFieldUsername: View {
     @Environment(AuthViewModel.self) var authVM
+    @Environment(UserViewModel.self) var userVM
 
     var body: some View {
-        @Bindable var authVM = authVM
+        @Bindable var userVM = userVM
 
-        TextField("Nom d'utilisateur", text: $authVM.nomUtilisateur)
+        TextField("Nom d'utilisateur", text: $userVM.nomUtilisateur)
             .padding(.horizontal, 20)
             .padding(.vertical, 10)
             .background(Color.white)
@@ -30,4 +31,5 @@ struct TextFieldUsername: View {
 #Preview {
     TextFieldUsername()
         .environment(AuthViewModel())
+        .environment(UserViewModel())
 }
