@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var authVM = AuthViewModel()
     @State private var navigationVM = NavigationViewModel()
+    @State private var userVM = UserViewModel()
     
     var body: some View {
         
@@ -26,8 +27,24 @@ struct ContentView: View {
                             Login()
                         case .signIn:
                             SignIn()
-                        case .profilOnboarding (let user) :
-                            ProfilOnboarding(user: user)
+                        case .profilOnboarding:
+                            ProfilOnboarding()
+                        case .profil:
+                            Profil()
+                        case .parametres:
+                            Parametres()
+                        case .objectifs:
+                            Objectifs()
+                        case .objectifsAvances:
+                            ObjectifsAvances()
+                        case .dashboard:
+                            Dashboard()
+                        case .repasList:
+                            RepasList()
+                        case .activitesList:
+                            ActivitesList()
+                        case .stats:
+                            Stats()
                         }
                     }
             } else {
@@ -40,6 +57,7 @@ struct ContentView: View {
         }
             .environment(authVM)
             .environment(navigationVM)
+            .environment(userVM)
     }
 }
 
@@ -47,4 +65,5 @@ struct ContentView: View {
     ContentView()
         .environment(AuthViewModel())
         .environment(NavigationViewModel())
+        .environment(UserViewModel())
 }

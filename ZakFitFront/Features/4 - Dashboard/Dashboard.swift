@@ -9,11 +9,25 @@ import SwiftUI
 
 struct Dashboard : View {
     
+    @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(UserViewModel.self) var userVM
+    
     var body: some View {
-        Text("Dashboard")
+        
+        VStack {
+            Button {
+                navigationVM.path.append(AppRoute.profil)
+                
+            }label: {
+                Image(.profilOrange)
+            }
+            Text("Dashboard")
+        }
     }
 }
 
 #Preview {
     Dashboard()
+        .environment(NavigationViewModel())
+        .environment(UserViewModel())
 }

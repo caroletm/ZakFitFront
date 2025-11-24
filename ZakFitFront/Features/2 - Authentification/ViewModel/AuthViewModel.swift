@@ -16,10 +16,10 @@ class AuthViewModel {
     //MARK: - DataUser
     
     var errorMessage: String? = "Mot de passe incorrect. Veuillez réessayer."
-    var nomUtilisateur: String = ""
+//    var nomUtilisateur: String = ""
     var motDePasse: String = ""
     var motDePasseConfirm: String = ""
-    var email: String = ""
+//    var email: String = ""
     
     //MARK: - Etats d'affichage
     

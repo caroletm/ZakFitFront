@@ -9,32 +9,24 @@ import SwiftUI
 
 struct ProfilOnboarding: View {
     @Environment(NavigationViewModel.self) var navigationVM
-    
-    var user: User
-    
-    @State var nom = ""
-    @State var prenom = ""
-    @State var taille = 155
-    @State var poids = 59
-    @State var sexe : UserGender? = nil
-    @State var age : Int = 33
-    @State var preference : UserPreferences = .glutenFree
-    @State var activityLevel : UserActivityLevel = .high
+    @Environment(UserViewModel.self) var userVM
     
     var body: some View {
         
-   
+        @Bindable var userVM = userVM
+        
+        NavigationView {
             VStack {
                 VStack {
                     Button {
                         //
                     }label:{
-                        Image(user.image)
+                        Image(userVM.image ?? "profilGrey")
                     }
-                    Text(user.username)
+                    Text(userVM.nomUtilisateur)
                         .font(.system(size: 20, weight: .bold))
                         .foregroundStyle(.orangeLight300)
-                    Text(user.email)
+                    Text(userVM.email)
                         .font(.system(size: 15, weight: .regular))
                         .foregroundStyle(.greyDark)
                 }
@@ -47,7 +39,7 @@ struct ProfilOnboarding: View {
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
                         Spacer()
-                        TextField("Nom", text: $nom)
+                        TextField("Nom", text: $userVM.nom)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
                             .background(Color.greyLight50)
@@ -62,7 +54,7 @@ struct ProfilOnboarding: View {
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
                         Spacer()
-                        TextField("Prénom", text: $prenom)
+                        TextField("Prénom", text: $userVM.prenom)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 10)
                             .background(Color.greyLight50)
@@ -77,7 +69,7 @@ struct ProfilOnboarding: View {
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
                         Spacer()
-                        Picker("Taille", selection: $taille) {
+                        Picker("Taille", selection: $userVM.taille) {
                             ForEach(100...200, id: \.self) {
                                 Text("\($0) cm")
                             }
@@ -90,7 +82,7 @@ struct ProfilOnboarding: View {
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
                         Spacer()
-                        Picker("Poids", selection: $poids) {
+                        Picker("Poids", selection: $userVM.poids) {
                             ForEach(30...200, id: \.self) {
                                 Text("\($0) kg")
                             }
@@ -103,7 +95,7 @@ struct ProfilOnboarding: View {
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
                         Spacer()
-                        Picker("Sexe", selection: $sexe) {
+                        Picker("Sexe", selection: $userVM.sexe) {
                             ForEach(UserGender.allCases, id: \.self) { gender in
                                 Text(gender.description)
                                     .tag(gender)
@@ -117,7 +109,7 @@ struct ProfilOnboarding: View {
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
                         Spacer()
-                        Picker("Age", selection: $age) {
+                        Picker("Age", selection: $userVM.age) {
                             ForEach(18...150, id: \.self) {
                                 Text("\($0) ans")
                             }
@@ -130,7 +122,7 @@ struct ProfilOnboarding: View {
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
                         
-                        StyledPicker(selection: $preference, labelFor: { $0.description })
+                        StyledPicker(selection: $userVM.preference, labelFor: { $0.description })
                             .padding(.horizontal)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -141,7 +133,7 @@ struct ProfilOnboarding: View {
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
                         
-                        StyledPicker(selection: $activityLevel, labelFor: { $0.description })
+                        StyledPicker(selection: $userVM.activityLevel, labelFor: { $0.description })
                             .padding(.horizontal)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -151,7 +143,8 @@ struct ProfilOnboarding: View {
                         Text("Objectifs de santé")
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
-                        BoutonSouligne (text: "Renseigner mes objectifs", color: .black, fontSize: 16, fontWeight: .medium) {
+                        BoutonSouligne (text: "Renseigner mes objectifs", color: .black, fontSize: 16, fontWeight: .bold) {
+                            navigationVM.path.append(AppRoute.objectifs)
                         }
                         .padding(.vertical,5)
                     }
@@ -159,16 +152,13 @@ struct ProfilOnboarding: View {
                     .padding([.horizontal, .top], 10)
                 }
             }
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text("Mon profil")
-                    .font(.system(size: 24, weight: .bold))
-            }
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
 #Preview {
-    ProfilOnboarding(user : firstUser)
+    ProfilOnboarding()
         .environment(NavigationViewModel())
+        .environment(UserViewModel())
 }

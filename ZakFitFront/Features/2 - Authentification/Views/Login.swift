@@ -13,8 +13,6 @@ struct Login : View {
     
     var body: some View {
         
-//        @Bindable var authVM = authVM
-        
         ZStack {
             LinearGradient(
                 colors: [.white, .greyLight100, .greyDark],

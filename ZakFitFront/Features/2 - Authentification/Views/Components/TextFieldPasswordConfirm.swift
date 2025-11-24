@@ -10,6 +10,8 @@ import SwiftUI
 struct TextFieldPasswordConfirm: View {
     @Environment(AuthViewModel.self) var authVM
     
+    @State var isPasswordVisible: Bool = false
+    
     var body: some View {
         
         @Bindable var authVM = authVM
@@ -30,10 +32,10 @@ struct TextFieldPasswordConfirm: View {
             }
             
             Button {
-                authVM.isPasswordVisible.toggle()
+                isPasswordVisible.toggle()
             }label: {
-                Image(systemName: authVM.isPasswordVisible ? "eye.slash" : "eye")
-                    .foregroundColor(authVM.isPasswordVisible ? .black : .greyLight100)
+                Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
+                    .foregroundColor(isPasswordVisible ? .black : .greyLight100)
             }
         }
         .padding(.horizontal, 20)

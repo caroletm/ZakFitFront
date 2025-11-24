@@ -15,5 +15,5 @@ struct Stats : View {
 }
 
 #Preview {
-    Dashboard()
+    Stats()
 }
