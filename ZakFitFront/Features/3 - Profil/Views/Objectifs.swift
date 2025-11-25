@@ -11,27 +11,17 @@ struct Objectifs : View {
     
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(UserViewModel.self) var userVM
-    
-//    var user: User
-    
-//    @State var preference : UserPreferences = .none
-//    @State var dateDebut : Date = Date()
-//    @State var poidsCible : Double? = 55
-//    @State var nbDuree : Int? = 12
-//    @State var uniteDuree : String? = "semaine"
-//    @State var showPicker : Bool = false
-//    @State var caloriesParJourString : String = "1500"
-//    @State var caloriesParJour : Int? = 1500
-//    @State var caloriesBruleesParJourString : String = "1500"
-//    @State var caloriesBruleesParJour : Int? = 1500
-//    @State var dureeActiviteString : String = "30"
-//    @State var dureeActivite : Int? = 30
-//    @State var nbEntrainementsHebdoString : String = "3"
-//    @State var nbEntrainementsHebdo : Int? = 3
+    @Environment(ObjectifViewModel.self) var objectifVM
+
+    @State var caloriesParJourString : String = ""
+    @State var caloriesBruleesParJourString : String = ""
+    @State var dureeActiviteString : String = ""
+    @State var nbEntrainementsHebdoString : String = ""
     
     var body: some View {
         
         @Bindable var userVM = userVM
+        @Bindable var objectifVM = objectifVM
         
         NavigationView {
             
@@ -43,15 +33,15 @@ struct Objectifs : View {
                         
                         Text("Objectifs nutritionnels")
                             .font(.system(size: 20, weight: .bold))
-                        StyledPicker(selection: $userVM.preference, labelFor: { $0.description })
+                        StyledPicker(selection: $objectifVM.objectifGlobal, labelFor: { $0.description })
                             .padding(.vertical)
                         
                         HStack {
                             Text("Poids de départ :")
                             Spacer()
                             VStack() {
-                                Text("\(userVM.poids) kg")
-                                Text(" le \(userVM.dateDebut, style: .date)")
+                                Text("\(String(format: "%.1f", userVM.poids ?? 0)) kg")
+                                Text("\(userVM.dateFormatter(objectifVM.dateDebut))")
                                     .font(.system(size: 10, weight: .bold))
                             }.font(.system(size: 16, weight: .bold))
                         }
@@ -60,9 +50,9 @@ struct Objectifs : View {
                         HStack {
                             Text("Objectif de poids cible :")
                             Spacer()
-                            Picker("Poids", selection: $userVM.poidsCible) {
-                                ForEach(30...200, id: \.self) {
-                                    Text("\($0) kg")
+                            Picker("Poids", selection: $objectifVM.poidsCible) {
+                                ForEach(40...200, id: \.self) { value in
+                                    Text("\(value) kg").tag(Double(value) as Double?)
                                 }
                             }.pickerStyle(.automatic)
                         }
@@ -71,30 +61,26 @@ struct Objectifs : View {
                             Text("Objectif de durée :")
                             Spacer()
                             
-                            if userVM.nbDuree != nil && userVM.uniteDuree != nil {
-                                Button {
-                                    userVM.showPicker = true
-                                }label: {
-                                    Text("Définir")
-                                }
-                            }else {
-                                Button {
-                                    userVM.showPicker = true
-                                }label: {
-                                    Text("\(userVM.nbDuree ?? 0) \(userVM.uniteDuree ?? "")")
-                                }
-                            }
-                        }
-                        .padding(.vertical)
+                            Button {
+                                   objectifVM.showPicker = true
+                               } label: {
+                                   if objectifVM.nbDuree == nil || objectifVM.uniteDuree == nil {
+                                       Text("Définir")
+                                   } else {
+                                       Text("\(objectifVM.nbDuree!) \(objectifVM.uniteDuree!)")
+                                   }
+                               }
+                           }
+                           .padding(.vertical)
                         
                         HStack {
-                            VStack {
+                            VStack(alignment :.leading) {
                                 Text("Objectif calorique quotidien :")
-                                Text("Si pas renseigné, l'objectif sera calculé")
+                                Text("Si pas renseigné, l'objectif sera calculé*")
                                     .font(.caption)
                             }
                             Spacer()
-                            TextField("ex: 1800", text: $userVM.caloriesParJourString)
+                            TextField("\(objectifVM.caloriesCiblesCalculees())", text: $caloriesParJourString)
                                 .keyboardType(.numberPad)
                                 .padding(8)
                                 .font(.system(size: 16, weight: .bold))
@@ -103,20 +89,20 @@ struct Objectifs : View {
                                 .multilineTextAlignment(.center)
                                 .frame(width: 80, height: 40)
                                 .cornerRadius(10)
-                                .onChange(of: userVM.caloriesParJourString) {
-                                    userVM.caloriesParJourString = userVM.caloriesParJourString.filter { $0.isNumber }
-                                    userVM.caloriesParJour = Int(userVM.caloriesParJourString)
+                                .onChange(of: caloriesParJourString) {
+                                    caloriesParJourString = caloriesParJourString.filter { $0.isNumber }
+                                    objectifVM.caloriesParJour = Int(caloriesParJourString)
                                 }
-                        }.padding(.bottom, 10)
+                        }.padding(.vertical)
                         
                         HStack {
-                            VStack {
+                            VStack (alignment :.leading){
                                 Text("Objectif calorique quotidien à dépenser :")
-                                Text("Si pas renseigné, l'objectif sera calculé")
+                                Text("Si pas renseigné, l'objectif sera calculé*")
                                     .font(.caption)
                             }
                             Spacer()
-                            TextField("ex: 1800", text: $userVM.caloriesBruleesParJourString)
+                            TextField("\(objectifVM.caloriesCiblesBruleesCalculees())", text: $caloriesBruleesParJourString)
                                 .keyboardType(.numberPad)
                                 .padding(8)
                                 .font(.system(size: 16, weight: .bold))
@@ -125,19 +111,19 @@ struct Objectifs : View {
                                 .multilineTextAlignment(.center)
                                 .frame(width: 80, height: 40)
                                 .cornerRadius(10)
-                                .onChange(of: userVM.caloriesBruleesParJourString) {
-                                    userVM.caloriesBruleesParJourString = userVM.caloriesBruleesParJourString.filter { $0.isNumber }
-                                    userVM.caloriesBruleesParJour = Int(userVM.caloriesBruleesParJourString)
+                                .onChange(of: caloriesBruleesParJourString) {
+                                    caloriesBruleesParJourString = caloriesBruleesParJourString.filter { $0.isNumber }
+                                    objectifVM.caloriesBruleesParJour = Int(caloriesBruleesParJourString)
                                 }
-                        }.padding(.bottom, 10)
+                        }.padding(.vertical)
                         
                         Button {
                             navigationVM.path.append(AppRoute.objectifsAvances)
                         }label:{
                             HStack {
-                                VStack {
+                                VStack(alignment :.leading) {
                                     Text("Objectifs nutritionnels avancés :")
-                                    Text("Si pas renseignés, l'objectifs seront calculés")
+                                    Text("Si pas renseignés, les objectifs seront calculés*")
                                         .font(.caption)
                                 }
                                 .foregroundStyle(.black)
@@ -150,15 +136,21 @@ struct Objectifs : View {
                         Divider()
                             .background(Color.accent)
                             .padding(.horizontal, 20)
+                            .padding(.vertical)
                         
                         Text("Objectifs d'activité")
                             .font(.system(size: 20, weight: .bold))
                             .padding(.vertical)
                         
                         HStack {
-                            Text("Durée d'activité quotidien (en min): ")
+                            
+                            VStack(alignment :.leading) {
+                                Text("Durée d'activité quotidien (en min):")
+                                Text("Si pas renseigné, l'objectif de base sera renseigné")
+                                    .font(.caption)
+                            }
                             Spacer()
-                            TextField("ex: 1800", text: $userVM.dureeActiviteString)
+                            TextField("30", text: $dureeActiviteString)
                                 .keyboardType(.numberPad)
                                 .padding(8)
                                 .font(.system(size: 16, weight: .bold))
@@ -167,16 +159,16 @@ struct Objectifs : View {
                                 .multilineTextAlignment(.center)
                                 .frame(width: 60, height: 40)
                                 .cornerRadius(10)
-                                .onChange(of: userVM.dureeActiviteString) {
-                                    userVM.dureeActiviteString = userVM.dureeActiviteString.filter { $0.isNumber }
-                                    userVM.dureeActivite = Int(userVM.dureeActiviteString)
+                                .onChange(of: dureeActiviteString) {
+                                    dureeActiviteString = dureeActiviteString.filter { $0.isNumber }
+                                    objectifVM.dureeActivite = Int(dureeActiviteString)
                                 }
                         }
                         
                         HStack {
-                            Text("Durée d'entrainements hebdomadaires: ")
+                            Text("Nombre d'entrainements hebdomadaires: ")
                             Spacer()
-                            TextField("ex: 1800", text: $userVM.nbEntrainementsHebdoString)
+                            TextField("5", text: $nbEntrainementsHebdoString)
                                 .keyboardType(.numberPad)
                                 .padding(8)
                                 .font(.system(size: 16, weight: .bold))
@@ -185,31 +177,42 @@ struct Objectifs : View {
                                 .multilineTextAlignment(.center)
                                 .frame(width: 60, height: 40)
                                 .cornerRadius(10)
-                                .onChange(of: userVM.nbEntrainementsHebdoString) {
-                                    userVM.nbEntrainementsHebdoString = userVM.nbEntrainementsHebdoString.filter { $0.isNumber }
-                                    userVM.nbEntrainementsHebdo = Int(userVM.nbEntrainementsHebdoString)
+                                .onChange(of: nbEntrainementsHebdoString) {
+                                    nbEntrainementsHebdoString = nbEntrainementsHebdoString.filter { $0.isNumber }
+                                    objectifVM.nbEntrainementsHebdo = Int(nbEntrainementsHebdoString)
                                 }
-                        }.padding(.bottom,10)
+                        }.padding(.vertical)
                         
                         Divider()
                             .background(Color.accent)
                             .padding(.horizontal, 20)
+                            .padding(.vertical)
                     }
                     
                     VStack {
-                        Text("Votre objectif de poids est de \(String(format: "%.1f", userVM.poidsCible ?? 0)) kg au 2020020")
-                            .font(.system(size: 16, weight: .bold))
-                            .padding()
-                            .multilineTextAlignment(.center)
-                            .foregroundStyle(.orangeLight300)
+                        if objectifVM.poidsCible != nil  || objectifVM.nbDuree != nil {
+                            Text("Votre objectif de poids est de \(String(format: "%.1f", objectifVM.poidsCible ?? 0)) kg au \(userVM.dateFormatter(objectifVM.dateCible() ?? Date()))")
+                                .font(.system(size: 16, weight: .bold))
+                                .padding()
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(.orangeLight300)
+                        }else {
+                            Text("Votre objectif de poids est de \(String(format: "%.1f", userVM.poids ?? 0)) kg")
+                                .font(.system(size: 16, weight: .bold))
+                                .padding()
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(.orangeLight300)
+                        }
+                       
                         Text("*calculs effectués selon le métabolisme basal (BMR)")
                             .font(.system(size: 10, weight: .regular))
                     }
                     
-                    
                     HStack {
                         Spacer()
                         BoutonOrange(text: "Valider", width: 115, height: 50) {
+                            objectifVM.createObjectifRepas()
+                            objectifVM.createObjectifActivite()
                             navigationVM.path = NavigationPath()
                         }
                         
@@ -226,19 +229,19 @@ struct Objectifs : View {
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)
-                .sheet(isPresented: $userVM.showPicker) {
-                    DureePicker(nbDuree: $userVM.nbDuree, uniteDuree: $userVM.uniteDuree, showPicker: $userVM.showPicker)
+                .sheet(isPresented: $objectifVM.showPicker) {
+                    DureePicker(showPicker: $objectifVM.showPicker)
                         .presentationDetents([.fraction(0.3)])
                 }
-             
-                
             }
         }
     }
 }
 
 #Preview {
+    let userVM = UserViewModel()
     Objectifs()
         .environment(NavigationViewModel())
-        .environment(UserViewModel())
+        .environment(userVM)
+        .environment(ObjectifViewModel(userVM: userVM))
 }

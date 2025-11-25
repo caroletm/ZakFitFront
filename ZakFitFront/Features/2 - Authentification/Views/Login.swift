@@ -10,6 +10,8 @@ import SwiftUI
 struct Login : View {
     
     @Environment(AuthViewModel.self) var authVM
+    @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(UserViewModel.self) var userVM
     
     var body: some View {
         
@@ -58,7 +60,8 @@ struct Login : View {
                     }
                 }
                 BoutonOrange(text: "Se connecter", width: 280, height: 47) {
-                    //
+                    authVM.isAuthenticated = true
+                    navigationVM.path = NavigationPath()
                 }
                 
                 Text("Vous n'avez pas de compte?")
@@ -79,6 +82,8 @@ struct Login : View {
 #Preview {
     Login()
         .environment(AuthViewModel())
+        .environment(NavigationViewModel())
+        .environment(UserViewModel())
 }
 
 

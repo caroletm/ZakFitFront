@@ -10,7 +10,14 @@ import SwiftUI
 struct ContentView: View {
     @State private var authVM = AuthViewModel()
     @State private var navigationVM = NavigationViewModel()
-    @State private var userVM = UserViewModel()
+    @State private var userVM : UserViewModel
+    @State private var objectifVM : ObjectifViewModel
+    
+    init() {
+        let userVM = UserViewModel()
+        self._userVM = State(initialValue: userVM)
+        self._objectifVM = State(initialValue: ObjectifViewModel(userVM: userVM))
+    }
     
     var body: some View {
         
@@ -58,12 +65,15 @@ struct ContentView: View {
             .environment(authVM)
             .environment(navigationVM)
             .environment(userVM)
+            .environment(objectifVM)
     }
 }
 
 #Preview {
+    let userVM = UserViewModel()
     ContentView()
         .environment(AuthViewModel())
         .environment(NavigationViewModel())
-        .environment(UserViewModel())
+        .environment(userVM)
+        .environment(ObjectifViewModel(userVM: userVM))
 }

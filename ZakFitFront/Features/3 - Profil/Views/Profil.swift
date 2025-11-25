@@ -10,6 +10,7 @@ import SwiftUI
 struct Profil: View {
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(UserViewModel.self) var userVM
+    @Environment(ObjectifViewModel.self) var objectifVM
     
     var body: some View {
         
@@ -60,7 +61,7 @@ struct Profil: View {
                                 .font(.system(size: 16, weight: .bold))
                                 .foregroundStyle(.orangeLight300)
                             Spacer()
-                            Text("\(userVM.taille) cm")
+                            Text("\(userVM.taille ?? 0) cm")
                                 .font(.system(size: 14, weight: .bold))
                         }
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 15, trailing: 10))
@@ -70,10 +71,12 @@ struct Profil: View {
                                 .font(.system(size: 16, weight: .bold))
                                 .foregroundStyle(.orangeLight300)
                             Spacer()
-                            Text("\(userVM.poids) kg")
+                            
+                            Text("\(String(format: "%.1f", userVM.poids ?? 0)) kg")
                                 .font(.system(size: 14, weight: .bold))
                         }
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 15, trailing: 10))
+                        
                         
                         HStack {
                             Text("Sexe")
@@ -90,7 +93,7 @@ struct Profil: View {
                                 .font(.system(size: 16, weight: .bold))
                                 .foregroundStyle(.orangeLight300)
                             Spacer()
-                            Text("\(userVM.email)")
+                            Text("\(userVM.dateFormatter(userVM.dateNaissance))")
                                 .font(.system(size: 14, weight: .bold))
                         }
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 15, trailing: 10))
@@ -101,7 +104,7 @@ struct Profil: View {
                                 .font(.system(size: 16, weight: .bold))
                                 .foregroundStyle(.orangeLight300)
                             Spacer()
-                            Text("\(userVM.age) ans")
+                            Text("\(userVM.age ?? 0) ans")
                                 .font(.system(size: 14, weight: .bold))
                         }
                         .padding(EdgeInsets(top: 0, leading: 10, bottom: 15, trailing: 10))
@@ -167,7 +170,9 @@ struct Profil: View {
 }
 
 #Preview {
+    let userVM = UserViewModel()
     Profil()
         .environment(NavigationViewModel())
         .environment(UserViewModel())
+        .environment(ObjectifViewModel(userVM: userVM))
 }

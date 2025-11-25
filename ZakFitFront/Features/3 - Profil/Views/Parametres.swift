@@ -10,10 +10,11 @@ import SwiftUI
 struct Parametres : View {
     
     @Environment(NavigationViewModel.self) var navigationVM
-    
-    @State var notificationActive : Bool = false
+    @Environment(UserViewModel.self) var userVM
     
     var body: some View {
+        
+        @Bindable var userVM = userVM
         
         NavigationView {
             
@@ -22,15 +23,19 @@ struct Parametres : View {
                 VStack (alignment :.leading, spacing : 20) {
                     Text("Général")
                         .font(.system(size: 20, weight: .bold))
-                    Text("Modifier mon profil")
-                        .font(.system(size: 16, weight: .medium))
+                    Button {
+                        navigationVM.path.append(AppRoute.profilOnboarding)
+                    }label:{
+                        Text("Modifier mon profil")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundStyle(Color.black)
+                    }
                 }
                 .padding()
                 
                 Divider()
                     .background(Color.accent)
                     .padding(.horizontal, 20)
-                
                 
                 VStack (alignment :.leading, spacing : 20) {
                     Text("Aide et support")
@@ -53,7 +58,7 @@ struct Parametres : View {
                         Text("Notifications")
                             .font(.system(size: 16, weight: .medium))
                         Spacer()
-                        Toggle("", isOn: $notificationActive)
+                        Toggle("", isOn: $userVM.isNotificationActive)
                             .labelsHidden()
                             .toggleStyle(SwitchToggleStyle(tint: .orangeLight300))
                     }
@@ -61,6 +66,8 @@ struct Parametres : View {
                     Text("Confidentialité")
                         .font(.system(size: 16, weight: .medium))
                     Text("Conditions Générales d'utilisation")
+                        .font(.system(size: 16, weight: .medium))
+                    Text("Supprimer mon compte")
                         .font(.system(size: 16, weight: .medium))
                 }
                 .padding()
@@ -86,4 +93,5 @@ struct Parametres : View {
 #Preview {
     Parametres()
         .environment(NavigationViewModel())
+        .environment(UserViewModel())
 }
