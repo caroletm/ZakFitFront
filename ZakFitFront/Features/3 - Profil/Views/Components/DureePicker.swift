@@ -9,12 +9,15 @@ import SwiftUI
 
 public struct DureePicker: View {
     
-    @Binding var nbDuree: Int?
-    @Binding var uniteDuree: String?
-    var uniteDureePossible : [String] = ["semaine", "mois", "année"]
-    @Binding var showPicker: Bool
+    @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(UserViewModel.self) var userVM
+    @Environment(ObjectifViewModel.self) var objectifVM
     
+    @Binding var showPicker: Bool
+
     public var body: some View {
+        
+        @Bindable var objectifVM = objectifVM
         
         VStack {
             HStack  {
@@ -22,6 +25,7 @@ public struct DureePicker: View {
                     .font(.system(size: 18, weight : .bold))
                 Spacer()
                 Button {
+                  
                     showPicker = false
                 }label: {
                     Text ("OK")
@@ -30,16 +34,16 @@ public struct DureePicker: View {
             .padding()
             HStack {
             
-                Picker("NbDuree", selection: $nbDuree) {
+                Picker("NbDuree", selection: $objectifVM.nbDuree) {
                     ForEach(1...50, id: \.self) { value in
-                        Text("\(value)")
+                        Text("\(value)").tag(Optional(value))
                     }
                 }
                 .pickerStyle(.wheel)
                 
-                Picker("UnitDuree", selection: $uniteDuree) {
-                    ForEach(uniteDureePossible, id: \.self) { unite in
-                        Text(unite)
+                Picker("UnitDuree", selection: $objectifVM.uniteDuree) {
+                    ForEach(UniteDuree.allCases, id: \.self) { unite in
+                        Text(unite.description).tag(Optional(unite))
                     }
                 }
                 .pickerStyle(.wheel)
@@ -49,5 +53,9 @@ public struct DureePicker: View {
 }
 
 #Preview {
-    DureePicker(nbDuree: .constant(3), uniteDuree: .constant("semaines"), showPicker: .constant(true))
+    let userVM = UserViewModel()
+    DureePicker(showPicker: .constant(true))
+        .environment(NavigationViewModel())
+        .environment(userVM)
+        .environment(ObjectifViewModel(userVM: userVM))
 }

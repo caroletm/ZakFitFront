@@ -10,6 +10,7 @@ import SwiftUI
 struct ProfilOnboarding: View {
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(UserViewModel.self) var userVM
+    @Environment(ObjectifViewModel.self) var objectifVM
     
     var body: some View {
         
@@ -71,7 +72,7 @@ struct ProfilOnboarding: View {
                         Spacer()
                         Picker("Taille", selection: $userVM.taille) {
                             ForEach(100...200, id: \.self) {
-                                Text("\($0) cm")
+                                Text("\($0) cm").tag($0 as Int?)
                             }
                         }.pickerStyle(.automatic)
                     }
@@ -83,8 +84,8 @@ struct ProfilOnboarding: View {
                             .foregroundStyle(.orangeLight300)
                         Spacer()
                         Picker("Poids", selection: $userVM.poids) {
-                            ForEach(30...200, id: \.self) {
-                                Text("\($0) kg")
+                            ForEach(30...200, id: \.self) { value in
+                                Text("\(value) kg").tag(Double(value) as Double?)
                             }
                         }.pickerStyle(.automatic)
                     }
@@ -105,15 +106,37 @@ struct ProfilOnboarding: View {
                     .padding(.horizontal)
                     
                     HStack {
+                        Text("Date de Naissance")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(.orangeLight300)
+                        
+                        Spacer()
+                        
+                        DatePicker(
+                            "",
+                            selection: $userVM.dateNaissance,
+                            displayedComponents: [.date]
+                        )
+                        .datePickerStyle(.compact)
+                    }
+                    .padding(EdgeInsets(top: 0, leading: 10, bottom: 15, trailing: 10))
+                    
+                    HStack {
                         Text("Age")
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
                         Spacer()
-                        Picker("Age", selection: $userVM.age) {
-                            ForEach(18...150, id: \.self) {
-                                Text("\($0) ans")
-                            }
-                        }.pickerStyle(.automatic)
+                        
+                        if userVM.age ?? 0 > 0 {
+                            Text("\(userVM.age ?? 0) ans")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundStyle(Color.orangeLight300)
+                        }else {
+                            Text("Non renseigné")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundStyle(Color.orangeLight300)
+                        }
+                   
                     }
                     .padding(.horizontal)
                     
@@ -158,7 +181,9 @@ struct ProfilOnboarding: View {
 }
 
 #Preview {
+    let userVM = UserViewModel()
     ProfilOnboarding()
         .environment(NavigationViewModel())
-        .environment(UserViewModel())
+        .environment(userVM)
+        .environment(ObjectifViewModel(userVM: userVM))
 }

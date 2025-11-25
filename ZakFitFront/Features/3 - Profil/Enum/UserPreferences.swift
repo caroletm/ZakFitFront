@@ -6,14 +6,18 @@
 //
 
 enum UserPreferences: String, CaseIterable {
+    case parDefault
     case vegetarian
     case vegan
     case glutenFree
     case lactoseIntolerant
     case none
+
     
     var description: String {
         switch self {
+        case .parDefault:
+            return "-"
         case .vegetarian:
             return "Vegetarien"
         case .vegan:

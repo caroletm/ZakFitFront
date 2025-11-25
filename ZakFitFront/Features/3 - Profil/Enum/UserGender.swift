@@ -9,7 +9,7 @@ enum UserGender: String, CaseIterable {
     case male
     case female
     case other
-    
+
     var description: String {
         switch self {
         case .male:

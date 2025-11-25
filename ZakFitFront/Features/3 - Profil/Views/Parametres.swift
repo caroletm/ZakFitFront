@@ -62,6 +62,8 @@ struct Parametres : View {
                         .font(.system(size: 16, weight: .medium))
                     Text("Conditions Générales d'utilisation")
                         .font(.system(size: 16, weight: .medium))
+                    Text("Supprimer mon compte")
+                        .font(.system(size: 16, weight: .medium))
                 }
                 .padding()
                 

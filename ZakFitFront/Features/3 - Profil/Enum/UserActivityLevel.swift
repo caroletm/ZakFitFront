@@ -6,13 +6,18 @@
 //
 
 enum UserActivityLevel: String, CaseIterable {
+    
+    case parDefault
     case low
     case moderate
     case high
     case veryHigh
+
     
     var description: String {
         switch self {
+        case .parDefault:
+            return "-"
         case .low:
             return "Peu actif"
         case .moderate:

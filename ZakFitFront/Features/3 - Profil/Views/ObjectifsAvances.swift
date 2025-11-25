@@ -10,10 +10,11 @@ import SwiftUI
 struct ObjectifsAvances: View {
     
     @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(ObjectifViewModel.self) var objectifVM
     
-    @State var proteinesString : String = "100"
-    @State var glucidesString : String = "100"
-    @State var lipidesString : String = "100"
+    @State var proteinesString : String = ""
+    @State var glucidesString : String = ""
+    @State var lipidesString : String = ""
     @State var proteines : Int? = nil
     @State var glucides : Int? = nil
     @State var lipides : Int? = nil
@@ -31,7 +32,7 @@ struct ObjectifsAvances: View {
                     HStack {
                         Text("Objectif de proteines (g): ")
                         Spacer()
-                        TextField("proteines", text: $proteinesString)
+                        TextField("", text: $proteinesString)
                             .keyboardType(.numberPad)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
@@ -49,7 +50,7 @@ struct ObjectifsAvances: View {
                     HStack {
                         Text("Objectif de glucides (g): ")
                         Spacer()
-                        TextField("glucides", text: $glucidesString)
+                        TextField("", text: $glucidesString)
                             .keyboardType(.numberPad)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
@@ -67,7 +68,7 @@ struct ObjectifsAvances: View {
                     HStack {
                         Text("Objectif de lipides (g): ")
                         Spacer()
-                        TextField("proteines", text: $lipidesString)
+                        TextField("", text: $lipidesString)
                             .keyboardType(.numberPad)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
@@ -104,7 +105,9 @@ struct ObjectifsAvances: View {
 }
 
 #Preview {
+    let userVM = UserViewModel()
     ObjectifsAvances()
         .environment(NavigationViewModel())
+        .environment(ObjectifViewModel(userVM: userVM))
 }
 
