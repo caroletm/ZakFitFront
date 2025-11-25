@@ -74,7 +74,7 @@ struct Objectifs : View {
                            .padding(.vertical)
                         
                         HStack {
-                            VStack {
+                            VStack(alignment :.leading) {
                                 Text("Objectif calorique quotidien :")
                                 Text("Si pas renseigné, l'objectif sera calculé*")
                                     .font(.caption)
@@ -96,7 +96,7 @@ struct Objectifs : View {
                         }.padding(.vertical)
                         
                         HStack {
-                            VStack {
+                            VStack (alignment :.leading){
                                 Text("Objectif calorique quotidien à dépenser :")
                                 Text("Si pas renseigné, l'objectif sera calculé*")
                                     .font(.caption)
@@ -121,9 +121,9 @@ struct Objectifs : View {
                             navigationVM.path.append(AppRoute.objectifsAvances)
                         }label:{
                             HStack {
-                                VStack {
+                                VStack(alignment :.leading) {
                                     Text("Objectifs nutritionnels avancés :")
-                                    Text("Si pas renseignés, l'objectifs seront calculés*")
+                                    Text("Si pas renseignés, les objectifs seront calculés*")
                                         .font(.caption)
                                 }
                                 .foregroundStyle(.black)
@@ -138,16 +138,19 @@ struct Objectifs : View {
                             .padding(.horizontal, 20)
                             .padding(.vertical)
                         
-                        
-                        
                         Text("Objectifs d'activité")
                             .font(.system(size: 20, weight: .bold))
                             .padding(.vertical)
                         
                         HStack {
-                            Text("Durée d'activité quotidien (en min): ")
+                            
+                            VStack(alignment :.leading) {
+                                Text("Durée d'activité quotidien (en min):")
+                                Text("Si pas renseigné, l'objectif de base sera renseigné")
+                                    .font(.caption)
+                            }
                             Spacer()
-                            TextField("", text: $dureeActiviteString)
+                            TextField("30", text: $dureeActiviteString)
                                 .keyboardType(.numberPad)
                                 .padding(8)
                                 .font(.system(size: 16, weight: .bold))
@@ -163,9 +166,9 @@ struct Objectifs : View {
                         }
                         
                         HStack {
-                            Text("Durée d'entrainements hebdomadaires: ")
+                            Text("Nombre d'entrainements hebdomadaires: ")
                             Spacer()
-                            TextField("", text: $nbEntrainementsHebdoString)
+                            TextField("5", text: $nbEntrainementsHebdoString)
                                 .keyboardType(.numberPad)
                                 .padding(8)
                                 .font(.system(size: 16, weight: .bold))
@@ -187,19 +190,29 @@ struct Objectifs : View {
                     }
                     
                     VStack {
-                        Text("Votre objectif de poids est de \(String(format: "%.1f", objectifVM.poidsCible ?? 0)) kg au \(userVM.dateFormatter(objectifVM.dateCible() ?? Date()))")
-                            .font(.system(size: 16, weight: .bold))
-                            .padding()
-                            .multilineTextAlignment(.center)
-                            .foregroundStyle(.orangeLight300)
+                        if objectifVM.poidsCible != nil  || objectifVM.nbDuree != nil {
+                            Text("Votre objectif de poids est de \(String(format: "%.1f", objectifVM.poidsCible ?? 0)) kg au \(userVM.dateFormatter(objectifVM.dateCible() ?? Date()))")
+                                .font(.system(size: 16, weight: .bold))
+                                .padding()
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(.orangeLight300)
+                        }else {
+                            Text("Votre objectif de poids est de \(String(format: "%.1f", userVM.poids ?? 0)) kg")
+                                .font(.system(size: 16, weight: .bold))
+                                .padding()
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(.orangeLight300)
+                        }
+                       
                         Text("*calculs effectués selon le métabolisme basal (BMR)")
                             .font(.system(size: 10, weight: .regular))
                     }
                     
-                    
                     HStack {
                         Spacer()
                         BoutonOrange(text: "Valider", width: 115, height: 50) {
+                            objectifVM.createObjectifRepas()
+                            objectifVM.createObjectifActivite()
                             navigationVM.path = NavigationPath()
                         }
                         
@@ -220,8 +233,6 @@ struct Objectifs : View {
                     DureePicker(showPicker: $objectifVM.showPicker)
                         .presentationDetents([.fraction(0.3)])
                 }
-             
-                
             }
         }
     }

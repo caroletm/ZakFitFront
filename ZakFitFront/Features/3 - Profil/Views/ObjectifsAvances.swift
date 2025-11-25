@@ -15,11 +15,10 @@ struct ObjectifsAvances: View {
     @State var proteinesString : String = ""
     @State var glucidesString : String = ""
     @State var lipidesString : String = ""
-    @State var proteines : Int? = nil
-    @State var glucides : Int? = nil
-    @State var lipides : Int? = nil
     
     var body: some View {
+        
+        @Bindable var objectifVM = objectifVM
         
         NavigationView {
             
@@ -30,9 +29,13 @@ struct ObjectifsAvances: View {
                         .font(.system(size: 20, weight: .bold))
                         .padding(.vertical)
                     HStack {
-                        Text("Objectif de proteines (g): ")
+                        VStack(alignment: .leading) {
+                            Text("Objectif de proteines (g): ")
+                            Text("Si pas renseigné, l'objectif sera calculé*")
+                                .font(.caption)
+                        }
                         Spacer()
-                        TextField("", text: $proteinesString)
+                        TextField("\(String(format: "%.1f",objectifVM.proteinesCiblesCalculees()))", text: $proteinesString)
                             .keyboardType(.numberPad)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
@@ -43,14 +46,18 @@ struct ObjectifsAvances: View {
                             .cornerRadius(10)
                             .onChange(of: proteinesString) {
                                 proteinesString = proteinesString.filter { $0.isNumber }
-                                proteines = Int(proteinesString) ?? 0
+                                objectifVM.proteines = Double(proteinesString) ?? 0
                             }
                     }.padding(.bottom,10)
                     
                     HStack {
-                        Text("Objectif de glucides (g): ")
+                        VStack(alignment: .leading) {
+                            Text("Objectif de glucides (g): ")
+                            Text("Si pas renseigné, l'objectif sera calculé*")
+                                .font(.caption)
+                        }
                         Spacer()
-                        TextField("", text: $glucidesString)
+                        TextField("\(String(format: "%.1f", objectifVM.glucidesCiblesCalculees()))", text: $glucidesString)
                             .keyboardType(.numberPad)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
@@ -61,14 +68,18 @@ struct ObjectifsAvances: View {
                             .cornerRadius(10)
                             .onChange(of: glucidesString) {
                                 glucidesString = glucidesString.filter { $0.isNumber }
-                                glucides = Int(glucidesString) ?? 0
+                                objectifVM.glucides = Double(glucidesString) ?? 0
                             }
                     }.padding(.bottom,10)
                     
                     HStack {
-                        Text("Objectif de lipides (g): ")
+                        VStack(alignment: .leading) {
+                            Text("Objectif de lipides (g): ")
+                            Text("Si pas renseigné, l'objectif sera calculé*")
+                                .font(.caption)
+                        }
                         Spacer()
-                        TextField("", text: $lipidesString)
+                        TextField("\(String(format: "%.1f",objectifVM.lipidesCiblesCalculees()))", text: $lipidesString)
                             .keyboardType(.numberPad)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
@@ -79,13 +90,13 @@ struct ObjectifsAvances: View {
                             .cornerRadius(10)
                             .onChange(of: lipidesString) {
                                 lipidesString = lipidesString.filter { $0.isNumber }
-                                lipides = Int(lipidesString) ?? 0
+                                objectifVM.lipides = Double(lipidesString) ?? 0
                             }
                     }.padding(.bottom,10)
                 }
                 .padding()
                 
-                Text("Votre objectif hebdomadaire est fixé à :\n\(proteines ?? 0) g de protéines, \n \(glucides ?? 0)g de glucides,\n \(lipides ?? 0) g de lipides.")
+                Text("Votre objectif hebdomadaire est fixé à :\n\(String(format: "%.1f", objectifVM.proteines ?? 0)) g de protéines, \n \(String(format: "%.1f", objectifVM.glucides ?? 0)) g de glucides,\n \(String(format: "%.1f", objectifVM.lipides ?? 0)) g de lipides.")
                     .multilineTextAlignment(.center)
                     .font(.system(size: 18, weight: .medium))
                     .foregroundStyle(.greyDark)
