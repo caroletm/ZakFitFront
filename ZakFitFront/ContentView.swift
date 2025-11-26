@@ -52,6 +52,18 @@ struct ContentView: View {
                             ActivitesList()
                         case .stats:
                             Stats()
+                        case .historique:
+                            Historique()
+                        case .notifications:
+                            Notifications()
+                        case .ajoutRepas:
+                            AjoutRepas()
+                        case .ajoutActivite:
+                            AjoutActivite()
+                        case .detailRepas:
+                            DetailRepas()
+                        case .detailActivite:
+                            DetailActivite()
                         }
                     }
             } else {

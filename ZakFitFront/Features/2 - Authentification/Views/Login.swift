@@ -13,6 +13,8 @@ struct Login : View {
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(UserViewModel.self) var userVM
     
+    @State var isPasswordVisible: Bool = false
+    
     var body: some View {
         
         ZStack {
@@ -36,7 +38,7 @@ struct Login : View {
                 Spacer()
                     .frame(height : 15)
                 
-                TextFieldPassword()
+                TextFieldPassword(isPasswordVisible: $isPasswordVisible)
                 
                 HStack {
                     HStack {

@@ -10,7 +10,7 @@ import SwiftUI
 struct TextFieldPassword: View {
     @Environment(AuthViewModel.self) var authVM
     
-    @State var isPasswordVisible: Bool = false
+    @Binding var isPasswordVisible: Bool
     
     var body: some View {
         
@@ -50,7 +50,7 @@ struct TextFieldPassword: View {
 }
 
 #Preview {
-    TextFieldPassword()
+    TextFieldPassword(isPasswordVisible: .constant(false))
         .environment(AuthViewModel())
 }
 

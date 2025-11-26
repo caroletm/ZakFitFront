@@ -10,7 +10,7 @@ import SwiftUI
 struct TextFieldPasswordConfirm: View {
     @Environment(AuthViewModel.self) var authVM
     
-    @State var isPasswordVisible: Bool = false
+    @Binding var isPasswordVisible: Bool
     
     var body: some View {
         
@@ -51,7 +51,7 @@ struct TextFieldPasswordConfirm: View {
 }
 
 #Preview {
-    TextFieldPasswordConfirm()
+    TextFieldPasswordConfirm(isPasswordVisible: .constant(false))
         .environment(AuthViewModel())
 }
 
