@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct Historique : View {
+    @Environment(NavigationViewModel.self) var navigationVM
     
     var body: some View {
         Text("Historique")
@@ -16,4 +17,5 @@ struct Historique : View {
 
 #Preview {
     Historique()
+        .environment(NavigationViewModel())
 }

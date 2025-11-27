@@ -21,6 +21,8 @@ class ObjectifViewModel {
     
     //MARK: - Objectifs
     
+    var objectifData : [Objectif] = []
+    
     //Objectifs Repas :
     var objectifGlobal : UserObjectifGlobal = .parDefault
     var poidsCible : Double? = nil
@@ -197,7 +199,7 @@ class ObjectifViewModel {
             caloriesBruleesParJour: nil,
             nbEntrainementsHebdo: nil
         )
-        userVM.objectifs.append(newObjectif)
+        objectifData.append(newObjectif)
     }
         
         func createObjectifActivite() {
@@ -216,6 +218,6 @@ class ObjectifViewModel {
                 caloriesBruleesParJour: caloriesBruleesParJour ?? caloriesCiblesBruleesCalculees(),
                 nbEntrainementsHebdo: nbEntrainementsHebdo ?? 5
                 )
-        userVM.objectifs.append(newObjectif)
+            objectifData.append(newObjectif)
     }
 }

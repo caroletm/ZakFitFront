@@ -10,6 +10,7 @@ import SwiftUI
 struct TabBarView: View {
     
     @Environment(UserViewModel.self) var userVM
+    @Environment(NavigationViewModel.self) var navigationVM
     
     var body: some View {
         
@@ -34,4 +35,5 @@ struct TabBarView: View {
 #Preview {
     TabBarView()
         .environment(UserViewModel())
+        .environment(NavigationViewModel())
 }

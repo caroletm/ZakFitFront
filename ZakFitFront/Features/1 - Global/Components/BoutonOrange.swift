@@ -28,7 +28,7 @@ struct BoutonOrange: View {
                     .fontWeight(.bold)
             }
         }
-        .padding()
+//        .padding()
     }
 }
 

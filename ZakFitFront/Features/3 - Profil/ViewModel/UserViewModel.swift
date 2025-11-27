@@ -31,7 +31,6 @@ class UserViewModel {
     var preference : UserPreferences = UserPreferences.parDefault
     var activityLevel : UserActivityLevel = .parDefault
     var isNotificationActive : Bool = true
-    var objectifs : [Objectif] = []
     
     //MARK: - Date
     

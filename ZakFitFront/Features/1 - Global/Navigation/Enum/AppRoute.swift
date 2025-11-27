@@ -17,4 +17,10 @@ enum AppRoute : Hashable {
     case repasList
     case activitesList
     case stats
+    case notifications
+    case historique
+    case ajoutRepas
+    case ajoutActivite
+    case detailRepas
+    case detailActivite
 }
