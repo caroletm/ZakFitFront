@@ -9,9 +9,9 @@ import SwiftUI
 
 struct StyledPicker<T: Hashable & CaseIterable>: View {
     
-    @Environment(NavigationViewModel.self) var navigationVM
-    @Environment(UserViewModel.self) var userVM
-    @Environment(ObjectifViewModel.self) var objectifVM
+//    @Environment(NavigationViewModel.self) var navigationVM
+//    @Environment(UserViewModel.self) var userVM
+//    @Environment(ObjectifViewModel.self) var objectifVM
     
     @Binding var selection: T
     let labelFor: (T) -> String

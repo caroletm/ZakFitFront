@@ -21,7 +21,6 @@ struct ContentView: View {
     
     var body: some View {
         
-        
         NavigationStack(path: $navigationVM.path) {
             
             if authVM.isAuthenticated {

@@ -173,6 +173,10 @@ struct ProfilOnboarding: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding([.horizontal, .top], 10)
+                    
+                    BoutonOrange(text: "Valider", width: 115, height: 50) {
+                        navigationVM.path = NavigationPath()
+                    }.padding()
                 }
             }
         }

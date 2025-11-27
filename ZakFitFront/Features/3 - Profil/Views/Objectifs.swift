@@ -214,7 +214,7 @@ struct Objectifs : View {
                             objectifVM.createObjectifRepas()
                             objectifVM.createObjectifActivite()
                             navigationVM.path = NavigationPath()
-                        }
+                        }.padding()
                         
                         Spacer()
                     }
