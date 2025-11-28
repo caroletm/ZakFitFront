@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ListeDesAliments: View {
+    @Environment(RepasViewModel.self) var repasVM
     
     var body: some View {
         VStack (alignment :.leading){
@@ -15,21 +16,21 @@ struct ListeDesAliments: View {
                 .font(.system(size: 20, weight: .bold))
             ScrollView {
                 
-                ForEach(0..<5) { aliment in
+                ForEach(repasVM.consoData, id: \.id) { conso in
                     
                     VStack  {
                         HStack {
-                            Text("Pomme")
+                            Text(conso.aliment.description)
                             Spacer()
                             VStack (alignment: .trailing) {
                                 HStack {
-                                    Text("1")
+                                    Text("\(conso.quantite)")
                                         .font(.system(size: 16, weight: .bold))
-                                    Text("unité")
+                                    Text(conso.portion.description)
                                         .font(.system(size: 16, weight: .regular))
                                 }
                                 HStack {
-                                    Text("40")
+                                    Text("\(String(format: "%.0f", conso.calories))")
                                         .font(.system(size: 10, weight: .bold))
                                     Text("calories")
                                         .font(.system(size: 10, weight: .regular))
@@ -46,4 +47,9 @@ struct ListeDesAliments: View {
             
         }
     }
+}
+
+#Preview {
+    ListeDesAliments()
+        .environment(RepasViewModel())
 }

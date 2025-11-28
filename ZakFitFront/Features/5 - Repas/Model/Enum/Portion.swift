@@ -6,6 +6,8 @@
 //
 
 enum Portion: String, CaseIterable {
+    
+    case parDefault
     case unite
     case cuillere
     case verre
@@ -18,6 +20,8 @@ enum Portion: String, CaseIterable {
     
     var description: String {
         switch self {
+            case .parDefault:
+            return ""
         case .unite:
             return "unité"
         case .cuillere:

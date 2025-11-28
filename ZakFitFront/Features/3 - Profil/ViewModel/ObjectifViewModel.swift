@@ -27,10 +27,10 @@ class ObjectifViewModel {
     var objectifGlobal : UserObjectifGlobal = .parDefault
     var poidsCible : Double? = nil
     var showPicker : Bool = false
-    var caloriesParJour : Int? = nil
+    var caloriesParJour : Double? = nil
     
     //Objectifs Activites :
-    var caloriesBruleesParJour : Int? = nil
+    var caloriesBruleesParJour : Double? = nil
     var dureeActivite : Int? = nil
     var nbEntrainementsHebdo : Int? = nil
     
@@ -63,7 +63,7 @@ class ObjectifViewModel {
 //    Femmes : 655 + (9,6 x poids (Kg)) + (1,8 x taille (cm)) – (4,7 x âge)
 //    Hommes : 66 + (13,7 x poids (Kg)) + (5 x taille (cm)) – (6,5 x âge)
     
-    func caloriesCiblesCalculees() -> Int {
+    func caloriesCiblesCalculees() -> Double {
         guard let poids = userVM.poids,
               let taille = userVM.taille,
               let age = userVM.age
@@ -102,14 +102,14 @@ class ObjectifViewModel {
         
         if userVM.sexe == .female {
             let result = 655.0 + (9.6 * poids) + (1.8 * Double(taille)) - (4.7 * Double(age))
-            return Int(result * activityFactor * objectifGlobalFactor)
+            return result * activityFactor * objectifGlobalFactor
         } else {
             let result = 66.0 + (13.7 * poids) + (5.0 * Double(taille)) - (6.5 * Double(age))
-            return Int(result * activityFactor * objectifGlobalFactor)
+            return result * activityFactor * objectifGlobalFactor
         }
     }
     
-    func caloriesCiblesBruleesCalculees() -> Int {
+    func caloriesCiblesBruleesCalculees() -> Double {
         guard let poids = userVM.poids,
               let taille = userVM.taille,
               let age = userVM.age
@@ -135,10 +135,10 @@ class ObjectifViewModel {
         
         if userVM.sexe == .female {
             let result = 655.0 + (9.6 * poids) + (1.8 * Double(taille)) - (4.7 * Double(age))
-            return Int(result * activityFactor)
+            return result * activityFactor
         } else {
             let result = 66.0 + (13.7 * poids) + (5.0 * Double(taille)) - (6.5 * Double(age))
-            return Int(result * activityFactor)
+            return result * activityFactor
         }
     }
     
@@ -191,7 +191,7 @@ class ObjectifViewModel {
             dateFin: dateCible() ?? nil,
             typeObjectif: .repas,
             poidsCible: 0,
-            caloriesParJour: caloriesParJour ?? Int(caloriesCiblesCalculees()),
+            caloriesParJour: caloriesParJour ?? caloriesCiblesCalculees(),
             proteines: proteines ?? proteinesCiblesCalculees(),
             glucides: glucides ?? glucidesCiblesCalculees(),
             lipides: lipides ?? lipidesCiblesCalculees(),

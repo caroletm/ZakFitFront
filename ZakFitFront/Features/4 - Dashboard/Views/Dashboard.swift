@@ -11,6 +11,8 @@ struct Dashboard : View {
     
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(UserViewModel.self) var userVM
+    @Environment(RepasViewModel.self) var repasVM
+    @Environment(ActiviteViewModel.self) var activiteVM
     
     @State var showRepasModal: Bool = false
     @State var showActiviteModal: Bool = false
@@ -39,7 +41,7 @@ struct Dashboard : View {
                                 .frame(width: 24, height: 24)
                                 .foregroundStyle(Color.black)
                         }
-                    }.padding()
+                    }.padding(EdgeInsets(top: 10, leading: 20, bottom: 20, trailing: 20))
                     
                     HStack {
                         Text("Aujourd'hui")
@@ -54,7 +56,7 @@ struct Dashboard : View {
                                 .frame(width: 30, height: 27)
                                 .foregroundStyle(Color.black)
                         }
-                    }.padding()
+                    }.padding(EdgeInsets(top: 0, leading: 20, bottom: 0, trailing: 20))
                     
                     //Carrousel objectifs
                     
@@ -68,39 +70,43 @@ struct Dashboard : View {
                         BarreCaloriesConso()
                         BarreMinsActivite()
                         
-                    }.padding()
+                    }.padding(EdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20))
                     //Dernière activité
                     
                     VStack(alignment: .leading, spacing: 8) {
                         
-                        Text("Dernière activité")
-                            .font(.system(size: 20, weight: .semibold))
-                        
-                        BoutonLastActivite()
-                            .padding(.vertical)
-                        
                         Text("Dernier repas")
                             .font(.system(size: 20, weight: .semibold))
                         
-                        BoutonLastRepas()
-                            .padding(.vertical)
+                        BoutonLastRepas(repas: repasVM.repasData.last!)
+                            .padding(EdgeInsets(top: 5, leading: 0, bottom: 20, trailing: 0))
+                        
+                        Text("Dernière activité")
+                            .font(.system(size: 20, weight: .semibold))
+                        
+                        BoutonLastActivite(activite: activiteVM.activiteData.last!)
+                            .padding(EdgeInsets(top: 5, leading: 0, bottom: 20, trailing: 0))
+                        
                     }
                 }
             }
         }
         .sheet(isPresented: $showRepasModal){
-            AjoutRepas()
+            AjoutRepas(showRepasModal: $showRepasModal)
         }
         .sheet(isPresented: $showActiviteModal){
-            AjoutActivite()
+            AjoutActivite(showActiviteModal: $showActiviteModal)
         }
     }
 }
 
 #Preview {
+    let userVM = UserViewModel()
     Dashboard()
         .environment(NavigationViewModel())
         .environment(UserViewModel())
+        .environment(RepasViewModel())
+        .environment(ActiviteViewModel(userVM: userVM))
 }
 
 

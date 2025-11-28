@@ -7,6 +7,8 @@
 import SwiftUI
 
 struct RectangleMacronutriments: View {
+    @Environment(RepasViewModel.self) var repasVM
+    
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 5)
@@ -21,13 +23,18 @@ struct RectangleMacronutriments: View {
                 Text("Macronutriments")
                     .font(.system(size: 12, weight: .bold))
                     .foregroundColor(Color.black)
-                Text("Protéines : 10g")
+                Text("Protéines :  \(String(format: "%.1f",repasVM.calculerProteinesTotalesRepas()))g")
                     .font(.system(size: 12, weight: .regular))
-                Text("Glucides : 10g")
+                Text("Glucides : \(String(format: "%.1f",repasVM.calculerGlucidesTotalesRepas())) g")
                     .font(.system(size: 12, weight: .regular))
-                Text("Lipides : 10g")
+                Text("Lipides : \(String(format: "%.1f",repasVM.calculerLipidesTotalesRepas())) g")
                     .font(.system(size: 12, weight: .regular))
             }
         }
     }
+}
+
+#Preview {
+    RectangleMacronutriments()
+        .environment(RepasViewModel())
 }

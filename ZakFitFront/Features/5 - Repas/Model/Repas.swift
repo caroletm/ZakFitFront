@@ -12,13 +12,15 @@ class Repas : Identifiable, Hashable {
     var id : UUID = UUID()
     var typeRepas : TypeRepas
     var date : Date
-    var calories : Int
+    var calories : Double
+    var consos : [Conso] = []
     
-    init(id: UUID, typeRepas: TypeRepas, date: Date, calories: Int) {
+    init(id: UUID, typeRepas: TypeRepas, date: Date, calories: Double, consos: [Conso]) {
         self.id = id
         self.typeRepas = typeRepas
         self.date = date
         self.calories = calories
+        self.consos = consos
     }
     
     // MARK: - Hashable
@@ -30,3 +32,5 @@ static func == (lhs: Repas, rhs: Repas) -> Bool {
         hasher.combine(id)
     }
 }
+
+let repas1 : Repas = Repas(id: UUID(), typeRepas: .dejeuner, date: Date(), calories: 1000, consos: [conso1, conso1, conso1])

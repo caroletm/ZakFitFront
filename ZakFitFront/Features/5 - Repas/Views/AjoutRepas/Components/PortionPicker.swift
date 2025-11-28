@@ -7,32 +7,32 @@
 
 import SwiftUI
 
-public struct AlimentPicker: View {
+public struct PortionPicker: View {
     
     @Environment(NavigationViewModel.self) var navigationVM
     
-    @Binding var showAlimentPicker: Bool
-    @Binding var selectedAliment: Aliments
+    @Binding var showPortionPicker: Bool
+    @Binding var selectedPortion: Portion?
 
     public var body: some View {
                 
         VStack {
             HStack  {
-                Text("Sélectionne un aliment")
+                Text("Sélectionne un type de portion")
                     .font(.system(size: 18, weight : .bold))
                 Spacer()
                 Button {
                   
-                    showAlimentPicker = false
+                    showPortionPicker = false
                 }label: {
                     Text ("OK")
                 }
             }
             .padding()
                 
-                Picker("Aliment", selection: $selectedAliment) {
-                    ForEach(Aliments.allCases, id: \.self) { aliment in
-                        Text(aliment.description).tag(Optional(aliment))
+                Picker("Portion", selection: $selectedPortion) {
+                    ForEach(Portion.allCases, id: \.self) { portion in
+                        Text(portion.description).tag(Optional(portion))
                     }
                 }
                 .pickerStyle(.wheel)
@@ -42,7 +42,7 @@ public struct AlimentPicker: View {
 }
 
 #Preview {
-    AlimentPicker(showAlimentPicker: .constant(true), selectedAliment: .constant(.pomme))
+    PortionPicker(showPortionPicker: .constant(true), selectedPortion: .constant(.unite))
         .environment(NavigationViewModel())
 //        .environment(userVM)
 //        .environment(ObjectifViewModel(userVM: userVM))

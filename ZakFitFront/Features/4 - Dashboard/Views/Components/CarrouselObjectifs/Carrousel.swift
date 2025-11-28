@@ -60,7 +60,7 @@ struct Carrousel: View {
                         .fill(selectedIndex == slide.rawValue ? Color.orangeLight300 : Color.greyLight100)
                         .frame(width: 8, height: 8)
                 }
-            }.padding()
+            }/*.padding()*/
         }
     }
 }

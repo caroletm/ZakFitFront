@@ -9,16 +9,16 @@ import SwiftUI
 
 struct AjoutActivite: View {
     @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(ActiviteViewModel.self) var activiteVM
     
-    @State var dateActivite: Date = Date()
-    @State var selectedActivite : TypeActivite? = nil
-    @State var selectedDuree : Int? = nil
     @State var showPickerMinutes : Bool = false
     @State var showPickerDebut : Bool = false
-    @State var caloriesBruleesString : String = "0"
-    @State var caloriesBrulees : Int? = nil
+    @Binding var showActiviteModal : Bool
+    @State var caloriesBruleesString : String = ""
     
     var body: some View {
+        
+        @Bindable var activiteVM = activiteVM
         
         NavigationView {
             VStack{
@@ -29,7 +29,7 @@ struct AjoutActivite: View {
                     Spacer()
                     DatePicker(
                         "",
-                        selection: $dateActivite,
+                        selection: $activiteVM.dateActivite,
                         displayedComponents: [.date, .hourAndMinute]
                     )
                     .datePickerStyle(.compact)
@@ -50,10 +50,10 @@ struct AjoutActivite: View {
                             ForEach(TypeActivite.allCases, id: \.self) { type in
                                 Button {
                                     
-                                    if selectedActivite == type {
-                                        selectedActivite = nil
+                                    if activiteVM.selectedActivite == type {
+                                        activiteVM.selectedActivite = nil
                                     }else{
-                                        selectedActivite = type
+                                        activiteVM.selectedActivite = type
                                     }
                                     
                                 }label: {
@@ -61,7 +61,7 @@ struct AjoutActivite: View {
                                     ZStack{
                                         RoundedRectangle(cornerRadius: 5)
                                             .frame(width: 63, height: 63)
-                                            .foregroundStyle(selectedActivite == type ? Color.greyDark : Color.greyLight100)
+                                            .foregroundStyle(activiteVM.selectedActivite == type ? Color.greyDark : Color.greyLight100)
                                         VStack {
                                             Image(systemName: type.imageName)
                                                 .font(.system(size: 24))
@@ -70,7 +70,7 @@ struct AjoutActivite: View {
                                             Text(type.description)
                                                 .font(.system(size: 8, weight: .bold))
                                             
-                                        }  .foregroundStyle(selectedActivite == type ? Color.white : Color.greyDark)
+                                        }  .foregroundStyle(activiteVM.selectedActivite == type ? Color.white : Color.greyDark)
                                     }
                                 }
                             }
@@ -86,10 +86,10 @@ struct AjoutActivite: View {
                     Button {
                         showPickerMinutes.toggle()
                     }label:{
-                        if selectedDuree == nil {
+                        if activiteVM.selectedDuree == nil {
                             Text("Définir")
                         }else{
-                            Text("\(selectedDuree ?? 0) minutes")
+                            Text("\(activiteVM.selectedDuree ?? 0) minutes")
                                 .font(.system(size: 16, weight: .regular))
                                 .foregroundStyle(Color.black)
                         }
@@ -105,7 +105,7 @@ struct AjoutActivite: View {
                         .font(.system(size: 16, weight: .bold))
                     Spacer()
                     
-                    TextField("", text: $caloriesBruleesString)
+                    TextField("\(String(format: "%.0f", activiteVM.caloriesBruleesCalculees()))", text: $caloriesBruleesString)
                         .keyboardType(.numberPad)
                         .padding(8)
                         .font(.system(size: 16, weight: .bold))
@@ -116,7 +116,7 @@ struct AjoutActivite: View {
                         .cornerRadius(10)
                         .onChange(of: caloriesBruleesString) {
                             caloriesBruleesString = caloriesBruleesString.filter { $0.isNumber }
-                            caloriesBrulees = Int(caloriesBruleesString)
+                            activiteVM.caloriesBrulees = Double(caloriesBruleesString)
                         }
                     
                 }
@@ -124,7 +124,7 @@ struct AjoutActivite: View {
                 
                 Spacer()
     
-                Text("Cette activité consomme à peu près 500 calories")
+                Text("Cette activité consomme à peu près \(String(format: "%.0f", activiteVM.caloriesBruleesCalculees())) calories")
                     .font(.system(size: 16, weight: .regular))
                     .foregroundStyle(Color.greyDark)
                     .italic()
@@ -133,10 +133,16 @@ struct AjoutActivite: View {
                     .padding(EdgeInsets(top: 0, leading: 10, bottom: 80, trailing: 10))
                 
                 BoutonOrange(text: "Valider", width: 115, height: 50) {
-                    //
+                    
+                    if activiteVM.isValidCreateActivite() {
+                        activiteVM.createActivite()
+                        showActiviteModal.toggle()
+                    }
+                    
                 }.padding(.bottom,5)
+                
                 BoutonSouligne(text: "Annuler", color: Color.black, fontSize: 16, fontWeight: .bold) {
-
+                    showActiviteModal.toggle()
                 }
                 .padding(.bottom, 10)
             }
@@ -149,7 +155,7 @@ struct AjoutActivite: View {
             
         }.sheet(isPresented: $showPickerMinutes) {
             
-            Picker("Minutes", selection: $selectedDuree) {
+            Picker("Minutes", selection: $activiteVM.selectedDuree) {
                 ForEach(0..<200, id: \.self) { i in
                     Text("\(i) minutes").tag(i)
                 }
@@ -157,11 +163,12 @@ struct AjoutActivite: View {
             .presentationDetents([.fraction(0.3)])
             .pickerStyle(.wheel)
         }
-       
     }
 }
 
 #Preview {
-    AjoutActivite()
+    let userVM = UserViewModel()
+    AjoutActivite(showActiviteModal: .constant(false))
         .environment(NavigationViewModel())
+        .environment(ActiviteViewModel(userVM: userVM))
 }

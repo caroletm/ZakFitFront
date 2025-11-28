@@ -80,7 +80,7 @@ struct Objectifs : View {
                                     .font(.caption)
                             }
                             Spacer()
-                            TextField("\(objectifVM.caloriesCiblesCalculees())", text: $caloriesParJourString)
+                            TextField("\(String(format: "%.0f",objectifVM.caloriesCiblesCalculees()))", text: $caloriesParJourString)
                                 .keyboardType(.numberPad)
                                 .padding(8)
                                 .font(.system(size: 16, weight: .bold))
@@ -91,7 +91,7 @@ struct Objectifs : View {
                                 .cornerRadius(10)
                                 .onChange(of: caloriesParJourString) {
                                     caloriesParJourString = caloriesParJourString.filter { $0.isNumber }
-                                    objectifVM.caloriesParJour = Int(caloriesParJourString)
+                                    objectifVM.caloriesParJour = Double(caloriesParJourString)
                                 }
                         }.padding(.vertical)
                         
@@ -102,7 +102,7 @@ struct Objectifs : View {
                                     .font(.caption)
                             }
                             Spacer()
-                            TextField("\(objectifVM.caloriesCiblesBruleesCalculees())", text: $caloriesBruleesParJourString)
+                            TextField("\(String(format: "%.0f",objectifVM.caloriesCiblesBruleesCalculees()))", text: $caloriesBruleesParJourString)
                                 .keyboardType(.numberPad)
                                 .padding(8)
                                 .font(.system(size: 16, weight: .bold))
@@ -113,7 +113,7 @@ struct Objectifs : View {
                                 .cornerRadius(10)
                                 .onChange(of: caloriesBruleesParJourString) {
                                     caloriesBruleesParJourString = caloriesBruleesParJourString.filter { $0.isNumber }
-                                    objectifVM.caloriesBruleesParJour = Int(caloriesBruleesParJourString)
+                                    objectifVM.caloriesBruleesParJour = Double(caloriesBruleesParJourString)
                                 }
                         }.padding(.vertical)
                         

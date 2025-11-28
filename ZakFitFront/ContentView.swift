@@ -12,11 +12,14 @@ struct ContentView: View {
     @State private var navigationVM = NavigationViewModel()
     @State private var userVM : UserViewModel
     @State private var objectifVM : ObjectifViewModel
+    @State private var repasVM = RepasViewModel()
+    @State private var activiteVM: ActiviteViewModel
     
     init() {
         let userVM = UserViewModel()
         self._userVM = State(initialValue: userVM)
         self._objectifVM = State(initialValue: ObjectifViewModel(userVM: userVM))
+        self._activiteVM = State(initialValue: ActiviteViewModel(userVM: userVM))
     }
     
     var body: some View {
@@ -56,13 +59,13 @@ struct ContentView: View {
                         case .notifications:
                             Notifications()
                         case .ajoutRepas:
-                            AjoutRepas()
+                            AjoutRepas(showRepasModal: .constant(false))
                         case .ajoutActivite:
-                            AjoutActivite()
-                        case .detailRepas:
-                            DetailRepas()
-                        case .detailActivite:
-                            DetailActivite()
+                            AjoutActivite(showActiviteModal: .constant(false))
+                        case .detailRepas (let repas):
+                            DetailRepas(repas: repas)
+                        case .detailActivite (let activite):
+                            DetailActivite (activite: activite)
                         }
                     }
             } else {
@@ -77,6 +80,8 @@ struct ContentView: View {
             .environment(navigationVM)
             .environment(userVM)
             .environment(objectifVM)
+            .environment(repasVM)
+            .environment(activiteVM)
     }
 }
 
@@ -87,4 +92,6 @@ struct ContentView: View {
         .environment(NavigationViewModel())
         .environment(userVM)
         .environment(ObjectifViewModel(userVM: userVM))
+        .environment(RepasViewModel())
+        .environment(ActiviteViewModel(userVM: userVM))
 }
