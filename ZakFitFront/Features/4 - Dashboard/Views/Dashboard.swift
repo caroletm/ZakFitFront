@@ -13,6 +13,7 @@ struct Dashboard : View {
     @Environment(UserViewModel.self) var userVM
     @Environment(RepasViewModel.self) var repasVM
     @Environment(ActiviteViewModel.self) var activiteVM
+    @Environment(ObjectifViewModel.self) var objectifVM
     
     @State var showRepasModal: Bool = false
     @State var showActiviteModal: Bool = false
@@ -107,7 +108,7 @@ struct Dashboard : View {
             }
         }
         .sheet(isPresented: $showRepasModal){
-            AjoutRepas(showRepasModal: $showRepasModal)
+            AjoutRepas(showRepasModal: $showRepasModal, origin: .dashboard)
         }
         .sheet(isPresented: $showActiviteModal){
             AjoutActivite(showActiviteModal: $showActiviteModal)
@@ -122,6 +123,7 @@ struct Dashboard : View {
         .environment(UserViewModel())
         .environment(RepasViewModel())
         .environment(ActiviteViewModel(userVM: userVM))
+        .environment(ObjectifViewModel(userVM: userVM))
 }
 
 

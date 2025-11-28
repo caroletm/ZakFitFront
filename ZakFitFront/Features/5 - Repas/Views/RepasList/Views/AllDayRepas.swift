@@ -18,6 +18,14 @@ struct AllDayRepas: View {
                 Text("Tous mes repas :")
                     .font(.system(size: 16, weight: .bold))
                 Spacer()
+                if repasVM.isFilterActive {
+                    Button {
+                        repasVM.resetFilter()
+                    }label: {
+                        Text("Vider les filtres")
+                            .font(.system(size: 14, weight: .regular))
+                    }
+                }
                 Button {
                     navigationVM.path.append(AppRoute.repasFiltres)
                 }label : {
@@ -32,7 +40,7 @@ struct AllDayRepas: View {
             }.padding()
             
             ScrollView {
-                if repasVM.repasFiltres.isEmpty {
+                if repasVM.repasFiltres.isEmpty && !repasVM.isFilterActive {
                     ForEach(repasVM.repasData, id: \.self) { repas in
                         BoutonRepas(repas : repas)
                     }

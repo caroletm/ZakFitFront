@@ -59,7 +59,7 @@ struct ContentView: View {
                         case .notifications:
                             Notifications()
                         case .ajoutRepas:
-                            AjoutRepas(showRepasModal: .constant(false))
+                            AjoutRepas(showRepasModal: .constant(false), origin: .repasList)
                         case .ajoutActivite:
                             AjoutActivite(showActiviteModal: .constant(false))
                         case .detailRepas (let repas):

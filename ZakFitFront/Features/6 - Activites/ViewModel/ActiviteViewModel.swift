@@ -21,7 +21,7 @@ class ActiviteViewModel {
     
     //MARK: - Activités Data
     
-    var activiteData: [Activite] = [activite1]
+    var activiteData: [Activite] = []
     
     //MARK: - Ajouter Activite
     

@@ -42,18 +42,19 @@ struct DayRepas: View {
                 ForEach(repasVM.repasDuJour, id: \.self) { repas in
                     BoutonRepas(repas: repas)
                 }
-            }
+                ZStack {
+                    Circle()
+                        .frame(width: 90, height: 90)
+                        .foregroundStyle(Color.greyDark)
+                    VStack {
+                        Text("\(String(format: "%.0f", repasVM.totalCaloriesJour))")
+                            .font(.system(size: 16, weight: .bold))
+                        Text("calories")
+                            .font(.system(size: 10, weight: .bold))
+                    }.foregroundStyle(Color.white)
+                }.padding(EdgeInsets(top: 40, leading: 10, bottom: 10, trailing: 10))
             
-            ZStack {
-                Circle()
-                    .frame(width: 90, height: 90)
-                    .foregroundStyle(Color.greyDark)
-                VStack {
-                    Text("\(String(format: "%.0f", repasVM.totalCaloriesJour))")
-                        .font(.system(size: 16, weight: .bold))
-                    Text("calories")
-                        .font(.system(size: 10, weight: .bold))
-                }.foregroundStyle(Color.white)
+     
             
                 
             }

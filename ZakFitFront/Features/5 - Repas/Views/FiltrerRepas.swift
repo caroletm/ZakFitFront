@@ -11,9 +11,9 @@ struct FiltrerRepas: View {
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(RepasViewModel.self) var repasVM
     
-    @State var value: Double = 0
-    
     var body: some View {
+        
+        @Bindable var repasVM = repasVM
         
         NavigationView{
             
@@ -57,7 +57,7 @@ struct FiltrerRepas: View {
                             .font(.system(size: 16, weight: .bold))
                         Spacer()
                         
-                        Text("\(Int(value))")
+                        Text("\(Int(repasVM.minCalories))")
                             .font(.system(size: 16, weight: .bold))
                             .padding()
                             .background(Color.orangeLight100)
@@ -67,10 +67,18 @@ struct FiltrerRepas: View {
                         
                     }.padding(EdgeInsets(top: 0, leading: 10, bottom: 10, trailing: 10))
                     
-                    Slider(value: $value, in: 0...5000)
+                    Slider(value: $repasVM.minCalories, in: 0...5000)
                         .padding(EdgeInsets(top: 0, leading: 50, bottom: 10, trailing: 50))
                 }
                 FiltreParNomAliment()
+                
+                if repasVM.isFilterActive {
+                    Button {
+                        repasVM.resetFilter()
+                    }label:{
+                        Text("Vider les filtres")
+                    }
+                }
                 Spacer()
                 
                 BoutonOrange(text: "Valider", width: 115, height: 50) {

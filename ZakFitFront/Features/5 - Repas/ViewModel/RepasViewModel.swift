@@ -227,13 +227,11 @@ class RepasViewModel {
         selectedPortion = nil
     }
     
- 
-    
-    //MARK: - Vider la liste des aliments consommés
-    
-    func clearList() {
+    func resetRepasPicker() {
+        selectedRepas = nil
         consoData.removeAll()
     }
+    
     
     //MARK: - Créer un repas
     
@@ -242,7 +240,7 @@ class RepasViewModel {
             id : UUID(),
             typeRepas: selectedRepas ?? .encas,
             date: dateRepas,
-            calories: calculerCaloriesTotales(),
+            calories: calculerCaloriesTotalesRepas(),
             consos: consoData
         )
         repasData.append(newRepas)
@@ -268,7 +266,7 @@ class RepasViewModel {
         repasDuJour.reduce(0) { $0 + $1.calories }
     }
     
-    var maxCalories: Double = 5000
+    var minCalories: Double = 0
      var filterAliment: String = ""
     
     //MARK: - Filtrer les repas
@@ -283,7 +281,7 @@ class RepasViewModel {
              }
              
              // Filtre sur calories max
-             if repas.calories > maxCalories {
+             if repas.calories < minCalories {
                  return false
              }
              
@@ -300,10 +298,14 @@ class RepasViewModel {
          }
      }
     
+    var isFilterActive : Bool {
+        selectedRepas != nil || !filterAliment.isEmpty || minCalories != 0
+    }
+    
     func resetFilter() {
         filterAliment = ""
         selectedRepas = nil
-        maxCalories = 5000
+        minCalories = 0
     }
     
     

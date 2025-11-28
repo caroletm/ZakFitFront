@@ -15,6 +15,13 @@ struct AjoutRepas: View {
     @State var showAjouterModal : Bool = false
     @Binding var showRepasModal : Bool
     
+    enum AjoutRepasOrigin {
+        case dashboard
+        case repasList
+    }
+    
+    let origin: AjoutRepasOrigin
+    
     var body: some View {
         
         @Bindable var repasVM = repasVM
@@ -94,14 +101,27 @@ struct AjoutRepas: View {
                 BoutonOrange(text: "Valider", width: 115, height: 50) {
                     if repasVM.isValidCreateRepas() {
                         repasVM.createRepas()
-                        showRepasModal.toggle()
-                        repasVM.resetAlimentPickers()
+                        repasVM.resetRepasPicker()
+                        
+                        switch origin {
+                        case .dashboard:
+                            showRepasModal = false
+                        case .repasList:
+                            navigationVM.path.removeLast()
+                        }
+                        
                     }
                 }.padding(.bottom,5)
                 
                 BoutonSouligne(text: "Annuler", color: Color.black, fontSize: 16, fontWeight: .bold) {
-                    showRepasModal.toggle()
-                    repasVM.resetAlimentPickers()
+                    repasVM.resetRepasPicker()
+                   
+                    switch origin {
+                          case .dashboard:
+                              showRepasModal = false
+                          case .repasList:
+                              navigationVM.path.removeLast()
+                          }
                 }
             }
             
@@ -120,11 +140,12 @@ struct AjoutRepas: View {
             AjoutAliment(showAjouterModal: $showAjouterModal)
                 .presentationDetents([.fraction(0.8)])
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
 #Preview {
-    AjoutRepas(showRepasModal: .constant(false))
+    AjoutRepas(showRepasModal: .constant(false), origin: .repasList)
         .environment(NavigationViewModel())
         .environment(RepasViewModel())
 }

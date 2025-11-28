@@ -9,12 +9,22 @@ import SwiftUI
 
 struct BarreCaloriesConso: View {
     @Environment(NavigationViewModel.self) var navigationVM
-    
-    var maxCalories : Double = 100
-    var currentCalories : Double =  40
+    @Environment(RepasViewModel.self) var repasVM
+    @Environment(ObjectifViewModel.self) var objectifVM
+
+//    var maxCalories : Double = 100
+//    var currentCalories : Double =  40
     @State var isFlipped : Bool = false
     
+
+    
     var body: some View {
+        
+        let objectif = objectifVM.caloriesCiblesCalculees()
+        let calories = repasVM.totalCaloriesJour
+        let ratio = objectif > 0 ? min(calories / objectif, 1) : 0
+        let barHeight = ratio * 116
+        
         Button {
             isFlipped.toggle()
         }label:{
@@ -27,7 +37,7 @@ struct BarreCaloriesConso: View {
                         .opacity(isFlipped ? 0.4 : 0.2)
                     
                     RoundedRectangle(cornerRadius: 10)
-                        .frame(width: 68, height: currentCalories > maxCalories ? maxCalories : (currentCalories/maxCalories) * 116)
+                        .frame(width: 68, height: barHeight)
                         .foregroundStyle(Color.orangeLight300)
                         .opacity(isFlipped ? 0.5 : 0.3)
                 }
@@ -39,7 +49,7 @@ struct BarreCaloriesConso: View {
                 
                 if isFlipped {
                     VStack {
-                        Text("\(String(format: "%.0f", currentCalories)) %")
+                        Text("\(String(format: "%.0f", repasVM.totalCaloriesJour)) %")
                             .font(.system(size: 20, weight: .bold))
                             .padding(.bottom)
                         Text("de\n l'objectif")
@@ -64,6 +74,9 @@ struct BarreCaloriesConso: View {
 }
 
 #Preview {
+    let userVM = UserViewModel()
     BarreCaloriesConso()
         .environment(NavigationViewModel())
+        .environment(RepasViewModel())
+        .environment(ObjectifViewModel(userVM: userVM))
 }

@@ -179,6 +179,7 @@ struct AjoutAliment: View {
                         BoutonOrange(text: "Valider", width: 105, height: 40) {
                             if repasVM.isValidAddConso() {
                                 repasVM.AddAlimentConsommé()
+                                repasVM.resetAlimentPickers()
                                 showAjouterModal.toggle()
                             }else {
                                 print("FAIL /\n selectedAliment: \(repasVM.selectedAliment ?? .parDefault)\nnomAlimentACreer: \(repasVM.nomAlimentACreer)\nqteAliment: \(repasVM.qteAliment ?? 999)\nselectedPortion: \(repasVM.selectedPortion ?? .kilo)\ncaloriesTotales: \(repasVM.calculerCaloriesTotales())")
@@ -192,6 +193,7 @@ struct AjoutAliment: View {
                             
                             if repasVM.isValidCreateConso() {
                                 repasVM.AddAlimentConsommé()
+                                repasVM.resetAlimentPickers()
                                 showAjouterModal.toggle()
                             }else{
                                 print("FAIL /\n selectedAliment: \(repasVM.selectedAliment ?? .parDefault)\nnomAlimentACreer: \(repasVM.nomAlimentACreer)\nqteAliment: \(repasVM.qteAliment ?? 999)\nselectedPortion: \(repasVM.selectedPortion ?? .kilo)\ncaloriesTotales: \(repasVM.calculerCaloriesTotales())")
