@@ -35,3 +35,6 @@ static func == (lhs: Aliment, rhs: Aliment) -> Bool {
         hasher.combine(id)
     }
 }
+
+
+let pomme : Aliment = Aliment(nom: "pomme", portion: .unite, calories: 50, proteines: 0.3, glucides: 14, lipides: 0.3)

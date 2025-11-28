@@ -7,24 +7,24 @@
 
 import SwiftUI
 
-struct AjoutModal: View {
+struct AjoutAliment: View {
     
     @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(RepasViewModel.self) var repasVM
     
     @State var selectedTab: String = "Ajouter"
     @State var tabs : [String] = ["Ajouter", "Créer"]
     
-    @State var selectedAliment : Aliments = .parDefault
     @State var showAlimentPicker : Bool = false
-    @State var selectedPortion: Portion = .unite
     @State var showPortionPicker : Bool = false
-    @State var qteAlimentString: String = "0"
-    @State var qteAliment : Int = 0
-    @State var caloriesParPortionString: String = "0"
-    @State var caloriesParPortion : Int = 0
-    @State var nomAlimentACreer : String = ""
+    @Binding var showAjouterModal : Bool
     
+    @State var qteAlimentString: String = ""
+    @State var caloriesParPortionString: String = ""
+
     var body: some View {
+        
+        @Bindable var repasVM = repasVM
         
         NavigationView {
             ZStack {
@@ -41,7 +41,6 @@ struct AjoutModal: View {
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
-                    .tint(.orangeLight300) // Change la couleur du segment sélectionné
                     .padding(EdgeInsets(top: 10, leading: 30, bottom: 20, trailing: 30))
                     
                     HStack {
@@ -60,13 +59,13 @@ struct AjoutModal: View {
                                         .frame(width: 100, height: 30)
                                         .foregroundStyle(Color.white)
                                         .cornerRadius(15)
-                                    Text("\(selectedAliment.description)")
+                                    Text("\(repasVM.selectedAliment?.description ?? "")")
                                         .font(.system(size: 16, weight: .regular))
                                         .foregroundStyle(.black)
                                 }
                             }
                         }else if selectedTab == "Créer"{
-                            TextField("", text: $nomAlimentACreer)
+                            TextField("", text: $repasVM.nomAlimentACreer)
                                 .padding(8)
                                 .font(.system(size: 16, weight: .regular))
                                 .foregroundStyle(.black)
@@ -74,8 +73,8 @@ struct AjoutModal: View {
                                 .multilineTextAlignment(.center)
                                 .frame(width: 100, height: 30)
                                 .cornerRadius(15)
-                                .onChange(of: nomAlimentACreer) {
-                                    nomAlimentACreer = nomAlimentACreer
+                                .onChange(of: repasVM.nomAlimentACreer) {
+                                    repasVM.nomAlimentACreer = repasVM.nomAlimentACreer
                                 }
                         }
                 
@@ -95,7 +94,7 @@ struct AjoutModal: View {
                                     .frame(width: 100, height: 30)
                                     .foregroundStyle(Color.white)
                                     .cornerRadius(15)
-                                Text("\(selectedPortion.description)")
+                                Text("\(repasVM.selectedPortion?.description ?? "")")
                                     .font(.system(size: 16, weight: .regular))
                                     .foregroundStyle(.black)
                             }
@@ -118,8 +117,8 @@ struct AjoutModal: View {
                             .frame(width: 100, height: 30)
                             .cornerRadius(15)
                             .onChange(of: qteAlimentString) {
-                                qteAlimentString = qteAlimentString.filter { $0.isNumber }
-                                qteAliment = Int(qteAlimentString) ?? 0
+                               qteAlimentString = qteAlimentString.filter { $0.isNumber }
+                                repasVM.qteAliment = Int(qteAlimentString) ?? 0
                             }
                     }
                     .padding(EdgeInsets(top: 0, leading: 40, bottom: 10, trailing: 40))
@@ -129,7 +128,7 @@ struct AjoutModal: View {
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
                         Spacer()
-                        TextField("", text: $caloriesParPortionString)
+                        TextField("\(String(format: "%.2f",repasVM.calculerCaloriesParPortion()))", text: $caloriesParPortionString)
                             .keyboardType(.numberPad)
                             .padding(8)
                             .font(.system(size: 16, weight: .regular))
@@ -140,7 +139,7 @@ struct AjoutModal: View {
                             .cornerRadius(15)
                             .onChange(of: caloriesParPortionString) {
                                 caloriesParPortionString = caloriesParPortionString.filter { $0.isNumber }
-                                caloriesParPortion = Int(caloriesParPortionString) ?? 0
+                                repasVM.caloriesParPortion = Double(caloriesParPortionString) ?? 0
                             }
                     }
                     .padding(EdgeInsets(top: 0, leading: 40, bottom: 10, trailing: 40))
@@ -151,7 +150,7 @@ struct AjoutModal: View {
                             .foregroundStyle(.orangeLight300)
                         Spacer()
                         VStack() {
-                            Text("40")
+                            Text("\(String(format: "%.1f",repasVM.calculerCaloriesTotales()))")
                                 .font(.system(size: 24, weight: .bold))
                                 .foregroundStyle(.orangeLight300)
                             Text("calories")
@@ -165,9 +164,9 @@ struct AjoutModal: View {
                         VStack (alignment :.leading, spacing: 10) {
                             Text("Macronutriments estimés :")
                                 .underline()
-                            Text("Protéines : 10g")
-                            Text("Glucides : 20g")
-                            Text("Lipides : 10g")
+                            Text("Protéines : \(String(format: "%.1f", repasVM.calculerProteinesTotales())) g")
+                            Text("Glucides : \(String(format: "%.1f",repasVM.calculerGlucidesTotales()))g")
+                            Text("Lipides : \(String(format: "%.1f",repasVM.calculerLipidesTotales()))g")
                         }
                         .font(.system(size: 12, weight: .regular))
                         .foregroundStyle(.orangeLight300)
@@ -178,27 +177,39 @@ struct AjoutModal: View {
                     if selectedTab == "Ajouter" {
                         
                         BoutonOrange(text: "Valider", width: 105, height: 40) {
-                            //
+                            if repasVM.isValidAddConso() {
+                                repasVM.AddAlimentConsommé()
+                                showAjouterModal.toggle()
+                            }else {
+                                print("FAIL /\n selectedAliment: \(repasVM.selectedAliment ?? .parDefault)\nnomAlimentACreer: \(repasVM.nomAlimentACreer)\nqteAliment: \(repasVM.qteAliment ?? 999)\nselectedPortion: \(repasVM.selectedPortion ?? .kilo)\ncaloriesTotales: \(repasVM.calculerCaloriesTotales())")
+                            }
+                          
                         }.padding(5)
                         
                     }else if selectedTab == "Créer"{
                         
                         BoutonOrange(text: "Créer l'aliment", width: 155, height: 40) {
-                            //
+                            
+                            if repasVM.isValidCreateConso() {
+                                repasVM.AddAlimentConsommé()
+                                showAjouterModal.toggle()
+                            }else{
+                                print("FAIL /\n selectedAliment: \(repasVM.selectedAliment ?? .parDefault)\nnomAlimentACreer: \(repasVM.nomAlimentACreer)\nqteAliment: \(repasVM.qteAliment ?? 999)\nselectedPortion: \(repasVM.selectedPortion ?? .kilo)\ncaloriesTotales: \(repasVM.calculerCaloriesTotales())")
+                            }
                         }
                         .padding(5)
                     }
                     BoutonSouligne(text: "Annuler", color: Color.black, fontSize: 16, fontWeight: .bold) {
-                        
+                        showAjouterModal.toggle()
                     }
                 }
             }
             .sheet(isPresented: $showAlimentPicker) {
-                AlimentPicker(showAlimentPicker: $showAlimentPicker, selectedAliment: $selectedAliment)
+                AlimentPicker(showAlimentPicker: $showAlimentPicker, selectedAliment: $repasVM.selectedAliment)
                     .presentationDetents([.fraction(0.3)])
             }
             .sheet(isPresented: $showPortionPicker) {
-                PortionPicker(showPortionPicker: $showPortionPicker, selectedPortion: $selectedPortion)
+                PortionPicker(showPortionPicker: $showPortionPicker, selectedPortion: $repasVM.selectedPortion)
                     .presentationDetents([.fraction(0.3)])
             }
         }
@@ -206,6 +217,7 @@ struct AjoutModal: View {
 }
 
 #Preview {
-    AjoutModal()
+    AjoutAliment(showAjouterModal: .constant(false))
         .environment(NavigationViewModel())
+        .environment(RepasViewModel())
 }

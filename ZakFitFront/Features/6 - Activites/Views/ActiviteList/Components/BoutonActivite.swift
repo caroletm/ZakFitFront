@@ -1,20 +1,21 @@
 //
-//  BoutonLastActivite.swift
+//  BoutonActivite.swift
 //  ZakFitFront
 //
-//  Created by caroletm on 26/11/2025.
+//  Created by caroletm on 28/11/2025.
 //
 
 import SwiftUI
 
-struct BoutonLastActivite: View {
+struct BoutonActivite: View {
     @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(ActiviteViewModel.self) var activiteVM
     
     var activite : Activite
     
     var body: some View {
         Button {
-            navigationVM.path.append(AppRoute.detailActivite(activite: activite))
+//            navigationVM.path.append(AppRoute.detailActivite(activite: activite))
         } label: {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
@@ -28,7 +29,7 @@ struct BoutonLastActivite: View {
                 
                 VStack(alignment: .leading) {
                    
-                    Text("Il y a 20 minutes")
+                    Text("Le \(activiteVM.dateFormatter(activite.date))")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(.greyDark)
                 
@@ -73,6 +74,8 @@ struct BoutonLastActivite: View {
 }
 
 #Preview {
-    BoutonLastActivite(activite: activite1)
+    let userVM = UserViewModel()
+    BoutonActivite(activite: activite1)
         .environment(NavigationViewModel())
+        .environment(ActiviteViewModel(userVM : userVM))
 }

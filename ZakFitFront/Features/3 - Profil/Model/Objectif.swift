@@ -15,15 +15,15 @@ class Objectif : Identifiable, Hashable {
     var dateFin: Date?
     var typeObjectif : TypeObjectif
     var poidsCible: Double?
-    var caloriesParJour: Int?
+    var caloriesParJour: Double?
     var proteines : Double?
     var glucides : Double?
     var lipides : Double?
     var minsActivité: Int?
-    var caloriesBruleesParJour: Int?
+    var caloriesBruleesParJour: Double?
     var nbEntrainementsHebdo: Int?
     
-    init (id: UUID, objectifGlobal: UserObjectifGlobal, dateDebut: Date, dateFin: Date?, typeObjectif: TypeObjectif, poidsCible: Double?, caloriesParJour: Int?, proteines: Double?, glucides: Double?, lipides: Double?, minsActivité: Int?, caloriesBruleesParJour: Int?, nbEntrainementsHebdo: Int?) {
+    init (id: UUID, objectifGlobal: UserObjectifGlobal, dateDebut: Date, dateFin: Date?, typeObjectif: TypeObjectif, poidsCible: Double?, caloriesParJour: Double?, proteines: Double?, glucides: Double?, lipides: Double?, minsActivité: Int?, caloriesBruleesParJour: Double?, nbEntrainementsHebdo: Int?) {
         self.id = id
         self.objectifGlobal = objectifGlobal
         self.dateDebut = dateDebut

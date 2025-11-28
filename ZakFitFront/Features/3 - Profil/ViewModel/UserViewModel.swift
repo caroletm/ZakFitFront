@@ -22,7 +22,7 @@ class UserViewModel {
     var nom = ""
     var prenom = ""
     var taille : Int? = nil
-    var poids : Double? = nil
+    var poids : Double? = 59 // achanger en nil
     var sexe : UserGender? = nil
     var dateNaissance : Date = Date()
     var age: Int? {

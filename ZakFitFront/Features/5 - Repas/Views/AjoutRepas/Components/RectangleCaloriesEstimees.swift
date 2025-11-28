@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct RectangleCaloriesEstimees: View {
+    @Environment(RepasViewModel.self) var repasVM
+    
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 5)
@@ -22,7 +24,7 @@ struct RectangleCaloriesEstimees: View {
                 Text("Calories estimées")
                     .font(.system(size: 12, weight: .bold))
                     .foregroundColor(Color.black)
-                Text("40")
+                Text("\(String(format: "%.0f",repasVM.calculerCaloriesTotalesRepas()))")
                     .font(.system(size: 32, weight: .bold))
                     .foregroundColor(Color.orangeLight300)
                 Text("calories")
@@ -31,4 +33,9 @@ struct RectangleCaloriesEstimees: View {
             }
         }
     }
+}
+
+#Preview {
+    RectangleCaloriesEstimees()
+        .environment(RepasViewModel())
 }

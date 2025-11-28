@@ -66,4 +66,29 @@ enum TypeActivite: String, CaseIterable {
             return "figure.indoor.soccer"
         }
     }
+    
+    var MET: Double {
+        switch self {
+        case .courseAPied:
+            return 10.0
+        case .musculation:
+            return 6.0
+        case .velo:
+            return 8.0
+        case .yoga:
+            return 3.0
+        case .tennis:
+            return 7.0
+        case .danse:
+            return 6.0
+        case .basket:
+            return 8.0
+        case .marche:
+            return 3.3
+        case .natation:
+            return 8.0
+        case .football:
+            return 8.0
+        }
+    }
 }

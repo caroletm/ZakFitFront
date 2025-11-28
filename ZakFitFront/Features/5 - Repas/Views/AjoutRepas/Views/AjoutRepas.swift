@@ -9,13 +9,15 @@ import SwiftUI
 
 struct AjoutRepas: View {
     @Environment(NavigationViewModel.self) var navigationVM
-    
-    @State var dateRepas: Date = Date()
-    @State var selectedRepas: TypeRepas? = nil
+    @Environment(RepasViewModel.self) var repasVM
+
     @State var showScanModal : Bool = false
     @State var showAjouterModal : Bool = false
+    @Binding var showRepasModal : Bool
     
     var body: some View {
+        
+        @Bindable var repasVM = repasVM
         
         NavigationView {
             
@@ -27,7 +29,7 @@ struct AjoutRepas: View {
                     Spacer()
                     DatePicker(
                         "",
-                        selection: $dateRepas,
+                        selection: $repasVM.dateRepas,
                         displayedComponents: [.date]
                     )
                     .datePickerStyle(.compact)
@@ -46,18 +48,18 @@ struct AjoutRepas: View {
                         ForEach(TypeRepas.allCases, id: \.self) { type in
                             Button {
                                 
-                                if selectedRepas == type {
-                                    selectedRepas = nil
+                                if repasVM.selectedRepas == type {
+                                    repasVM.selectedRepas = nil
                                 }else{
-                                    selectedRepas = type
+                                    repasVM.selectedRepas = type
                                 }
                                 
                             }label: {
                                 Text(type.label)
                                     .font(.system(size: 10, weight: .medium))
-                                    .foregroundStyle(selectedRepas == type ? Color.white : Color.orangeLight300)
+                                    .foregroundStyle(repasVM.selectedRepas == type ? Color.white : Color.orangeLight300)
                                     .padding(8)
-                                    .background(selectedRepas == type ? Color.orangeLight300 : Color.orangeLight100)
+                                    .background(repasVM.selectedRepas == type ? Color.orangeLight300 : Color.orangeLight100)
                                 
                                     .cornerRadius(10)
                                     .padding(5)
@@ -90,10 +92,16 @@ struct AjoutRepas: View {
                 }.padding(.bottom,10)
                 
                 BoutonOrange(text: "Valider", width: 115, height: 50) {
-                    //
+                    if repasVM.isValidCreateRepas() {
+                        repasVM.createRepas()
+                        showRepasModal.toggle()
+                        repasVM.clearList()
+                    }
                 }.padding(.bottom,5)
+                
                 BoutonSouligne(text: "Annuler", color: Color.black, fontSize: 16, fontWeight: .bold) {
-
+                    showRepasModal.toggle()
+                    repasVM.clearList()
                 }
             }
             
@@ -109,15 +117,16 @@ struct AjoutRepas: View {
                 .presentationDetents([.medium])
         }
         .sheet(isPresented: $showAjouterModal) {
-            AjoutModal()
+            AjoutAliment(showAjouterModal: $showAjouterModal)
                 .presentationDetents([.fraction(0.8)])
         }
     }
 }
 
 #Preview {
-    AjoutRepas()
+    AjoutRepas(showRepasModal: .constant(false))
         .environment(NavigationViewModel())
+        .environment(RepasViewModel())
 }
 
 

@@ -10,12 +10,14 @@ import SwiftUI
 struct DetailActivite: View {
     @Environment(NavigationViewModel.self) var navigationVM
     
+    var activite: Activite
+    
     var body: some View {
         Text("DetailActivite")
     }
 }
 
 #Preview {
-    DetailActivite()
+    DetailActivite(activite: activite1)
         .environment(NavigationViewModel())
 }
