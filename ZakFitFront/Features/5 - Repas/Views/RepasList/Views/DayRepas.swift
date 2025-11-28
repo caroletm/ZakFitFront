@@ -12,6 +12,9 @@ struct DayRepas: View {
     @Environment(RepasViewModel.self) var repasVM
     
     var body: some View {
+        
+        @Bindable var repasVM = repasVM
+        
         VStack {
             HStack {
                 Image(systemName: "calendar")
@@ -20,9 +23,14 @@ struct DayRepas: View {
                     .frame(width: 30, height: 27)
                     .padding(.vertical, 5)
                 
-                Text("Lundi 28 /11/2025")
-                    .font(.system(size: 20, weight: .bold))
-                Spacer()
+                DatePicker(
+                    "",
+                    selection: $repasVM.selectedRepasDate,
+                    displayedComponents: [.date]
+                )
+                .datePickerStyle(.compact)
+                
+
             }.padding()
             HStack {
                 Text("Repas de cette journée :")
@@ -31,7 +39,7 @@ struct DayRepas: View {
             }.padding(.horizontal)
             
             ScrollView {
-                ForEach(repasVM.repasData, id: \.self) { repas in
+                ForEach(repasVM.repasDuJour, id: \.self) { repas in
                     BoutonRepas(repas: repas)
                 }
             }
@@ -41,7 +49,7 @@ struct DayRepas: View {
                     .frame(width: 90, height: 90)
                     .foregroundStyle(Color.greyDark)
                 VStack {
-                    Text("800")
+                    Text("\(String(format: "%.0f", repasVM.totalCaloriesJour))")
                         .font(.system(size: 16, weight: .bold))
                     Text("calories")
                         .font(.system(size: 10, weight: .bold))

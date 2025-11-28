@@ -19,7 +19,7 @@ struct AllDayRepas: View {
                     .font(.system(size: 16, weight: .bold))
                 Spacer()
                 Button {
-                    //
+                    navigationVM.path.append(AppRoute.repasFiltres)
                 }label : {
                     ZStack {
                         Circle()
@@ -32,8 +32,14 @@ struct AllDayRepas: View {
             }.padding()
             
             ScrollView {
-                ForEach(repasVM.repasData, id: \.self) { repas in
-                    BoutonRepas(repas : repas)
+                if repasVM.repasFiltres.isEmpty {
+                    ForEach(repasVM.repasData, id: \.self) { repas in
+                        BoutonRepas(repas : repas)
+                    }
+                }else {
+                    ForEach(repasVM.repasFiltres, id: \.self) { repas in
+                        BoutonRepas(repas: repas)
+                    }
                 }
             }
         }

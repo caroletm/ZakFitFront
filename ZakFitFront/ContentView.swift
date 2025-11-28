@@ -66,6 +66,8 @@ struct ContentView: View {
                             DetailRepas(repas: repas)
                         case .detailActivite (let activite):
                             DetailActivite (activite: activite)
+                        case .repasFiltres:
+                            FiltrerRepas()
                         }
                     }
             } else {

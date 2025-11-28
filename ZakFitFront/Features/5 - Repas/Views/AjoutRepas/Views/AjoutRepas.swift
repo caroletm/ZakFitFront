@@ -95,13 +95,13 @@ struct AjoutRepas: View {
                     if repasVM.isValidCreateRepas() {
                         repasVM.createRepas()
                         showRepasModal.toggle()
-                        repasVM.clearList()
+                        repasVM.resetAlimentPickers()
                     }
                 }.padding(.bottom,5)
                 
                 BoutonSouligne(text: "Annuler", color: Color.black, fontSize: 16, fontWeight: .bold) {
                     showRepasModal.toggle()
-                    repasVM.clearList()
+                    repasVM.resetAlimentPickers()
                 }
             }
             
