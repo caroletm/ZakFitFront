@@ -20,7 +20,7 @@ struct DetailRepas: View {
                 HStack {
                     Text("Detail par repas : ")
                         .font(.system(size: 16, weight: .semibold))
-                    Text("Déjeuner du 25/11/2025")
+                    Text("\(repas.typeRepas.label) du \(repasVM.dateFormatter(repas.date))")
                 }
                 .padding()
                 
@@ -110,7 +110,7 @@ struct DetailRepas: View {
             }
             .toolbar{
                 ToolbarItem(placement: .principal) {
-                    Text("Lundi 17 novembre 2025")
+                    Text("\(repasVM.dateFormatterLong(repas.date))")
                         .font(.system(size: 24, weight: .bold))
                 }
             }

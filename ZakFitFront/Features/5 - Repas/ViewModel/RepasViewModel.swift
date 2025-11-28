@@ -14,9 +14,9 @@ class RepasViewModel {
     
     //MARK: - Repas Aliments Data
     
-    var repasData : [Repas] = [repas1]
+    var repasData : [Repas] = []
     var alimentData : [Aliment] = []
-    var consoData : [Conso] = [conso1]
+    var consoData : [Conso] = []
     
     //MARK: - Ajouter Repas
     
@@ -221,6 +221,12 @@ class RepasViewModel {
             && calculerCaloriesTotales() > 0
     }
     
+    func resetAlimentPickers() {
+        selectedAliment = nil
+        qteAliment = nil
+        selectedPortion = nil
+    }
+    
  
     
     //MARK: - Vider la liste des aliments consommés
@@ -248,6 +254,58 @@ class RepasViewModel {
             && calculerCaloriesTotalesRepas() > 0
             && dateRepas <= Date()
     }
+    //MARK: - RepasList - Repas du Jour (DayRepas)
+    
+    var selectedRepasDate: Date = Date()
+    
+    var repasDuJour: [Repas] {
+        repasData.filter { repas in
+            Calendar.current.isDate(repas.date, inSameDayAs: selectedRepasDate)
+        }
+    }
+    
+    var totalCaloriesJour: Double {
+        repasDuJour.reduce(0) { $0 + $1.calories }
+    }
+    
+    var maxCalories: Double = 5000
+     var filterAliment: String = ""
+    
+    //MARK: - Filtrer les repas
+     
+     // Résultat filtré
+     var repasFiltres: [Repas] {
+         repasData.filter { repas in
+             
+             // Filtre sur type de repas
+             if let type = selectedRepas, repas.typeRepas != type {
+                 return false
+             }
+             
+             // Filtre sur calories max
+             if repas.calories > maxCalories {
+                 return false
+             }
+             
+             // Filtre sur aliment contenu
+             if !filterAliment.isEmpty {
+                 let match = repas.consos.contains { conso in
+                     conso.aliment.description.lowercased()
+                         .contains(filterAliment.lowercased())
+                 }
+                 if !match { return false }
+             }
+             
+             return true
+         }
+     }
+    
+    func resetFilter() {
+        filterAliment = ""
+        selectedRepas = nil
+        maxCalories = 5000
+    }
+    
     
     //MARK: - Date
     
@@ -255,6 +313,13 @@ class RepasViewModel {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/yyyy"
         return formatter.string(from: date)
+    }
+    
+    func dateFormatterLong(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "fr_FR") // Pour avoir le jour et mois en français
+        formatter.dateFormat = "EEEE d MMMM yyyy"      // EEEE = nom complet du jour, MMMM = nom complet du mois
+        return formatter.string(from: date).capitalized // capitalized pour mettre la première lettre en majuscule
     }
     
 }

@@ -77,16 +77,31 @@ struct Dashboard : View {
                         
                         Text("Dernier repas")
                             .font(.system(size: 20, weight: .semibold))
-                        
-                        BoutonLastRepas(repas: repasVM.repasData.last!)
-                            .padding(EdgeInsets(top: 5, leading: 0, bottom: 20, trailing: 0))
+                        if !repasVM.repasData.isEmpty {
+                            BoutonLastRepas(repas: repasVM.repasData.last!)
+                                .padding(EdgeInsets(top: 5, leading: 0, bottom: 20, trailing: 0))
+                        }else {
+                            Text("Vous n'avez pas encore ajouté de repas")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundStyle(Color.greyLight200)
+                                .italic()
+                                .padding(EdgeInsets(top: 40, leading: 20, bottom: 40, trailing: 0))
+                                
+                        }
+                       
                         
                         Text("Dernière activité")
                             .font(.system(size: 20, weight: .semibold))
-                        
-                        BoutonLastActivite(activite: activiteVM.activiteData.last!)
-                            .padding(EdgeInsets(top: 5, leading: 0, bottom: 20, trailing: 0))
-                        
+                        if !activiteVM.activiteData.isEmpty {
+                            BoutonLastActivite(activite: activiteVM.activiteData.last!)
+                                .padding(EdgeInsets(top: 5, leading: 0, bottom: 20, trailing: 0))
+                        }else{
+                            Text("Vous n'avez pas encore ajouté d'activités")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundStyle(Color.greyLight200)
+                                .italic()
+                                .padding(EdgeInsets(top: 40, leading: 20, bottom: 40, trailing: 0))
+                        }
                     }
                 }
             }
