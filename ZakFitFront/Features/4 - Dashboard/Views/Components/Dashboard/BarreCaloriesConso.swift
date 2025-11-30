@@ -12,11 +12,8 @@ struct BarreCaloriesConso: View {
     @Environment(RepasViewModel.self) var repasVM
     @Environment(ObjectifViewModel.self) var objectifVM
 
-//    var maxCalories : Double = 100
-//    var currentCalories : Double =  40
-    @State var isFlipped : Bool = false
     
-
+    @State var isFlipped : Bool = false
     
     var body: some View {
         
@@ -49,9 +46,15 @@ struct BarreCaloriesConso: View {
                 
                 if isFlipped {
                     VStack {
-                        Text("\(String(format: "%.0f", repasVM.totalCaloriesJour)) %")
-                            .font(.system(size: 20, weight: .bold))
-                            .padding(.bottom)
+                        if objectif > 0 {
+                            Text("\(String(format: "%.0f", calories/objectif * 100)) %")
+                                .font(.system(size: 20, weight: .bold))
+                                .padding(.bottom)
+                        }else {
+                            Text("0%")
+                                .font(.system(size: 20, weight: .bold))
+                                .padding(.bottom)
+                        }
                         Text("de\n l'objectif")
                             .font(.system(size: 8, weight: .bold))
                     }.padding(.bottom)
@@ -59,10 +62,10 @@ struct BarreCaloriesConso: View {
                         .foregroundStyle(Color.greyDark)
                 }else{
                     VStack {
-                        Text("300")
+                        Text("\(String(format: "%.0f", calories))")
                             .font(.system(size: 20, weight: .bold))
                             .padding(.bottom)
-                        Text("calories\nbrûlées")
+                        Text("calories\nconsommées")
                             .font(.system(size: 8, weight: .bold))
                     }.padding(.bottom)
                         .frame(width: 68)

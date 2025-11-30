@@ -9,14 +9,23 @@ import SwiftUI
 
 struct BarreMinsActivite: View {
     @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(ObjectifViewModel.self) var objectifVM
+    @Environment(ActiviteViewModel.self) var activiteVM
     
-    var maxActivity : Double = 100
-    var currentActivity : Double =  80
     @State var isFlipped : Bool = false
     
     var body: some View {
+        
+        let objectif = objectifVM.dureeActivite
+        let minsActivite = activiteVM.totalMinsActivitesJour
+        let ratio = objectif ?? 30 > 0 ? min(minsActivite / (objectif ?? 30), 1) : 0
+        let barHeight = ratio * 116
+        
         Button {
             isFlipped.toggle()
+            print("minsActivite: \(minsActivite)")
+            print("objectif: \(objectif ?? 30)")
+       
         }label:{
             
             ZStack (alignment : .bottom) {
@@ -28,7 +37,7 @@ struct BarreMinsActivite: View {
                         .opacity(isFlipped ? 0.4 : 0.2)
                     
                     RoundedRectangle(cornerRadius: 10)
-                        .frame(width: 68, height: currentActivity > maxActivity ? maxActivity : (currentActivity/maxActivity) * 116)
+                        .frame(width: 68, height: CGFloat(barHeight))
                         .foregroundStyle(Color.greyDark)
                         .opacity(isFlipped ? 0.5 : 0.3)
                 }
@@ -40,7 +49,7 @@ struct BarreMinsActivite: View {
                 
                 if isFlipped {
                     VStack {
-                        Text("\(String(format: "%.0f", currentActivity)) %")
+                        Text("\(minsActivite / (objectif ?? 30) * 100) %")
                             .font(.system(size: 20, weight: .bold))
                             .padding(.bottom)
                         Text("de\n l'objectif")
@@ -50,7 +59,7 @@ struct BarreMinsActivite: View {
                         .foregroundStyle(Color.orangeLight50)
                 }else{
                     VStack {
-                        Text("60")
+                        Text("\(minsActivite)")
                             .font(.system(size: 20, weight: .bold))
                             .padding(.bottom)
                         Text("mins\nd'activité")
@@ -65,6 +74,9 @@ struct BarreMinsActivite: View {
 }
 
 #Preview {
+    let userVM = UserViewModel()
     BarreMinsActivite()
         .environment(NavigationViewModel())
+        .environment(ObjectifViewModel(userVM:userVM))
+        .environment(ActiviteViewModel(userVM:userVM))
 }

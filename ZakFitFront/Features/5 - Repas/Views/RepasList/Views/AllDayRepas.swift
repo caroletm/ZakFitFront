@@ -44,6 +44,9 @@ struct AllDayRepas: View {
                     ForEach(repasVM.repasData, id: \.self) { repas in
                         BoutonRepas(repas : repas)
                     }
+                }
+                    else if repasVM.repasFiltres.isEmpty && repasVM.isFilterActive {
+                        Text("Aucun repas ne correspond à vos critères")
                 }else {
                     ForEach(repasVM.repasFiltres, id: \.self) { repas in
                         BoutonRepas(repas: repas)

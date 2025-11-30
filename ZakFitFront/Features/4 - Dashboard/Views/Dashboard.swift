@@ -111,7 +111,7 @@ struct Dashboard : View {
             AjoutRepas(showRepasModal: $showRepasModal, origin: .dashboard)
         }
         .sheet(isPresented: $showActiviteModal){
-            AjoutActivite(showActiviteModal: $showActiviteModal)
+            AjoutActivite(showActiviteModal: $showActiviteModal, origin: .dashboard)
         }
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct BoutonLastRepas: View {
     @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(RepasViewModel.self) var repasVM
     
     var repas : Repas
     
@@ -28,7 +29,7 @@ struct BoutonLastRepas: View {
                 
                 VStack(alignment: .leading) {
                    
-                    Text("Il y a 50 minutes")
+                    Text("\(repasVM.dateFormatterAgo(repas.date))")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(.white)
                 
@@ -42,7 +43,7 @@ struct BoutonLastRepas: View {
                         Spacer()
                         
                         VStack(spacing: 2) {
-                            Text("800")
+                            Text("\(String(format : "%.0f", repas.calories))")
                                 .font(.system(size: 32, weight: .bold))
 
                             Text("calories")
@@ -54,7 +55,7 @@ struct BoutonLastRepas: View {
                         .foregroundStyle(.white)
                     }
                     
-                    Text("Déjeuner")
+                    Text("\(repas.typeRepas.label)")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white)
                 }
@@ -72,4 +73,5 @@ struct BoutonLastRepas: View {
 #Preview {
     BoutonLastRepas(repas: repas1)
         .environment(NavigationViewModel())
+        .environment(RepasViewModel())
 }

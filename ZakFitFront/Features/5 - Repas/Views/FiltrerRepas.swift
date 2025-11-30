@@ -71,6 +71,7 @@ struct FiltrerRepas: View {
                         .padding(EdgeInsets(top: 0, leading: 50, bottom: 10, trailing: 50))
                 }
                 FiltreParNomAliment()
+                    .padding(EdgeInsets(top: 20, leading: 10, bottom: 10, trailing: 10))
                 
                 if repasVM.isFilterActive {
                     Button {

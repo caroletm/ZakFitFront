@@ -26,7 +26,7 @@ struct Carrousel: View {
     func slideView(for slide: ObjectifSlide) -> some View {
         switch slide {
         case .calories:
-            CaloriesDuJour()
+            CaloriesDuJour(consumed: 1200, goal: 1900)
         case .macros:
             MacrosDuJour()
         case .reco:

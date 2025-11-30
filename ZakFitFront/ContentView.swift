@@ -61,13 +61,15 @@ struct ContentView: View {
                         case .ajoutRepas:
                             AjoutRepas(showRepasModal: .constant(false), origin: .repasList)
                         case .ajoutActivite:
-                            AjoutActivite(showActiviteModal: .constant(false))
+                            AjoutActivite(showActiviteModal: .constant(false), origin: .activiteList)
                         case .detailRepas (let repas):
                             DetailRepas(repas: repas)
                         case .detailActivite (let activite):
                             DetailActivite (activite: activite)
                         case .repasFiltres:
                             FiltrerRepas()
+                        case .activiteFiltres:
+                            FiltrerActivite()
                         }
                     }
             } else {

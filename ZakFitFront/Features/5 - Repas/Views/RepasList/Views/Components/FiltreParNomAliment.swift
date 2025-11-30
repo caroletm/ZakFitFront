@@ -15,7 +15,7 @@ struct FiltreParNomAliment: View {
     var body: some View {
         VStack (alignment: .leading) {
             HStack{
-                Text("Par aliment ou macronutriments : ")
+                Text("Par aliment : ")
                     .font(.system(size: 16, weight: .bold))
                 Spacer()
             }
@@ -47,10 +47,7 @@ struct FiltreParNomAliment: View {
                                 .foregroundColor(.white)
                             
                             Button {
-                                // Supprimer le tag
                                 alimentsFiltres.removeAll { $0 == aliment }
-                                
-                                // Mise à jour du filtre dans le ViewModel
                                 repasVM.filterAliment = alimentsFiltres.joined(separator: ",")
                             } label: {
                                 Image(systemName: "xmark.circle.fill")

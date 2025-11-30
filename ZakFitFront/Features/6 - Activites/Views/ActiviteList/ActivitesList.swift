@@ -24,7 +24,7 @@ struct ActivitesList : View {
                             .foregroundStyle(Color.greyLight100)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                .stroke(style: StrokeStyle(lineWidth: 1))
+                                    .stroke(style: StrokeStyle(lineWidth: 1))
                             )
                         VStack {
                             Image(systemName: "figure.run")
@@ -34,17 +34,27 @@ struct ActivitesList : View {
                             Text("Ajouter une activité")
                                 .font(.system(size: 16, weight: .bold))
                         }
-
+                        
                     }
                     .foregroundStyle(Color.greyDark)
-                  
+                    
                 }.padding()
                 HStack {
                     Text("Liste des activités :")
                         .font(.system(size: 20, weight: .bold))
                     Spacer()
+                    
+                    if activiteVM.isFilterActive {
+                        Button {
+                            activiteVM.resetFilter()
+                        }label: {
+                            Text("Vider\n les filtres")
+                                .font(.system(size: 12, weight: .regular))
+                        }
+                        .padding(.leading, 10)
+                    }
                     Button {
-                        //
+                        navigationVM.path.append(AppRoute.activiteFiltres)
                     }label:{
                         ZStack {
                             Circle()
@@ -58,8 +68,7 @@ struct ActivitesList : View {
                         }
                     }
                     Button {
-                        //
-                    }label:{
+                        activiteVM.sortOrder = (activiteVM.sortOrder == .recentFirst ? .oldestFirst : .recentFirst)   }label:{
                         ZStack {
                             Circle()
                                 .frame(width: 31, height: 31)
@@ -75,8 +84,18 @@ struct ActivitesList : View {
                 .padding()
                 
                 ScrollView {
-                    ForEach(activiteVM.activiteData, id: \.self) { activite in
-                        BoutonActivite(activite : activite)
+                    
+                    if activiteVM.activiteFiltres.isEmpty && !activiteVM.isFilterActive {
+                        ForEach(activiteVM.activitesTriees, id: \.self) { activite in
+                            BoutonActivite(activite : activite)
+                        }
+                    } else if activiteVM.activiteFiltres.isEmpty && activiteVM.isFilterActive{
+                        Text("Aucune activite ne correspond à vos critères")
+                        
+                    }else {
+                        ForEach(activiteVM.activiteFiltres, id: \.self) { activite in
+                            BoutonActivite(activite : activite)
+                        }
                     }
                 }
             }
