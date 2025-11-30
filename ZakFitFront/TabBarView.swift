@@ -24,7 +24,7 @@ struct TabBarView: View {
             Tab("Activites", systemImage: "figure.run") {
                 ActivitesList()
             }
-            Tab("Tableau de bord", systemImage: "chart.line.uptrend.xyaxis") {
+            Tab("Suivi", systemImage: "chart.line.uptrend.xyaxis") {
                 Stats()
             }
         }

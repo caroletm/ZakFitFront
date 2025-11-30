@@ -21,7 +21,7 @@ class ActiviteViewModel {
     
     //MARK: - Activités Data
     
-    var activiteData: [Activite] = [activite1]
+    var activiteData: [Activite] = []
     
     //MARK: - Ajouter Activite
     
@@ -50,6 +50,29 @@ class ActiviteViewModel {
         return resultat
     }
     
+    var totalCaloriesBruleesJour: Double {
+        activitesDuJour.reduce(0) { total, activite in
+            total + activite.caloriesBrulees
+        }
+    }
+    
+    //MARK: - Calculer minutes d'activites par jour
+    
+    var activitesDuJour: [Activite] {
+        activiteData.filter { activite in
+            Calendar.current.isDate(activite.date, inSameDayAs: Date())
+        }
+    }
+    
+    var totalMinsActivitesJour: Int {
+        activitesDuJour.reduce(0) { total, activite in
+            total + activite.duree
+        }
+    }
+    
+
+
+    
     //MARK: - Create Activite
     
     func createActivite() {
@@ -69,12 +92,100 @@ class ActiviteViewModel {
         && dateActivite <= Date()
     }
     
+    func resetActivitePicker() {
+        selectedActivite = nil
+        selectedDuree = nil
+        dateActivite = Date()
+        caloriesBrulees = nil
+    }
+    
+    //MARK: - Filtrer les activites
+    
+    var minCaloriesBrulees: Double = 0
+    var minDuree : Int = 0
+    
+    // Résultat filtré
+    var activiteFiltres: [Activite] {
+        
+        let filtres = activiteData.filter { activite in
+
+            // Filtre sur type de repas
+            if let type = selectedActivite, activite.typeActivite != type {
+                return false
+            }
+            
+            if activite.duree < minDuree {
+                return false
+            }
+            
+            // Filtre sur calories max
+            if activite.caloriesBrulees < minCaloriesBrulees {
+                return false
+            }
+            return true
+        }
+        switch sortOrder {
+        case .recentFirst:
+            return filtres.sorted { $0.date > $1.date }
+        case .oldestFirst:
+            return filtres.sorted { $0.date < $1.date }
+        }
+    }
+    
+    var isFilterActive : Bool {
+        selectedActivite != nil || minCaloriesBrulees != 0 || minDuree != 0
+    }
+    
+    func resetFilter() {
+        selectedActivite = nil
+        minCaloriesBrulees = 0
+        minDuree = 0
+    }
+    
+    //MARK: - Trier les activites
+
+    enum ActiviteSortOrder {
+        case recentFirst
+        case oldestFirst
+    }
+    
+    var sortOrder : ActiviteSortOrder = .recentFirst
+    
+    var activitesTriees: [Activite] {
+        switch sortOrder {
+        case .recentFirst:
+            return activiteData.sorted { $0.date > $1.date }
+        case .oldestFirst:
+            return activiteData.sorted { $0.date < $1.date }
+        }
+    }
+    
     //MARK: - Date
     
     func dateFormatter(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/yyyy"
         return formatter.string(from: date)
+    }
+    
+    func dateFormatterAgo(_ date: Date) -> String {
+        let now = Date()
+        let timeAgo = Int(now.timeIntervalSince(date))
+        
+        let minute = 60
+        let hour = 60 * minute
+        let day = 24 * hour
+        
+        if timeAgo < minute {
+            return "il y a \(timeAgo) seconde\(timeAgo > 1 ? "s" : "")"
+        } else if timeAgo < hour {
+            return "il y a \(timeAgo / minute) minute\(timeAgo > 1 ? "s" : "")"
+        } else if timeAgo < day {
+            return "il y a \(timeAgo / hour) heure\(timeAgo > 1 ? "s" : "")"
+        } else {
+            let daysAgo = timeAgo / day
+            return "il y a \(daysAgo) jour\(daysAgo > 1 ? "s" : "")"
+        }
     }
     
 }

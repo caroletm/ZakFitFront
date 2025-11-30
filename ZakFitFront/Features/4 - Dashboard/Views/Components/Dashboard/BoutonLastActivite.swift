@@ -9,6 +9,7 @@ import SwiftUI
 
 struct BoutonLastActivite: View {
     @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(ActiviteViewModel.self) var activiteVM
     
     var activite : Activite
     
@@ -28,22 +29,20 @@ struct BoutonLastActivite: View {
                 
                 VStack(alignment: .leading) {
                    
-                    Text("Il y a 20 minutes")
+                    Text("\(activiteVM.dateFormatterAgo(activite.date))")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(.greyDark)
                 
                     HStack {
-                        Image(systemName: "figure.tennis")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 26, height: 32)
+                        Image(systemName: "\(activite.typeActivite?.imageName ?? "")")
+                            .font(.system(size: 32))
                             .foregroundStyle(.white)
                         
                         Spacer()
                         
                         VStack(alignment: .leading) {
                             HStack(alignment: .firstTextBaseline) {
-                                Text("90")
+                                Text("\(activite.duree)")
                                     .font(.system(size: 32, weight: .bold))
                                 Text("minutes")
                                     .font(.system(size: 14, weight: .bold))
@@ -51,7 +50,7 @@ struct BoutonLastActivite: View {
                             .foregroundStyle(.greyDark)
                             
                             HStack(alignment: .firstTextBaseline) {
-                                Text("600")
+                                Text("\(String(format: "%.0f", activite.caloriesBrulees))")
                                     .font(.system(size: 16, weight: .bold))
                                 Text("calories brûlées")
                                     .font(.system(size: 8, weight: .bold))
@@ -60,7 +59,7 @@ struct BoutonLastActivite: View {
                         }
                     }
                     
-                    Text("Tennis")
+                    Text("\(activite.typeActivite?.description ?? "")")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white)
                 }
@@ -73,6 +72,8 @@ struct BoutonLastActivite: View {
 }
 
 #Preview {
+    let userVM = UserViewModel()
     BoutonLastActivite(activite: activite1)
         .environment(NavigationViewModel())
+        .environment(ActiviteViewModel(userVM : userVM))
 }

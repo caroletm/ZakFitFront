@@ -227,13 +227,11 @@ class RepasViewModel {
         selectedPortion = nil
     }
     
- 
-    
-    //MARK: - Vider la liste des aliments consommés
-    
-    func clearList() {
+    func resetRepasPicker() {
+        selectedRepas = nil
         consoData.removeAll()
     }
+    
     
     //MARK: - Créer un repas
     
@@ -242,7 +240,7 @@ class RepasViewModel {
             id : UUID(),
             typeRepas: selectedRepas ?? .encas,
             date: dateRepas,
-            calories: calculerCaloriesTotales(),
+            calories: calculerCaloriesTotalesRepas(),
             consos: consoData
         )
         repasData.append(newRepas)
@@ -268,42 +266,50 @@ class RepasViewModel {
         repasDuJour.reduce(0) { $0 + $1.calories }
     }
     
-    var maxCalories: Double = 5000
-     var filterAliment: String = ""
+    var totalRepasJour: Int {
+        repasDuJour.count
+    }
     
     //MARK: - Filtrer les repas
-     
-     // Résultat filtré
-     var repasFiltres: [Repas] {
-         repasData.filter { repas in
-             
-             // Filtre sur type de repas
-             if let type = selectedRepas, repas.typeRepas != type {
-                 return false
-             }
-             
-             // Filtre sur calories max
-             if repas.calories > maxCalories {
-                 return false
-             }
-             
-             // Filtre sur aliment contenu
-             if !filterAliment.isEmpty {
-                 let match = repas.consos.contains { conso in
-                     conso.aliment.description.lowercased()
-                         .contains(filterAliment.lowercased())
-                 }
-                 if !match { return false }
-             }
-             
-             return true
-         }
-     }
+    
+    var minCalories: Double = 0
+    var filterAliment: String = ""
+    
+    // Résultat filtré
+    var repasFiltres: [Repas] {
+        repasData.filter { repas in
+            
+            // Filtre sur type de repas
+            if let type = selectedRepas, repas.typeRepas != type {
+                return false
+            }
+            
+            // Filtre sur calories max
+            if repas.calories < minCalories {
+                return false
+            }
+            
+            // Filtre sur aliment contenu
+            if !filterAliment.isEmpty {
+                let match = repas.consos.contains { conso in
+                    conso.aliment.description.lowercased()
+                        .contains(filterAliment.lowercased())
+                }
+                if !match { return false }
+            }
+            
+            return true
+        }
+    }
+    
+    var isFilterActive : Bool {
+        selectedRepas != nil || !filterAliment.isEmpty || minCalories != 0
+    }
     
     func resetFilter() {
         filterAliment = ""
         selectedRepas = nil
-        maxCalories = 5000
+        minCalories = 0
     }
     
     
@@ -320,6 +326,26 @@ class RepasViewModel {
         formatter.locale = Locale(identifier: "fr_FR") // Pour avoir le jour et mois en français
         formatter.dateFormat = "EEEE d MMMM yyyy"      // EEEE = nom complet du jour, MMMM = nom complet du mois
         return formatter.string(from: date).capitalized // capitalized pour mettre la première lettre en majuscule
+    }
+    
+    func dateFormatterAgo(_ date: Date) -> String {
+        let now = Date()
+        let timeAgo = Int(now.timeIntervalSince(date))
+        
+        let minute = 60
+        let hour = 60 * minute
+        let day = 24 * hour
+        
+        if timeAgo < minute {
+            return "il y a \(timeAgo) seconde\(timeAgo > 1 ? "s" : "")"
+        } else if timeAgo < hour {
+            return "il y a \(timeAgo / minute) minute\(timeAgo > 1 ? "s" : "")"
+        } else if timeAgo < day {
+            return "il y a \(timeAgo / hour) heure\(timeAgo > 1 ? "s" : "")"
+        } else {
+            let daysAgo = timeAgo / day
+            return "il y a \(daysAgo) jour\(daysAgo > 1 ? "s" : "")"
+        }
     }
     
 }

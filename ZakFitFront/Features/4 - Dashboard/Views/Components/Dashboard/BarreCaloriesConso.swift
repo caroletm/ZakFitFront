@@ -1,5 +1,5 @@
 //
-//  BarreMinsActivite.swift
+//  BarreCaloriesConso.swift
 //  ZakFitFront
 //
 //  Created by caroletm on 26/11/2025.
@@ -7,29 +7,35 @@
 
 import SwiftUI
 
-struct BarreMinsActivite: View {
+struct BarreCaloriesConso: View {
     @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(RepasViewModel.self) var repasVM
+    @Environment(ObjectifViewModel.self) var objectifVM
+
     
-    var maxActivity : Double = 100
-    var currentActivity : Double =  80
     @State var isFlipped : Bool = false
     
     var body: some View {
+        
+        let objectif = objectifVM.caloriesCiblesCalculees()
+        let calories = repasVM.totalCaloriesJour
+        let ratio = objectif > 0 ? min(calories / objectif, 1) : 0
+        let barHeight = ratio * 116
+        
         Button {
             isFlipped.toggle()
         }label:{
-            
             ZStack (alignment : .bottom) {
                 
-                ZStack (alignment : .bottom) {
+                ZStack(alignment : .bottom)  {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 68, height: 116)
-                        .foregroundStyle(Color.greyDark)
+                        .foregroundStyle(Color.orangeLight300)
                         .opacity(isFlipped ? 0.4 : 0.2)
                     
                     RoundedRectangle(cornerRadius: 10)
-                        .frame(width: 68, height: currentActivity > maxActivity ? maxActivity : (currentActivity/maxActivity) * 116)
-                        .foregroundStyle(Color.greyDark)
+                        .frame(width: 68, height: barHeight)
+                        .foregroundStyle(Color.orangeLight300)
                         .opacity(isFlipped ? 0.5 : 0.3)
                 }
                 .rotation3DEffect(
@@ -40,24 +46,30 @@ struct BarreMinsActivite: View {
                 
                 if isFlipped {
                     VStack {
-                        Text("\(String(format: "%.0f", currentActivity)) %")
-                            .font(.system(size: 20, weight: .bold))
-                            .padding(.bottom)
+                        if objectif > 0 {
+                            Text("\(String(format: "%.0f", calories/objectif * 100)) %")
+                                .font(.system(size: 20, weight: .bold))
+                                .padding(.bottom)
+                        }else {
+                            Text("0%")
+                                .font(.system(size: 20, weight: .bold))
+                                .padding(.bottom)
+                        }
                         Text("de\n l'objectif")
                             .font(.system(size: 8, weight: .bold))
                     }.padding(.bottom)
                         .frame(width: 68)
-                        .foregroundStyle(Color.orangeLight50)
+                        .foregroundStyle(Color.greyDark)
                 }else{
                     VStack {
-                        Text("60")
+                        Text("\(String(format: "%.0f", calories))")
                             .font(.system(size: 20, weight: .bold))
                             .padding(.bottom)
-                        Text("mins\nd'activité")
+                        Text("calories\nconsommées")
                             .font(.system(size: 8, weight: .bold))
                     }.padding(.bottom)
                         .frame(width: 68)
-                        .foregroundStyle(Color.greyDark)
+                        .foregroundStyle(Color.orangeLight300)
                 }
             }
         }
@@ -65,6 +77,9 @@ struct BarreMinsActivite: View {
 }
 
 #Preview {
-    BarreMinsActivite()
+    let userVM = UserViewModel()
+    BarreCaloriesConso()
         .environment(NavigationViewModel())
+        .environment(RepasViewModel())
+        .environment(ObjectifViewModel(userVM: userVM))
 }

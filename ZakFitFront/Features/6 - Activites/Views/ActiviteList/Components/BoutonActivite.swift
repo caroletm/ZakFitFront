@@ -34,17 +34,15 @@ struct BoutonActivite: View {
                         .foregroundStyle(.greyDark)
                 
                     HStack {
-                        Image(systemName: "figure.tennis")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 26, height: 32)
+                        Image(systemName: "\(activite.typeActivite?.imageName ?? "")")
+                            .font(.system(size: 32))
                             .foregroundStyle(.white)
                         
                         Spacer()
                         
                         VStack(alignment: .leading) {
                             HStack(alignment: .firstTextBaseline) {
-                                Text("90")
+                                Text("\(activite.duree)")
                                     .font(.system(size: 32, weight: .bold))
                                 Text("minutes")
                                     .font(.system(size: 14, weight: .bold))
@@ -52,7 +50,7 @@ struct BoutonActivite: View {
                             .foregroundStyle(.greyDark)
                             
                             HStack(alignment: .firstTextBaseline) {
-                                Text("600")
+                                Text("\(String(format: "%.0f", activite.caloriesBrulees))")
                                     .font(.system(size: 16, weight: .bold))
                                 Text("calories brûlées")
                                     .font(.system(size: 8, weight: .bold))
@@ -61,7 +59,7 @@ struct BoutonActivite: View {
                         }
                     }
                     
-                    Text("Tennis")
+                    Text("\(activite.typeActivite?.description ?? "")")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white)
                 }

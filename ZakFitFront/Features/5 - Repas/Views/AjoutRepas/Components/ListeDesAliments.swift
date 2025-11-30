@@ -13,7 +13,7 @@ struct ListeDesAliments: View {
     var body: some View {
         VStack (alignment :.leading){
             Text("Liste des aliments")
-                .font(.system(size: 20, weight: .bold))
+                .font(.system(size: 16, weight: .bold))
             ScrollView {
                 
                 ForEach(repasVM.consoData, id: \.id) { conso in
