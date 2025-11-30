@@ -14,7 +14,7 @@ class RepasViewModel {
     
     //MARK: - Repas Aliments Data
     
-    var repasData : [Repas] = []
+    var repasData : [Repas] = [repas1]
     var alimentData : [Aliment] = []
     var consoData : [Conso] = []
     
@@ -180,6 +180,13 @@ class RepasViewModel {
         return (totalCalories, totalProteines, totalGlucides, totalLipides)
     }
     
+    
+    var macrosJour: (calories: Double, proteines: Double, glucides: Double, lipides: Double) {
+        let consosDuJour = repasDuJour.flatMap { $0.consos }
+        return calculerMacrosTotales(for: consosDuJour)
+    }
+    
+    
     //MARK: - Ajouter aliment consommé
     
     func AddAlimentConsommé() {
@@ -254,11 +261,9 @@ class RepasViewModel {
     }
     //MARK: - RepasList - Repas du Jour (DayRepas)
     
-    var selectedRepasDate: Date = Date()
-    
     var repasDuJour: [Repas] {
         repasData.filter { repas in
-            Calendar.current.isDate(repas.date, inSameDayAs: selectedRepasDate)
+            Calendar.current.isDate(repas.date, inSameDayAs: Date())
         }
     }
     
@@ -266,9 +271,65 @@ class RepasViewModel {
         repasDuJour.reduce(0) { $0 + $1.calories }
     }
     
-    var totalRepasJour: Int {
-        repasDuJour.count
+
+    
+    //MARK: - Calculer calories repas par jour sélectionné (Historique)
+    
+    var selectedDate : Date = Date()
+    
+    var repasJourSelectionne: [Repas] {
+        repasData.filter { repas in
+            Calendar.current.isDate(repas.date, inSameDayAs: selectedDate)
+        }
     }
+    
+    var totalCaloriesRepasJourSelectionne: Double {
+        repasJourSelectionne.reduce(0) { $0 + $1.calories }
+    }
+    
+    
+    //MARK: - Calculer calories repas par semaine sélectionnée (Historique)
+    
+    
+    var selectedWeek: Date = Calendar.current.startOfWeek(for: Date())
+    
+    var startOfWeek: Date {
+        Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: selectedDate))!
+    }
+
+    var endOfWeek: Date {
+        Calendar.current.date(byAdding: .day, value: 6, to: startOfWeek)!
+    }
+    
+    func nextWeek() {
+        selectedDate = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: selectedDate)!
+    }
+
+    func previousWeek() {
+        selectedDate = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: selectedDate)!
+    }
+    
+    var repasSemaineSelectionne: [Repas] {
+        repasData.filter { repas in
+            Calendar.current.isDate(repas.date, equalTo: selectedDate, toGranularity: .weekOfYear)
+        }
+    }
+    
+    var totalCaloriesRepasSemaineSelectionne: Double {
+        repasSemaineSelectionne.reduce(0) { $0 + $1.calories }
+    }
+    
+    //MARK: - Calculer nb de repas
+    
+    var nbRepasJourSelectionne: Int {
+        repasJourSelectionne.count
+    }
+    
+    var nbRepasSemaine: Int {
+        repasSemaineSelectionne.count
+    }
+    
+    
     
     //MARK: - Filtrer les repas
     

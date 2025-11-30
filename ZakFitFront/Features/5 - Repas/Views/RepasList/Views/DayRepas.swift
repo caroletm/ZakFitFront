@@ -25,7 +25,7 @@ struct DayRepas: View {
                 
                 DatePicker(
                     "",
-                    selection: $repasVM.selectedRepasDate,
+                    selection: $repasVM.selectedDate,
                     displayedComponents: [.date]
                 )
                 .datePickerStyle(.compact)

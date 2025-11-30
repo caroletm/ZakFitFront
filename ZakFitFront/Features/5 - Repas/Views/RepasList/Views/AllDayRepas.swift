@@ -41,9 +41,7 @@ struct AllDayRepas: View {
             
             ScrollView {
                 if repasVM.repasFiltres.isEmpty && !repasVM.isFilterActive {
-                    ForEach(repasVM.repasData, id: \.self) { repas in
-                        BoutonRepas(repas : repas)
-                    }
+                        Text("Pas de repas pour l'instant")
                 }
                     else if repasVM.repasFiltres.isEmpty && repasVM.isFilterActive {
                         Text("Aucun repas ne correspond à vos critères")

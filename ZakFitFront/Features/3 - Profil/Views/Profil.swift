@@ -137,7 +137,7 @@ struct Profil: View {
                             Text("Objectifs de santé")
                                 .font(.system(size: 16, weight: .bold))
                                 .foregroundStyle(.orangeLight300)
-                            BoutonSouligne (text: "Renseigner mes objectifs", color: .black, fontSize: 16, fontWeight: .medium) {
+                            BoutonSouligne (text: "Modifier mes objectifs", color: .black, fontSize: 16, fontWeight: .medium) {
                                 navigationVM.path.append(AppRoute.objectifs)
                             }
                             .padding(.vertical,5)
