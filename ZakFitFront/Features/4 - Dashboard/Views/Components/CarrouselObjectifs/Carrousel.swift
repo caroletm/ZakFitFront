@@ -10,6 +10,9 @@ import SwiftUI
 struct Carrousel: View {
     
     @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(RepasViewModel.self) var repasVM
+    @Environment(ActiviteViewModel.self) var activiteVM
+    @Environment(ObjectifViewModel.self) var objectifVM
     
     @State var selectedIndex: Int = 0
     
@@ -26,9 +29,9 @@ struct Carrousel: View {
     func slideView(for slide: ObjectifSlide) -> some View {
         switch slide {
         case .calories:
-            CaloriesDuJour(consumed: 1200, goal: 1900)
+            CaloriesDuJour(consumed: repasVM.totalCaloriesJour, goal: objectifVM.caloriesCiblesCalculees())
         case .macros:
-            MacrosDuJour()
+            MacrosDuJour(proteines: 200, glucides: 200, lipides: 600)
         case .reco:
             RecoDuJour()
         case .message:
@@ -60,12 +63,16 @@ struct Carrousel: View {
                         .fill(selectedIndex == slide.rawValue ? Color.orangeLight300 : Color.greyLight100)
                         .frame(width: 8, height: 8)
                 }
-            }/*.padding()*/
+            }
         }
     }
 }
 
 #Preview {
+    let userVM = UserViewModel()
     Carrousel()
         .environment(NavigationViewModel())
+        .environment(RepasViewModel())
+        .environment(ActiviteViewModel(userVM: userVM))
+        .environment(ObjectifViewModel(userVM: userVM))
 }

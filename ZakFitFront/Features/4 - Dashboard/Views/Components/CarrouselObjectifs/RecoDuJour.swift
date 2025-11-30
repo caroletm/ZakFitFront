@@ -8,8 +8,23 @@
 import SwiftUI
 
 struct RecoDuJour: View {
+    
     var body: some View {
-        Text("Reco du jour")
+        
+        ZStack {
+            
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width: 345, height: 215)
+                .foregroundStyle(Color.white)
+                .cornerRadius(10)
+                .shadow(radius: 5)
+            
+            Text("\"Ajoutez 20g de proteines pour atteindre votre objectif\"")
+                .multilineTextAlignment(.center)
+                .font(.system(size: 20, weight: .bold))
+                .foregroundStyle(Color.orangeLight300)
+                .frame(width: 320, height: 215)
+        }
     }
 }
 

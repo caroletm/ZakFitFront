@@ -180,6 +180,13 @@ class RepasViewModel {
         return (totalCalories, totalProteines, totalGlucides, totalLipides)
     }
     
+    
+    var macrosJour: (calories: Double, proteines: Double, glucides: Double, lipides: Double) {
+        let consosDuJour = repasDuJour.flatMap { $0.consos }
+        return calculerMacrosTotales(for: consosDuJour)
+    }
+    
+    
     //MARK: - Ajouter aliment consommé
     
     func AddAlimentConsommé() {
@@ -266,9 +273,47 @@ class RepasViewModel {
         repasDuJour.reduce(0) { $0 + $1.calories }
     }
     
-    var totalRepasJour: Int {
-        repasDuJour.count
+
+    
+    //MARK: - Calculer calories repas par jour sélectionné (Historique)
+    
+    var selectedDate : Date = Date()
+    
+    var repasJourSelectionne: [Repas] {
+        repasData.filter { repas in
+            Calendar.current.isDate(repas.date, inSameDayAs: selectedDate)
+        }
     }
+    
+    var totalCaloriesRepasJourSelectionne: Double {
+        repasJourSelectionne.reduce(0) { $0 + $1.calories }
+    }
+    
+    
+    //MARK: - Calculer calories repas par semaine sélectionnée (Historique)
+    
+    
+    var repasSemaineSelectionne: [Repas] {
+        repasData.filter { repas in
+            Calendar.current.isDate(repas.date, equalTo: selectedDate, toGranularity: .weekOfYear)
+        }
+    }
+    
+    var totalCaloriesRepasSemaineSelectionne: Double {
+        repasSemaineSelectionne.reduce(0) { $0 + $1.calories }
+    }
+    
+    //MARK: - Calculer nb d'entrainements
+    
+    var nbRepasJourSelectionne: Int {
+        repasJourSelectionne.count
+    }
+    
+    var nbRepasSemaine: Int {
+        repasSemaineSelectionne.count
+    }
+    
+    
     
     //MARK: - Filtrer les repas
     

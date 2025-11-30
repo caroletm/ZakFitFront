@@ -56,7 +56,19 @@ class ActiviteViewModel {
         }
     }
     
-    //MARK: - Calculer minutes d'activites par jour
+    var totalCaloriesBruleesJourSelectionne: Double {
+        activitesDuJourSelectionne.reduce(0) { total, activite in
+            total + activite.caloriesBrulees
+        }
+    }
+    
+    var totalCaloriesBruleesSemaineSelectionne: Double {
+        activitesSemaineSelectionne.reduce(0) { total, activite in
+            total + activite.caloriesBrulees
+        }
+    }
+    
+    //MARK: - Calculer minutes d'activites par jour (barres dashboard)
     
     var activitesDuJour: [Activite] {
         activiteData.filter { activite in
@@ -70,8 +82,61 @@ class ActiviteViewModel {
         }
     }
     
+    //MARK: - Calculer minutes d'activites par jour sélectionné (Historique)
+    
+    var selectedDate : Date = Date()
+    
+    var activitesDuJourSelectionne: [Activite] {
+        activiteData.filter { activite in
+            Calendar.current.isDate(activite.date, inSameDayAs: selectedDate)
+        }
+    }
+    
+    var totalMinsActivitesJourSelectionne: Int {
+        activitesDuJourSelectionne.reduce(0) { total, activite in
+            total + activite.duree
+        }
+    }
+    
+    //MARK: - Calculer minutes d'activites par semaine sélectionnée (Historique)
+    
+    var selectedWeek: Date = Calendar.current.startOfWeek(for: Date())
+    
+    var startOfWeek: Date {
+        Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: selectedDate))!
+    }
 
+    var endOfWeek: Date {
+        Calendar.current.date(byAdding: .day, value: 6, to: startOfWeek)!
+    }
+    
+    func nextWeek() {
+        selectedDate = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: selectedDate)!
+    }
 
+    func previousWeek() {
+        selectedDate = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: selectedDate)!
+    }
+
+    var activitesSemaineSelectionne: [Activite] {
+        activiteData.filter { activite in
+            Calendar.current.isDate(activite.date, equalTo: selectedDate, toGranularity: .weekOfYear)
+        }
+    }
+    
+    var totalMinsActivitesSemaineSelectionne: Int {
+        activitesSemaineSelectionne.reduce(0) { $0 + $1.duree }
+        }
+    
+    //MARK: - Calculer nb d'entrainements
+    
+    var nbEntrainementsJour: Int {
+        activitesDuJour.count
+    }
+    
+    var nbEntrainementsSemaine: Int {
+        activitesSemaineSelectionne.count
+    }
     
     //MARK: - Create Activite
     
