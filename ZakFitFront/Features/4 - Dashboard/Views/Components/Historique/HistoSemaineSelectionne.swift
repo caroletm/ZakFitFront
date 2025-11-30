@@ -17,16 +17,17 @@ struct HistoSemaineSelectionne: View {
     var body: some View {
         
         @Bindable var repasVM = repasVM
+        @Bindable var activiteVM = activiteVM
         
         VStack {
             
             PickerSemaineSelectionne()
+                .onChange(of: activiteVM.selectedDate) { _, newDate in
+                      repasVM.selectedDate = newDate
+                  }
             
-            RoundedRectangle(cornerRadius: 10)
-                .frame(width: 345, height: 215)
-                .foregroundStyle(Color.white)
-                .shadow(radius: 5)
-                .padding(.vertical)
+            WindowSemaineCalories()
+                .padding()
             
             ScrollView {
                 HStack{
@@ -52,67 +53,21 @@ struct HistoSemaineSelectionne: View {
                         Spacer()
                     }  .padding(.horizontal)
                     
-                    Button {
-                        
-                    }label:{
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(Color.greyLight50)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .stroke(style: StrokeStyle(lineWidth: 1))
-                                        .foregroundStyle(Color.greyDark)
-                                )
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    
-                                    HStack {
-                                        Image(systemName: "fork.knife.circle")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 37, height: 40)
-                                            .foregroundStyle(.greyDark)
-                                        VStack (alignment : .leading) {
-                                            Text("3 repas")
-                                                .font(.system(size: 16, weight: .bold))
-                                            Text("2100 calories")
-                                                .font(.system(size: 12, weight: .bold))
-                                        }.foregroundStyle(Color.black)
-                                        
-                                    }
-                                    
-                                    HStack {
-                                        Image(systemName: "figure.run")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 37, height: 40)
-                                            .foregroundStyle(.greyDark)
-                                        VStack (alignment : .leading) {
-                                            Text("40 mins d'activité")
-                                                .font(.system(size: 16, weight: .bold))
-                                            Text("2100 calories brûlées")
-                                                .font(.system(size: 12, weight: .bold))
-                                        }.foregroundStyle(Color.black)
-                                    }
-                                }
-                                Spacer()
-                                HStack {
-                                    Image(systemName: "arrow.up.circle.fill")
-                                        .font(.system(size: 24, weight: .bold))
-                                    VStack() {
-                                        Text("1850")
-                                            .font(.system(size: 16, weight: .bold))
-                                        Text("calories")
-                                            .font(.system(size: 16, weight: .bold))
-                                    }
-                                }
-                            }
-                            .padding(.horizontal)
-                            .frame(width: 336, height: 115)
-                        }
-                        .frame(width: 336, height: 120)
-                    }
-                    .padding(5)
+                    BoutonResumeSemaine()
+                    HStack{
+                        Text("Mardi 18 Novembre :")
+                            .font(.system(size: 16, weight: .bold))
+                        Spacer()
+                    }  .padding(.horizontal)
+                    
+                    BoutonResumeSemaine()
+                    HStack{
+                        Text("Mercredi 19 Novembre :")
+                            .font(.system(size: 16, weight: .bold))
+                        Spacer()
+                    }  .padding(.horizontal)
+                    
+                    BoutonResumeSemaine()
                 }
             }
         }
@@ -127,4 +82,6 @@ struct HistoSemaineSelectionne: View {
         .environment(ActiviteViewModel(userVM: userVM))
         .environment(ObjectifViewModel(userVM: userVM))
 }
+
+
 

@@ -16,15 +16,15 @@ struct BarreMinsActivite: View {
     
     var body: some View {
         
-        let objectif = objectifVM.dureeActivite
-        let minsActivite = activiteVM.totalMinsActivitesJour
-        let ratio = objectif ?? 30 > 0 ? min(minsActivite / (objectif ?? 30), 1) : 0
+        let objectif = Double(objectifVM.dureeActivite ?? 30)
+        let minsActivite = Double(activiteVM.totalMinsActivitesJour)
+        let ratio = objectif > 0 ? min(minsActivite / (objectif), 1) : 0
         let barHeight = ratio * 116
         
         Button {
             isFlipped.toggle()
             print("minsActivite: \(minsActivite)")
-            print("objectif: \(objectif ?? 30)")
+            print("objectif: \(objectif)")
        
         }label:{
             
@@ -49,8 +49,7 @@ struct BarreMinsActivite: View {
                 
                 if isFlipped {
                     VStack {
-                        Text("\(minsActivite / (objectif ?? 30) * 100) %")
-                            .font(.system(size: 20, weight: .bold))
+                        Text("\(Int(ratio * 100)) %")                            .font(.system(size: 20, weight: .bold))
                             .padding(.bottom)
                         Text("de\n l'objectif")
                             .font(.system(size: 8, weight: .bold))
@@ -59,7 +58,7 @@ struct BarreMinsActivite: View {
                         .foregroundStyle(Color.orangeLight50)
                 }else{
                     VStack {
-                        Text("\(minsActivite)")
+                        Text("\(String(format : "%.0f", minsActivite))")
                             .font(.system(size: 20, weight: .bold))
                             .padding(.bottom)
                         Text("mins\nd'activité")

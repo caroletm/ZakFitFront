@@ -16,6 +16,7 @@ struct HistoJourSelectionne: View {
     var body: some View {
         
         @Bindable var repasVM = repasVM
+        @Bindable var activiteVM = activiteVM
         
         VStack {
             ScrollView {
@@ -29,7 +30,9 @@ struct HistoJourSelectionne: View {
                 .background(Color.white)
                 .cornerRadius(10)
                 .padding(.horizontal)
-                
+                .onChange(of: repasVM.selectedDate) {
+                    activiteVM.selectedDate = repasVM.selectedDate
+                }
                 Text("Résumé de la journée du \(repasVM.dateFormatter(repasVM.selectedDate))")
                     .font(.system(size: 20, weight: .bold))
                     .padding(.horizontal)

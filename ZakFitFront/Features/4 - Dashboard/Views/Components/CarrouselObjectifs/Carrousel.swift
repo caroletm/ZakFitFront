@@ -31,7 +31,7 @@ struct Carrousel: View {
         case .calories:
             CaloriesDuJour(consumed: repasVM.totalCaloriesJour, goal: objectifVM.caloriesCiblesCalculees())
         case .macros:
-            MacrosDuJour(proteines: 200, glucides: 200, lipides: 600)
+            MacrosDuJour(proteines: repasVM.macrosJour.proteines, glucides: repasVM.macrosJour.glucides, lipides: repasVM.macrosJour.lipides)
         case .reco:
             RecoDuJour()
         case .message:

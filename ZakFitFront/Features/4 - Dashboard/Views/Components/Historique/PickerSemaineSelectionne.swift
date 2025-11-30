@@ -25,7 +25,7 @@ struct PickerSemaineSelectionne: View {
                 start: activiteVM.startOfWeek,
                 end: activiteVM.endOfWeek
             ))
-                .font(.system(size: 20, weight: .bold))
+                .font(.system(size: 18, weight: .bold))
             
             Button {
                 activiteVM.nextWeek()
@@ -36,7 +36,7 @@ struct PickerSemaineSelectionne: View {
                     .foregroundStyle(Color.orangeLight300)
                     .padding(.horizontal)
             }
-        }.padding(.vertical)
+        }.padding(.vertical, 5)
     }
 }
 

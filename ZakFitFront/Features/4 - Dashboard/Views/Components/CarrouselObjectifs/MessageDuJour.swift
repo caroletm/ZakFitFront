@@ -10,6 +10,7 @@ import SwiftUI
 struct MessageDuJour: View {
     
     var body: some View {
+        
         ZStack {
             
             RoundedRectangle(cornerRadius: 10)

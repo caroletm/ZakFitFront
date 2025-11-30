@@ -9,6 +9,9 @@ import SwiftUI
 import Charts
 
 struct MacrosDuJour: View {
+    @Environment(RepasViewModel.self) var repasVM
+    @Environment(ActiviteViewModel.self) var activiteVM
+    @Environment(ObjectifViewModel.self) var objectifVM
     
     struct CalorieData: Identifiable {
         let id = UUID()
@@ -25,6 +28,16 @@ struct MacrosDuJour: View {
         "Glucides": .greyLight100,
         "Lipides": .orangeLight100
     ]
+    
+    var restantsProteines : Double {
+        return max(objectifVM.proteinesCiblesCalculees() - proteines, 0)
+    }
+    var restantsGlucides : Double {
+        return max(objectifVM.glucidesCiblesCalculees() - glucides, 0)
+    }
+    var restantsLipides : Double {
+        return max(objectifVM.lipidesCiblesCalculees() - lipides, 0)
+    }
     
     var body: some View {
         
@@ -78,9 +91,9 @@ struct MacrosDuJour: View {
                             Text("Restants:")
                                 .font(.system(size: 12, weight: .semibold))
                             VStack{
-                                Text("10g de protéines")
-                                Text("10g de glucides")
-                                Text("10g de lipides")
+                                Text("\(String(format: "%.0f", restantsProteines)) g de protéines")
+                                Text("\(String(format: "%.0f", restantsGlucides)) g de glucides")
+                                Text(" \(String(format: "%.0f", restantsLipides)) g de lipides")
                             }
                             .font(.system(size: 10, weight: .regular))
                         }
@@ -95,21 +108,21 @@ struct MacrosDuJour: View {
                             Rectangle()
                                 .frame(width: 10, height: 10)
                                 .foregroundStyle(Color.orangeLight300)
-                            Text("Protéines: 200 g")
+                            Text("Protéines: \(String(format: "%.0f", repasVM.macrosJour.proteines)) g")
                                 .font(.system(size: 10, weight: .regular))
                         }
                         HStack {
                             Rectangle()
                                 .frame(width: 10, height: 10)
                                 .foregroundStyle(Color.greyLight200)
-                            Text("Glucides: 200 g")
+                            Text("Glucides: \(String(format: "%.0f", repasVM.macrosJour.glucides)) g")
                                 .font(.system(size: 10, weight: .regular))
                         }
                         HStack {
                             Rectangle()
                                 .frame(width: 10, height: 10)
                                 .foregroundStyle(Color.orangeLight100)
-                            Text("Lipides: 200 g")
+                            Text("Lipides: \(String(format: "%.0f", repasVM.macrosJour.lipides)) g")
                                 .font(.system(size: 10, weight: .regular))
                         }
                         
@@ -122,5 +135,12 @@ struct MacrosDuJour: View {
 }
 
 #Preview {
-    MacrosDuJour(proteines: 200, glucides: 200, lipides: 600)
+    let userVM = UserViewModel()
+    ZStack {
+        Color.black.opacity(0.3).ignoresSafeArea(edges: .all)
+        MacrosDuJour(proteines: 200, glucides: 200, lipides: 600)
+            .environment(RepasViewModel())
+            .environment(ActiviteViewModel(userVM : userVM))
+            .environment(ObjectifViewModel(userVM : userVM))
+    }
 }
