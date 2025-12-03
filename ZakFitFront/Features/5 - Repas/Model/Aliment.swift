@@ -12,12 +12,12 @@ class Aliment : Identifiable, Hashable {
     var id : UUID = UUID()
     var nom : String
     var portion : Portion
-    var calories : Int
+    var calories : Double
     var proteines : Double
     var glucides : Double
     var lipides : Double
     
-    init(nom: String, portion: Portion, calories: Int, proteines: Double, glucides: Double, lipides: Double) {
+    init(nom: String, portion: Portion, calories: Double, proteines: Double, glucides: Double, lipides: Double) {
         self.nom = nom
         self.portion = portion
         self.calories = calories

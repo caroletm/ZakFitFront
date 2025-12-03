@@ -12,9 +12,6 @@ struct SignIn : View {
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(UserViewModel.self) var userVM
     
-    @State var isPasswordVisible: Bool = false
-    @State var isPasswordConfirmVisible: Bool = false
-    
     var body: some View {
         
         ZStack {
@@ -36,12 +33,13 @@ struct SignIn : View {
                 
                 TextFieldUsername()
                 TextFieldEmail()
-                TextFieldPassword(isPasswordVisible: $isPasswordVisible)
-                TextFieldPasswordConfirm(isPasswordVisible: $isPasswordConfirmVisible)
+                TextFieldPassword()
+                TextFieldPasswordConfirm()
                 
                 BoutonOrange(text: "S'inscrire", width: 280, height: 47) {
-                    authVM.isAuthenticated = true
-                    navigationVM.path.append(AppRoute.profilOnboarding)
+                    Task {
+                        await authVM.signUp()
+                    }
                 }
                 
                 Text("Déjà un compte?")
@@ -60,10 +58,11 @@ struct SignIn : View {
 }
 
 #Preview {
+    let userVM = UserViewModel()
     SignIn()
-        .environment(AuthViewModel())
+        .environment(AuthViewModel(userVM: userVM))
         .environment(NavigationViewModel())
-        .environment(UserViewModel())
+        .environment(userVM)
 }
 
 

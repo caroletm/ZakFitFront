@@ -33,7 +33,8 @@ struct TextFieldEmail: View {
 }
 
 #Preview {
+    let userVM = UserViewModel()
     TextFieldEmail()
-        .environment(AuthViewModel())
-        .environment(UserViewModel())
+        .environment(AuthViewModel(userVM: userVM))
+        .environment(userVM)
 }

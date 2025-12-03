@@ -5,7 +5,7 @@
 //  Created by caroletm on 21/11/2025.
 //
 
-enum UserPreferences: String, CaseIterable {
+enum UserPreferences: String, CaseIterable, Codable {
     case parDefault
     case vegetarian
     case vegan

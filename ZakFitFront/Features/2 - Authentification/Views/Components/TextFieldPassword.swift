@@ -9,32 +9,31 @@ import SwiftUI
 
 struct TextFieldPassword: View {
     @Environment(AuthViewModel.self) var authVM
-    
-    @Binding var isPasswordVisible: Bool
+    @Environment(UserViewModel.self) var userVM
     
     var body: some View {
         
-        @Bindable var authVM = authVM
+        @Bindable var userVM = userVM
         
         HStack {
             if authVM.isPasswordVisible {
-                TextField("Mot de passe", text: $authVM.motDePasse)
+                TextField("Mot de passe", text: $userVM.motDePasse)
                     .font(.system(size: 14))
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                 
             } else {
-                SecureField("Mot de passe", text: $authVM.motDePasse)
+                SecureField("Mot de passe", text: $userVM.motDePasse)
                     .font(.system(size: 14))
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
             }
             
             Button {
-                isPasswordVisible.toggle()
+                authVM.isPasswordVisible.toggle()
             }label: {
-                Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
-                    .foregroundColor(isPasswordVisible ? .black : .greyLight100)
+                Image(systemName: authVM.isPasswordVisible ? "eye.slash" : "eye")
+                    .foregroundColor(authVM.isPasswordVisible ? .black : .greyLight100)
             }
         }
         .padding(.horizontal, 20)
@@ -50,8 +49,11 @@ struct TextFieldPassword: View {
 }
 
 #Preview {
-    TextFieldPassword(isPasswordVisible: .constant(false))
-        .environment(AuthViewModel())
+    let userVM = UserViewModel()
+    TextFieldPassword()
+        .environment(userVM)
+        .environment(AuthViewModel(userVM: userVM))
+    
 }
 
 

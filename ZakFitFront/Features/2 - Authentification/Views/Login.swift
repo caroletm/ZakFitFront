@@ -13,8 +13,6 @@ struct Login : View {
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(UserViewModel.self) var userVM
     
-    @State var isPasswordVisible: Bool = false
-    
     var body: some View {
         
         ZStack {
@@ -26,6 +24,7 @@ struct Login : View {
             
             VStack {
                 Image(.logoZakFit)
+                    .padding()
                 
                 if let errorMessage = authVM.errorMessage {
                     Text(errorMessage)
@@ -34,11 +33,11 @@ struct Login : View {
                         .foregroundColor(.red)
                 }
                 
-                TextFieldUsername()
+                TextFieldEmail()
                 Spacer()
                     .frame(height : 15)
                 
-                TextFieldPassword(isPasswordVisible: $isPasswordVisible)
+                TextFieldPassword()
                 
                 HStack {
                     HStack {
@@ -58,12 +57,12 @@ struct Login : View {
                     }.padding()
                     
                     BoutonSouligne(text: "Mot de passe oublié?", color: .black, fontSize: 14, fontWeight: .regular) {
-                        //
+                       //
                     }
                 }
                 BoutonOrange(text: "Se connecter", width: 280, height: 47) {
-                    authVM.isAuthenticated = true
-                    navigationVM.path = NavigationPath()
+                    
+                    Task { await authVM.signIn()}
                 }
                 
                 Text("Vous n'avez pas de compte?")
@@ -78,14 +77,19 @@ struct Login : View {
                 }
             }
         }
+        .onAppear {
+            // Clear les erreurs quand on arrive sur la page
+            authVM.clearError()
+        }
     }
 }
 
 #Preview {
+    let userVM = UserViewModel()
     Login()
-        .environment(AuthViewModel())
+        .environment(AuthViewModel(userVM: userVM))
         .environment(NavigationViewModel())
-        .environment(UserViewModel())
+        .environment(userVM)
 }
 
 
