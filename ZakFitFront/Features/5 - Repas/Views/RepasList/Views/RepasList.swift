@@ -58,6 +58,14 @@ struct RepasList : View {
                         .font(.system(size: 24, weight: .bold))
                 }
             }.navigationBarTitleDisplayMode(.inline)
+            
+                .onAppear {
+                    Task {
+                        await repasVM.fetchAliments()
+                        await repasVM.fetchConsos()
+                        await repasVM.fetchRepas()
+                    }
+                }
         }
     }
 }

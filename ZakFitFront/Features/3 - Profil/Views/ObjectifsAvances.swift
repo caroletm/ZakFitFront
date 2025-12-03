@@ -45,8 +45,12 @@ struct ObjectifsAvances: View {
                             .frame(width: 60, height: 40)
                             .cornerRadius(10)
                             .onChange(of: proteinesString) {
-                                proteinesString = proteinesString.filter { $0.isNumber }
-                                objectifVM.proteines = Double(proteinesString) ?? 0
+                               proteinesString = proteinesString.filter { $0.isNumber }
+                                if proteinesString.isEmpty {
+                                    objectifVM.proteines = nil
+                                } else {
+                                    objectifVM.proteines = Double(proteinesString)
+                                }
                             }
                     }.padding(.bottom,10)
                     
@@ -68,7 +72,11 @@ struct ObjectifsAvances: View {
                             .cornerRadius(10)
                             .onChange(of: glucidesString) {
                                 glucidesString = glucidesString.filter { $0.isNumber }
-                                objectifVM.glucides = Double(glucidesString) ?? 0
+                                if glucidesString.isEmpty {
+                                    objectifVM.glucides = nil
+                                } else {
+                                    objectifVM.glucides = Double(glucidesString)
+                                }
                             }
                     }.padding(.bottom,10)
                     
@@ -90,7 +98,11 @@ struct ObjectifsAvances: View {
                             .cornerRadius(10)
                             .onChange(of: lipidesString) {
                                 lipidesString = lipidesString.filter { $0.isNumber }
-                                objectifVM.lipides = Double(lipidesString) ?? 0
+                                if lipidesString.isEmpty {
+                                    objectifVM.lipides = nil
+                                } else {
+                                    objectifVM.lipides = Double(lipidesString)
+                                }
                             }
                     }.padding(.bottom,10)
                 }

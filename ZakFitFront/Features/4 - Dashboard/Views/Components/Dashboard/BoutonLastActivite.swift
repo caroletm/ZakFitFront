@@ -11,11 +11,11 @@ struct BoutonLastActivite: View {
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(ActiviteViewModel.self) var activiteVM
     
-    var activite : Activite
+    var activite : ActiviteDTO
     
     var body: some View {
         Button {
-            navigationVM.path.append(AppRoute.detailActivite(activite: activite))
+//            navigationVM.path.append(AppRoute.detailActivite(activite: activite))
         } label: {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
@@ -34,7 +34,7 @@ struct BoutonLastActivite: View {
                         .foregroundStyle(.greyDark)
                 
                     HStack {
-                        Image(systemName: "\(activite.typeActivite?.imageName ?? "")")
+                        Image(systemName: "\(activite.typeActivite.imageName)")
                             .font(.system(size: 32))
                             .foregroundStyle(.white)
                         
@@ -59,7 +59,7 @@ struct BoutonLastActivite: View {
                         }
                     }
                     
-                    Text("\(activite.typeActivite?.description ?? "")")
+                    Text("\(activite.typeActivite.description)")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundStyle(.white)
                 }

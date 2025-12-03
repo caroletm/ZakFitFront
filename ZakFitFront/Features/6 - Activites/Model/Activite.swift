@@ -33,4 +33,4 @@ static func == (lhs: Activite, rhs: Activite) -> Bool {
     }
 }
 
-let activite1 = Activite(id: UUID(), typeActivite: .basket, date: Date(), duree: 60, caloriesBrulees: 240)
+let activite1 = ActiviteDTO(id: UUID(), typeActivite: .basket, date: Date(), duree: 60, caloriesBrulees: 240)

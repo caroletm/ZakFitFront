@@ -29,7 +29,7 @@ struct Carrousel: View {
     func slideView(for slide: ObjectifSlide) -> some View {
         switch slide {
         case .calories:
-            CaloriesDuJour(consumed: repasVM.totalCaloriesJour, goal: objectifVM.caloriesCiblesCalculees())
+            CaloriesDuJour(consumed: repasVM.totalCaloriesJour, goal: objectifVM.caloriesParJour ?? objectifVM.caloriesCiblesCalculees())
         case .macros:
             MacrosDuJour(proteines: repasVM.macrosJour.proteines, glucides: repasVM.macrosJour.glucides, lipides: repasVM.macrosJour.lipides)
         case .reco:

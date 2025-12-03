@@ -40,4 +40,20 @@ class UserViewModel {
         formatter.dateFormat = "dd/MM/yyyy"
         return formatter.string(from: date)
     }
+    
+    
+    //MARK: - Profil onboarding
+    
+    func update(from dto: UserDTO) {
+        self.image = dto.image
+        self.nom = dto.nom
+        self.prenom = dto.prenom
+        self.taille = dto.taille
+        self.poids = dto.poids
+        self.sexe = dto.sexe
+        self.dateNaissance = dto.dateNaissance
+        self.preference = dto.foodPreferences
+        self.activityLevel = dto.activityLevel
+    }
+    
 }

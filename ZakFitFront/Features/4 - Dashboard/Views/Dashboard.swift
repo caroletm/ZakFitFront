@@ -87,9 +87,9 @@ struct Dashboard : View {
                                 .foregroundStyle(Color.greyLight200)
                                 .italic()
                                 .padding(EdgeInsets(top: 40, leading: 20, bottom: 40, trailing: 0))
-                                
+                            
                         }
-                       
+                        
                         
                         Text("Dernière activité")
                             .font(.system(size: 20, weight: .semibold))
@@ -104,6 +104,16 @@ struct Dashboard : View {
                                 .padding(EdgeInsets(top: 40, leading: 20, bottom: 40, trailing: 0))
                         }
                     }
+                }
+            }
+            .onAppear() {
+                Task {
+                    await objectifVM.fetchAllObjectifs()
+                    await repasVM.fetchAliments()
+                    await repasVM.fetchConsos()
+                    await repasVM.fetchRepas()
+                    await activiteVM.fetchActivites()
+                    
                 }
             }
         }

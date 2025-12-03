@@ -13,9 +13,9 @@ class Repas : Identifiable, Hashable {
     var typeRepas : TypeRepas
     var date : Date
     var calories : Double
-    var consos : [Conso] = []
+    var consos : [ConsoDTO] = []
     
-    init(id: UUID, typeRepas: TypeRepas, date: Date, calories: Double, consos: [Conso]) {
+    init(id: UUID, typeRepas: TypeRepas, date: Date, calories: Double, consos: [ConsoDTO]) {
         self.id = id
         self.typeRepas = typeRepas
         self.date = date
@@ -33,4 +33,4 @@ static func == (lhs: Repas, rhs: Repas) -> Bool {
     }
 }
 
-let repas1 : Repas = Repas(id: UUID(), typeRepas: .dejeuner, date: Date(), calories: 1000, consos: [conso1, conso1, conso1])
+let repas1 : RepasDTO = RepasDTO(id: UUID(), typeRepas: .dejeuner, date: Date(), calories: 1000, consos: [conso1, conso1, conso1])

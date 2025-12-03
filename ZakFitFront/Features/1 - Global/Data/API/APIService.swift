@@ -102,7 +102,7 @@ final class APIService {
         if let token = token {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
-        request.httpBody = try JSONEncoder().encode(body)
+        request.httpBody = try JSONEncoder.iso8601Encoder.encode(body)
         
         let (data, response) = try await URLSession.shared.data(for: request)
         

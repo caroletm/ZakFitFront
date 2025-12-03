@@ -5,7 +5,7 @@
 //  Created by caroletm on 27/11/2025.
 //
 
-enum Portion: String, CaseIterable {
+enum Portion: String, CaseIterable, Codable, Hashable {
     
     case parDefault
     case unite

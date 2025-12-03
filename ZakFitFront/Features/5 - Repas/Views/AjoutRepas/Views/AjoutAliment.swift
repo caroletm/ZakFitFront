@@ -178,9 +178,16 @@ struct AjoutAliment: View {
                         
                         BoutonOrange(text: "Valider", width: 105, height: 40) {
                             if repasVM.isValidAddConso() {
-                                repasVM.AddAlimentConsommé()
-                                repasVM.resetAlimentPickers()
+                                Task {
+                                    await repasVM.AddAlimentConsommé()
+                                }
+                                
                                 showAjouterModal.toggle()
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                         repasVM.resetAlimentPickers()
+                                     }
+                                
                             }else {
                                 print("FAIL /\n selectedAliment: \(repasVM.selectedAliment ?? .parDefault)\nnomAlimentACreer: \(repasVM.nomAlimentACreer)\nqteAliment: \(repasVM.qteAliment ?? 999)\nselectedPortion: \(repasVM.selectedPortion ?? .kilo)\ncaloriesTotales: \(repasVM.calculerCaloriesTotales())")
                             }
@@ -192,9 +199,14 @@ struct AjoutAliment: View {
                         BoutonOrange(text: "Créer l'aliment", width: 155, height: 40) {
                             
                             if repasVM.isValidCreateConso() {
-                                repasVM.AddAlimentConsommé()
-                                repasVM.resetAlimentPickers()
+                                Task {
+                                    await repasVM.AddAlimentConsommé()
+                                }
                                 showAjouterModal.toggle()
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                         repasVM.resetAlimentPickers()
+                                     }
                             }else{
                                 print("FAIL /\n selectedAliment: \(repasVM.selectedAliment ?? .parDefault)\nnomAlimentACreer: \(repasVM.nomAlimentACreer)\nqteAliment: \(repasVM.qteAliment ?? 999)\nselectedPortion: \(repasVM.selectedPortion ?? .kilo)\ncaloriesTotales: \(repasVM.calculerCaloriesTotales())")
                             }
@@ -213,6 +225,13 @@ struct AjoutAliment: View {
             .sheet(isPresented: $showPortionPicker) {
                 PortionPicker(showPortionPicker: $showPortionPicker, selectedPortion: $repasVM.selectedPortion)
                     .presentationDetents([.fraction(0.3)])
+            }
+            .onAppear {
+                Task {
+                    await repasVM.fetchRepas()
+                    await repasVM.fetchConsos()
+                    await repasVM.fetchAliments()
+                }
             }
         }
     }

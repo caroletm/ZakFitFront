@@ -21,8 +21,8 @@ enum AppRoute : Hashable {
     case historique
     case ajoutRepas
     case ajoutActivite
-    case detailRepas (repas : Repas)
-    case detailActivite (activite : Activite)
+    case detailRepas (repas : RepasDTO)
+    case detailActivite (activite : ActiviteDTO)
     case repasFiltres
     case activiteFiltres
 }

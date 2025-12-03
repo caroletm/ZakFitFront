@@ -10,7 +10,7 @@ import SwiftUI
 struct DetailActivite: View {
     @Environment(NavigationViewModel.self) var navigationVM
     
-    var activite: Activite
+    var activite: ActiviteDTO
     
     var body: some View {
         Text("DetailActivite")

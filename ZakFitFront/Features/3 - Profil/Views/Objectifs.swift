@@ -80,7 +80,7 @@ struct Objectifs : View {
                                     .font(.caption)
                             }
                             Spacer()
-                            TextField("\(String(format: "%.0f",objectifVM.caloriesCiblesCalculees()))", text: $caloriesParJourString)
+                            TextField("\(String(format: "%.0f", objectifVM.caloriesCiblesCalculees()))", text: $caloriesParJourString)
                                 .keyboardType(.numberPad)
                                 .padding(8)
                                 .font(.system(size: 16, weight: .bold))
@@ -102,7 +102,7 @@ struct Objectifs : View {
                                     .font(.caption)
                             }
                             Spacer()
-                            TextField("\(String(format: "%.0f",objectifVM.caloriesCiblesBruleesCalculees()))", text: $caloriesBruleesParJourString)
+                            TextField("\(String(format: "%.0f", objectifVM.caloriesCiblesBruleesCalculees()))", text: $caloriesBruleesParJourString)
                                 .keyboardType(.numberPad)
                                 .padding(8)
                                 .font(.system(size: 16, weight: .bold))
@@ -150,7 +150,7 @@ struct Objectifs : View {
                                     .font(.caption)
                             }
                             Spacer()
-                            TextField("30", text: $dureeActiviteString)
+                            TextField("\(objectifVM.dureeActivite ?? 30)", text: $dureeActiviteString)
                                 .keyboardType(.numberPad)
                                 .padding(8)
                                 .font(.system(size: 16, weight: .bold))
@@ -168,7 +168,7 @@ struct Objectifs : View {
                         HStack {
                             Text("Nombre d'entrainements hebdomadaires: ")
                             Spacer()
-                            TextField("5", text: $nbEntrainementsHebdoString)
+                            TextField("\(objectifVM.nbEntrainementsHebdo ?? 5)", text: $nbEntrainementsHebdoString)
                                 .keyboardType(.numberPad)
                                 .padding(8)
                                 .font(.system(size: 16, weight: .bold))
@@ -211,8 +211,9 @@ struct Objectifs : View {
                     HStack {
                         Spacer()
                         BoutonOrange(text: "Valider", width: 115, height: 50) {
-                            objectifVM.createObjectifRepas()
-                            objectifVM.createObjectifActivite()
+//                            Task {
+//                                await objectifVM.createObjectif()
+//                            }
                             navigationVM.path = NavigationPath()
                         }.padding()
                         
@@ -232,6 +233,11 @@ struct Objectifs : View {
                 .sheet(isPresented: $objectifVM.showPicker) {
                     DureePicker(showPicker: $objectifVM.showPicker)
                         .presentationDetents([.fraction(0.3)])
+                }
+            }
+            .onAppear() {
+                Task {
+                    await objectifVM.fetchAllObjectifs()
                 }
             }
         }

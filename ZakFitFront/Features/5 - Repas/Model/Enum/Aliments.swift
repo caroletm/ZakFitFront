@@ -5,7 +5,7 @@
 //  Created by caroletm on 27/11/2025.
 //
 
-enum Aliments: String, CaseIterable {
+enum Aliments: String, CaseIterable, Codable, Hashable {
     case parDefault
     case pomme
     case banane

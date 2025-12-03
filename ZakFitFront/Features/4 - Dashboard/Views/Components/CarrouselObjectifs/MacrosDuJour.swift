@@ -30,13 +30,13 @@ struct MacrosDuJour: View {
     ]
     
     var restantsProteines : Double {
-        return max(objectifVM.proteinesCiblesCalculees() - proteines, 0)
+        return max(objectifVM.proteines ?? objectifVM.proteinesCiblesCalculees() - proteines, 0)
     }
     var restantsGlucides : Double {
-        return max(objectifVM.glucidesCiblesCalculees() - glucides, 0)
+        return max(objectifVM.glucides ?? objectifVM.glucidesCiblesCalculees() - glucides, 0)
     }
     var restantsLipides : Double {
-        return max(objectifVM.lipidesCiblesCalculees() - lipides, 0)
+        return max(objectifVM.lipides ?? objectifVM.lipidesCiblesCalculees() - lipides, 0)
     }
     
     var body: some View {

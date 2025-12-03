@@ -13,6 +13,8 @@ struct ProfilOnboarding: View {
     @Environment(ObjectifViewModel.self) var objectifVM
     @Environment(AuthViewModel.self) var authVM
     
+    @State var showAlert: Bool = false
+    
     var body: some View {
         
         @Bindable var userVM = userVM
@@ -169,6 +171,9 @@ struct ProfilOnboarding: View {
                                 .font(.system(size: 16, weight: .bold))
                                 .foregroundStyle(.orangeLight300)
                             BoutonSouligne (text: "Renseigner mes objectifs", color: .black, fontSize: 16, fontWeight: .bold) {
+                                Task {
+                                    await authVM.updateProfile()
+                                }
                                 navigationVM.path.append(AppRoute.objectifs)
                             }
                             .padding(.vertical,5)
@@ -177,9 +182,16 @@ struct ProfilOnboarding: View {
                         .padding([.horizontal, .top], 10)
                         
                         BoutonOrange(text: "Valider", width: 115, height: 50) {
-                            Task {
-                                await authVM.saveProfileOnboarding()
-                            }
+                            
+                            if authVM.isValidProfile && objectifVM.isValidObjectif {
+                                Task {
+                                    await authVM.updateProfile()
+                                    authVM.isAuthenticated = true
+                                    authVM.isFirstConnexion = false
+                                }
+                           }else{
+                               showAlert = true
+                           }
                 
                         }.padding(5)
                         BoutonSouligne(text: "Annuler", color: .black, fontSize: 16, fontWeight: .bold) {
@@ -190,8 +202,22 @@ struct ProfilOnboarding: View {
                 }
                 .navigationBarTitleDisplayMode(.inline)
             }
+            .onAppear() {
+                Task {
+                    await authVM.fetchDataUser()
+                    if let currentUser = authVM.currentUser {
+                           userVM.update(from: currentUser)
+                       }
+                }
         }
+            .alert("Champs manquants", isPresented: $showAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("Vous n'avez pas rempli tous les champs!")
+            }
         .navigationBarBackButtonHidden(true)
+   
+        }
     }
 }
 

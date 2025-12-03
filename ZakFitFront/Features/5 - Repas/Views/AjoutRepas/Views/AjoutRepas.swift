@@ -100,8 +100,9 @@ struct AjoutRepas: View {
                 
                 BoutonOrange(text: "Valider", width: 115, height: 50) {
                     if repasVM.isValidCreateRepas() {
-                        repasVM.createRepas()
-                        repasVM.resetRepasPicker()
+                        Task {
+                            await repasVM.createRepas()
+                        }
                         
                         switch origin {
                         case .dashboard:
@@ -110,11 +111,13 @@ struct AjoutRepas: View {
                             navigationVM.path.removeLast()
                         }
                         
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            repasVM.resetRepasPicker()
+                        }
                     }
                 }.padding(.bottom,5)
                 
                 BoutonSouligne(text: "Annuler", color: Color.black, fontSize: 16, fontWeight: .bold) {
-                    repasVM.resetRepasPicker()
                    
                     switch origin {
                           case .dashboard:
@@ -122,6 +125,9 @@ struct AjoutRepas: View {
                           case .repasList:
                               navigationVM.path.removeLast()
                           }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        repasVM.resetRepasPicker()
+                    }
                 }
             }
             
@@ -131,6 +137,13 @@ struct AjoutRepas: View {
                         .font(.system(size: 24, weight: .bold))
                 }
             }.navigationBarTitleDisplayMode(.inline)
+                .onAppear {
+                    Task {
+                        await repasVM.fetchRepas()
+                        await repasVM.fetchConsos()
+                        await repasVM.fetchAliments()
+                    }
+                }
         }
         .sheet(isPresented: $showScanModal) {
             ScanModal()
