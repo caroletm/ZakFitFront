@@ -17,7 +17,7 @@ struct UserCreateDTO: Codable {
     var prenom: String
     var taille: Int
     var poids: Double
-    var dateNaissance: String
+    var dateNaissance: Date
     var sexe: UserGender
     var foodPreferences: UserPreferences
     var activityLevel: UserActivityLevel
@@ -60,7 +60,7 @@ struct UserUpdateDTO: Codable {
     var taille : Int?
     var poids : Double?
     var sexe : UserGender?
-    var dateNaissance : String?
+    var dateNaissance : Date?
     var foodPreferences : UserPreferences?
     var activityLevel : UserActivityLevel?
 }

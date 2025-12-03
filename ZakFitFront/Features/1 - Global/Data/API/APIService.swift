@@ -34,7 +34,7 @@ final class APIService {
               (200...299).contains(httpResponse.statusCode) else {
             throw URLError(.badServerResponse)
         }
-        return try JSONDecoder.timestampDecoder.decode(T.self, from: data)
+        return try JSONDecoder.iso8601Decoder.decode(T.self, from: data)
     }
     
     //METHODE POST
@@ -49,7 +49,7 @@ final class APIService {
         if let token = token {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
-        request.httpBody = try JSONEncoder.timestampEncoder.encode(body)
+        request.httpBody = try JSONEncoder.iso8601Encoder.encode(body)
         
         // ⚡ Appel réseau
           let (data, response) = try await URLSession.shared.data(for: request)
@@ -66,7 +66,7 @@ final class APIService {
         }
         switch httpResponse.statusCode {
         case 200..<300:
-            return try JSONDecoder.timestampDecoder.decode(U.self, from: data)
+            return try JSONDecoder.iso8601Decoder.decode(U.self, from: data)
         case 401 :
             throw URLError(.userAuthenticationRequired)
         default:
@@ -110,23 +110,38 @@ final class APIService {
               (200...299).contains(httpResponse.statusCode) else {
             throw URLError(.badServerResponse)
         }
-        return try JSONDecoder.timestampDecoder.decode(U.self, from: data)
+        return try JSONDecoder.iso8601Decoder.decode(U.self, from: data)
     }
 }
 
-extension JSONDecoder {
-    static var timestampDecoder: JSONDecoder {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
-        return decoder
-    }
-}
+//extension JSONDecoder {
+//    static var timestampDecoder: JSONDecoder {
+//        let decoder = JSONDecoder()
+//        decoder.dateDecodingStrategy = .secondsSince1970
+//        return decoder
+//    }
+//}
+//
+//extension JSONEncoder {
+//    static var timestampEncoder: JSONEncoder {
+//        let encoder = JSONEncoder()
+//        encoder.dateEncodingStrategy = .secondsSince1970
+//        return encoder
+//    }
+//}
+
+//extension JSONDecoder {
+//    static var iso8601Decoder: JSONDecoder {
+//        let decoder = JSONDecoder()
+//        decoder.dateDecodingStrategy = .iso8601
+//        return decoder
+//    }
+//}
 
 extension JSONEncoder {
-    static var timestampEncoder: JSONEncoder {
+    static var iso8601Encoder: JSONEncoder {
         let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .secondsSince1970
+        encoder.dateEncodingStrategy = .iso8601
         return encoder
     }
 }
-

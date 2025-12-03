@@ -20,7 +20,6 @@ class AuthViewModel {
     }
     
     // MARK: - États d'affichage
-    var showLanding: Bool = true
     var showSignUp: Bool = false
     var showLogin: Bool = true
     var showProfilOnboarding: Bool = false
@@ -103,7 +102,6 @@ class AuthViewModel {
         do {
             currentUser = try await userService.getProfile(token: token)
             isAuthenticated = true
-            showLanding = false
             showLogin = false
             showSignUp = false
             print("Profil chargé: \(currentUser?.nom ?? "Unknown")")
@@ -129,21 +127,21 @@ class AuthViewModel {
         errorMessage = nil
         
         do {
-            // 1️⃣ Login et récupération du token
+            // Login et récupération du token
             let token = try await userService.login(email: userVM.email, motDePasse: userVM.motDePasse)
             authToken = token
             UserDefaults.standard.set(token, forKey: tokenKey)
             print("Token reçu: \(token)")
             
-            // 2️⃣ Charger le profil utilisateur
+            // Charger le profil utilisateur
             let profile = try await userService.getProfile(token: token)
             currentUser = profile
             print("Profil chargé: \(profile)")
             
-            // 3️⃣ Vérifier première connexion
+            // Vérifier première connexion
             checkFirstConnection()
             
-            // 4️⃣ Réinitialiser le mot de passe local
+            // Réinitialiser le mot de passe local
             userVM.motDePasse = ""
             isAuthenticated = true
             
@@ -161,8 +159,8 @@ class AuthViewModel {
     }
     
     // MARK: - Inscription utilisateur
-    /// Crée un nouveau compte utilisateur avec validation des champs.
-    /// Redirige vers l'écran de connexion en cas de succès.
+    // Crée un nouveau compte utilisateur avec validation des champs.
+    // Redirige vers l'écran de connexion en cas de succès.
     
     func signUp() async {
         guard !userVM.email.isEmpty, !userVM.motDePasse.isEmpty, !userVM.nomUtilisateur.isEmpty else {
@@ -175,6 +173,11 @@ class AuthViewModel {
         }
         guard userVM.motDePasse.count >= 8 else {
             errorMessage = "Le mot de passe doit contenir au moins 8 caractères"
+            return
+        }
+        
+        guard userVM.motDePasse == userVM.motDePasseConfirm, !userVM.motDePasseConfirm.isEmpty else {
+            errorMessage = "Les mots de passe ne sont pas identiques"
             return
         }
         
@@ -240,7 +243,6 @@ class AuthViewModel {
         errorMessage = nil
         
         // Retour à la landing page
-        showLanding = true
         showLogin = true
         showSignUp = false
         

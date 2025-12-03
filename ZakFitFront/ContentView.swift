@@ -35,7 +35,6 @@ struct ContentView: View {
                           } else {
                               TabBarView()
                           }
-                          
                       } else {
                           if authVM.showLogin {
                               Login()

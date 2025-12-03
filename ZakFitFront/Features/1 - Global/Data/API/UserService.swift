@@ -16,10 +16,7 @@ final class UserService {
     // Inscription
     func signUp(image : String, username: String, email: String, motDePasse: String, nom : String, prenom: String, taille : Int, poids : Double, dateNaissance : Date, sexe: UserGender, foodPreferences : UserPreferences, activityLevel: UserActivityLevel ) async throws -> UserDTO {
         
-        let formatter = ISO8601DateFormatter()
-        let dateString = formatter.string(from: dateNaissance)
-        
-        let body = UserCreateDTO(image: image, username: username, email: email, motDePasse: motDePasse, nom: nom, prenom: prenom, taille: taille, poids: poids, dateNaissance: dateString, sexe: sexe, foodPreferences: foodPreferences, activityLevel: activityLevel)
+        let body = UserCreateDTO(image: image, username: username, email: email, motDePasse: motDePasse, nom: nom, prenom: prenom, taille: taille, poids: poids, dateNaissance: dateNaissance, sexe: sexe, foodPreferences: foodPreferences, activityLevel: activityLevel)
         return try await api.post("/users", body: body)
     }
     
@@ -51,7 +48,6 @@ final class UserService {
     }
     
     //charger les données utilisateur
-    let formatter = ISO8601DateFormatter()
     func updateDataUser(
         image : String?,
         nom : String?,
@@ -72,7 +68,7 @@ final class UserService {
             taille: taille,
             poids: poids,
             sexe: sexe,
-            dateNaissance: dateNaissance != nil ? formatter.string(from: dateNaissance!) : nil,
+            dateNaissance: dateNaissance,
             foodPreferences: foodPreferences,
             activityLevel: activityLevel
            )
