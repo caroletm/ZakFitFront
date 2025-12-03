@@ -21,7 +21,7 @@ class ActiviteViewModel {
     
     //MARK: - Activités Data
     
-    var activiteData: [Activite] = [activite1]
+    var activiteData: [ActiviteDTO] = []
     
     //MARK: - Ajouter Activite
     
@@ -70,7 +70,7 @@ class ActiviteViewModel {
     
     //MARK: - Calculer minutes d'activites par jour (barres dashboard)
     
-    var activitesDuJour: [Activite] {
+    var activitesDuJour: [ActiviteDTO] {
         activiteData.filter { activite in
             Calendar.current.isDate(activite.date, inSameDayAs: Date())
         }
@@ -86,7 +86,7 @@ class ActiviteViewModel {
     
     var selectedDate : Date = Date()
     
-    var activitesDuJourSelectionne: [Activite] {
+    var activitesDuJourSelectionne: [ActiviteDTO] {
         activiteData.filter { activite in
             Calendar.current.isDate(activite.date, inSameDayAs: selectedDate)
         }
@@ -118,7 +118,7 @@ class ActiviteViewModel {
         selectedDate = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: selectedDate)!
     }
 
-    var activitesSemaineSelectionne: [Activite] {
+    var activitesSemaineSelectionne: [ActiviteDTO] {
         activiteData.filter { activite in
             Calendar.current.isDate(activite.date, equalTo: selectedDate, toGranularity: .weekOfYear)
         }
@@ -140,14 +140,22 @@ class ActiviteViewModel {
     
     //MARK: - Create Activite
     
-    func createActivite() {
-        let newActivite = Activite(
+    func createActivite() async {
+        let newActivite = ActiviteDTO(
             id: UUID(),
-            typeActivite: selectedActivite ?? .none,
+            typeActivite: selectedActivite ?? .courseAPied,
             date: dateActivite,
             duree: selectedDuree ?? 0,
             caloriesBrulees: caloriesBruleesCalculees())
         activiteData.append(newActivite)
+        
+        do {
+            print("BEFORE await:", selectedActivite as Any, selectedDuree as Any)
+            _ = try await service.createActivite(newActivite)
+            print("BEFORE await:", selectedActivite as Any, selectedDuree as Any)
+        }catch {
+            print("erreur lors de la création de l'activite, error : \(error)")
+        }
     }
     
     func isValidCreateActivite() -> Bool {
@@ -170,7 +178,7 @@ class ActiviteViewModel {
     var minDuree : Int = 0
     
     // Résultat filtré
-    var activiteFiltres: [Activite] {
+    var activiteFiltres: [ActiviteDTO] {
         
         let filtres = activiteData.filter { activite in
 
@@ -216,7 +224,7 @@ class ActiviteViewModel {
     
     var sortOrder : ActiviteSortOrder = .recentFirst
     
-    var activitesTriees: [Activite] {
+    var activitesTriees: [ActiviteDTO] {
         switch sortOrder {
         case .recentFirst:
             return activiteData.sorted { $0.date > $1.date }
@@ -252,5 +260,21 @@ class ActiviteViewModel {
             return "il y a \(daysAgo) jour\(daysAgo > 1 ? "s" : "")"
         }
     }
+    
+    
+    // MARK: - Call API : Données Back / Front
+    
+    private let service = ActiviteService()
+    
+    //Recupérer les activites
+    func fetchActivites() async {
+        do {
+            activiteData = try await service.getAllActivites()
+            print("Activites récupérées : \(activiteData)")
+        } catch {
+            print("Erreur dans le chargement des activites: \(error)")
+        }
+    }
+    
     
 }

@@ -61,31 +61,70 @@ class AuthViewModel {
         }
     }
     
-    //charger les infos du user
-    func saveProfileOnboarding() async {
-        guard let token = authToken else { return }
-
-        do {
-            let updatedUser = try await userService.updateDataUser(
-                image : userVM.image,
-                nom : userVM.nom,
-                prenom : userVM.prenom,
-                taille: userVM.taille,
-                poids: userVM.poids,
-                sexe: userVM.sexe,
-                dateNaissance: userVM.dateNaissance,
-                foodPreferences: userVM.preference,
-                activityLevel: userVM.activityLevel,
-                token: token
-            )
-            
-            currentUser = updatedUser
-            showProfilOnboarding = false
-            isFirstConnexion = false
-        } catch {
-            errorMessage = "Impossible de sauvegarder le profil"
-            print("Erreur updateHealthUser: \(error)")
+    //Mettre a jour le profil
+    func updateProfile() async {
+        guard let user = currentUser else {
+            print("ID utilisateur introuvable")
+            return
         }
+        
+        guard let userId = user.id else {
+            print(" Pas d'ID, impossible de PATCH")
+            return
+        }
+        
+        let dto = UserUpdateDTO(
+            image: userVM.image,
+            nom: userVM.nom,
+            prenom: userVM.prenom,
+            taille: userVM.taille,
+            poids: userVM.poids,
+            sexe: userVM.sexe,
+            dateNaissance: userVM.dateNaissance,
+            foodPreferences: userVM.preference,
+            activityLevel: userVM.activityLevel
+            )
+        
+        do {
+            let updatedUser = try await userService.updateDataUser(userId, dto: dto)
+            // mettre à jour le user local
+            self.currentUser = updatedUser
+            print(" User mis à jour : \(updatedUser)")
+        } catch {
+            print("Erreur update profil :", error)
+        }
+    }
+    
+    func fetchDataUser() async {
+        
+        guard let user = currentUser else {
+            print("ID utilisateur introuvable")
+            return
+        }
+        
+        guard let userId = user.id else {
+            print(" Pas d'ID, impossible de GET")
+            return
+        }
+        
+        do {
+            let user = try await userService.getUserById(userId)
+            print("Utilisateur fetché :", user)
+            self.currentUser = user
+        } catch {
+            print("Erreur de chargement des données utilisateur : \(error)")
+            print("Erreur Utilisateur fetché :", user)
+        }
+    }
+    
+    //Condition pour aller au dashboard
+    var isValidProfile : Bool {
+        return !userVM.nom.isEmpty &&
+        !userVM.prenom.isEmpty &&
+        userVM.sexe != .other &&
+        userVM.taille ?? 0 > 0 &&
+        userVM.poids ?? 0 > 0 &&
+        userVM.activityLevel != .parDefault
     }
     
     // MARK: - Chargement du profil utilisateur

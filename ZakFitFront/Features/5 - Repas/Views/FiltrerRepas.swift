@@ -99,6 +99,13 @@ struct FiltrerRepas: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                Task {
+                    await repasVM.fetchRepas()
+                    await repasVM.fetchConsos()
+                    await repasVM.fetchAliments()
+                }
+            }
         }
     }
 }

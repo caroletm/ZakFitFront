@@ -38,4 +38,4 @@ static func == (lhs: Conso, rhs: Conso) -> Bool {
     }
 }
 
-let conso1 : Conso = Conso(aliment: "Frites", portion: .unite, quantite: 1, calories: 42, proteines: 0.2, glucides: 21, lipides: 0.1)
+let conso1 : ConsoDTO = ConsoDTO(aliment: "Frites", portion: .unite, quantite: 1, calories: 42, proteines: 0.2, glucides: 21, lipides: 0.1)

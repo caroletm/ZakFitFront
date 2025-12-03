@@ -5,7 +5,7 @@
 //  Created by caroletm on 27/11/2025.
 //
 
-enum TypeActivite: String, CaseIterable {
+enum TypeActivite: String, CaseIterable, Codable {
     case courseAPied
     case musculation
     case velo

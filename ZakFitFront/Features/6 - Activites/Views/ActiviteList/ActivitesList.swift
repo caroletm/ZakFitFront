@@ -105,6 +105,11 @@ struct ActivitesList : View {
                         .font(.system(size: 24, weight: .bold))
                 }
             }
+            .onAppear {
+                Task {
+                    await activiteVM.fetchActivites()
+                }
+            }
             .navigationBarTitleDisplayMode(.inline)
         }
     }

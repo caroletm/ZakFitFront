@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct AjoutActivite: View {
+    
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(ActiviteViewModel.self) var activiteVM
     
@@ -142,8 +143,11 @@ struct AjoutActivite: View {
                 BoutonOrange(text: "Valider", width: 115, height: 50) {
                     
                     if activiteVM.isValidCreateActivite() {
-                        activiteVM.createActivite()
-                        activiteVM.resetActivitePicker()
+                        
+                        Task {
+                            await activiteVM.createActivite()
+                        }
+//                        activiteVM.resetActivitePicker()
                         
                         switch origin {
                         case .dashboard:
@@ -151,18 +155,26 @@ struct AjoutActivite: View {
                         case .activiteList:
                             navigationVM.path.removeLast()
                         }
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            activiteVM.resetActivitePicker()
+                        }
                     }
                     
                 }.padding(.bottom,5)
                 
                 BoutonSouligne(text: "Annuler", color: Color.black, fontSize: 16, fontWeight: .bold) {
-                    activiteVM.resetActivitePicker()
+//                    activiteVM.resetActivitePicker()
                     
                     switch origin {
                     case .dashboard:
                         showActiviteModal = false
                     case .activiteList:
                         navigationVM.path.removeLast()
+                    }
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        activiteVM.resetActivitePicker()
                     }
                 }
                 .padding(.bottom, 10)
@@ -174,6 +186,12 @@ struct AjoutActivite: View {
                         .font(.system(size: 24, weight: .bold))
                 }
             }.navigationBarTitleDisplayMode(.inline)
+            
+                .onAppear {
+                    Task {
+                        await activiteVM.fetchActivites()
+                    }
+                }
             
         }.sheet(isPresented: $showPickerMinutes) {
             

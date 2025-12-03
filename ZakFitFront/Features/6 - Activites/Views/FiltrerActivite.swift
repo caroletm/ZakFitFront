@@ -149,6 +149,11 @@ struct FiltrerActivite: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                Task {
+                    await activiteVM.fetchActivites()
+                }
+            }
         }
         .sheet(isPresented: $showPickerMinutes) {
             

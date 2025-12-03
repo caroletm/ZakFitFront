@@ -15,13 +15,24 @@ class ObjectifViewModel {
     
     var userVM : UserViewModel
     
+    private let service = ObjectifService()
+    private let userService = UserService()
+    
+    // MARK: - User actuel
+    var currentUser: UserDTO? = nil
+    
+    // Récupérer le token
+    var authToken: String? {
+        UserDefaults.standard.string(forKey: "authToken")
+    }
+    
     init(userVM : UserViewModel) {
         self.userVM = userVM
     }
     
     //MARK: - Objectifs
     
-    var objectifData : [Objectif] = []
+    var objectifData : [ObjectifDTO] = []
     
     //Objectifs Repas :
     var objectifGlobal : UserObjectifGlobal = .parDefault
@@ -59,9 +70,9 @@ class ObjectifViewModel {
     
     //MARK: - Objectifs de calories
     
-//    La formule de Harris et Benedict est la plus ancienne, et assure une idée claire des dépenses caloriques à 150kcal près.
-//    Femmes : 655 + (9,6 x poids (Kg)) + (1,8 x taille (cm)) – (4,7 x âge)
-//    Hommes : 66 + (13,7 x poids (Kg)) + (5 x taille (cm)) – (6,5 x âge)
+    //    La formule de Harris et Benedict est la plus ancienne, et assure une idée claire des dépenses caloriques à 150kcal près.
+    //    Femmes : 655 + (9,6 x poids (Kg)) + (1,8 x taille (cm)) – (4,7 x âge)
+    //    Hommes : 66 + (13,7 x poids (Kg)) + (5 x taille (cm)) – (6,5 x âge)
     
     func caloriesCiblesCalculees() -> Double {
         guard let poids = userVM.poids,
@@ -90,9 +101,9 @@ class ObjectifViewModel {
         
         let objectifGlobalFactor : Double
         switch objectifGlobal {
-            case .perte:
+        case .perte:
             objectifGlobalFactor = 0.8
-            case .gain:
+        case .gain:
             objectifGlobalFactor = 1.2
         case .maintien:
             objectifGlobalFactor = 1.0
@@ -148,15 +159,15 @@ class ObjectifViewModel {
     var glucides : Double? = nil
     var lipides : Double? = nil
     
-     // 1g lipides = 9 kcal
+    // 1g lipides = 9 kcal
     // 1g glucides = 4 kcal
     // 1g protéines = 4 kcal
-//    L’ANSES (Agence nationale de sécurité sanitaire de l’alimentation, de l’environnement et du travail) considère que la référence nutritionnelle en protéines des adultes en bonne santé (RNP) est de 0,83 g/kg, de 1 g/kg pour les personnes âgées, et de 1,2 g/kg pour les femmes enceintes ou allaitantes.Dans tous les cas donc, nous conseillons plutôt de viser entre 1,2 à 1,6 g/kg/j de protéines (selon votre âge et votre taux de masse grasse) et de monter jusqu’à 2,2 g/kg/j maximum si vous êtes un sportif de force et/ou que vous êtes en restriction calorique prolongée.
-//    L’ANSES recommande une part de lipides de 35 à 40% de l’apport énergétique total journalier5. Pour un adulte qui consomme en moyenne 2.000 kcal par jour, cela représente entre 78 g et 89 g de lipides par jour.
-//    Une estimation plus grossière de nos besoins consisterait à calculer au minimum 0,8 à 1 g de lipides par kg de poids de corps (soit 80 g si pesez 80 kg).
-//    Selon l’ANSES5, la part de glucides peut varier de 40% des apports (par exemple pour les personnes ayant une activité physique faible) à 55% pour les personnes avec une activité physique plus élevée.
-//    Pour une personne consommant en moyenne 2.000 kcal par jour, cela représente environ 200 à 300 g de glucides.
-//    https://www.nutriting.com/conseils/combien-macronutriments
+    //    L’ANSES (Agence nationale de sécurité sanitaire de l’alimentation, de l’environnement et du travail) considère que la référence nutritionnelle en protéines des adultes en bonne santé (RNP) est de 0,83 g/kg, de 1 g/kg pour les personnes âgées, et de 1,2 g/kg pour les femmes enceintes ou allaitantes.Dans tous les cas donc, nous conseillons plutôt de viser entre 1,2 à 1,6 g/kg/j de protéines (selon votre âge et votre taux de masse grasse) et de monter jusqu’à 2,2 g/kg/j maximum si vous êtes un sportif de force et/ou que vous êtes en restriction calorique prolongée.
+    //    L’ANSES recommande une part de lipides de 35 à 40% de l’apport énergétique total journalier5. Pour un adulte qui consomme en moyenne 2.000 kcal par jour, cela représente entre 78 g et 89 g de lipides par jour.
+    //    Une estimation plus grossière de nos besoins consisterait à calculer au minimum 0,8 à 1 g de lipides par kg de poids de corps (soit 80 g si pesez 80 kg).
+    //    Selon l’ANSES5, la part de glucides peut varier de 40% des apports (par exemple pour les personnes ayant une activité physique faible) à 55% pour les personnes avec une activité physique plus élevée.
+    //    Pour une personne consommant en moyenne 2.000 kcal par jour, cela représente environ 200 à 300 g de glucides.
+    //    https://www.nutriting.com/conseils/combien-macronutriments
     
     func lipidesCiblesCalculees() -> Double {
         let caloriesParJour = caloriesCiblesCalculees()
@@ -178,46 +189,81 @@ class ObjectifViewModel {
     
     //MARK: - Objectifs d'activité
     
-//    En France, la recommandation diffusée par le ministère chargé de la santé dans le cadre du Programme national nutrition santé (PNNS), est de pratiquer l’équivalent d’au moins 30 minutes de marche rapide par jour au minimum 5 fois par semaine pour les adultes et l’équivalent d’au moins 60 minutes par jour pour les enfants et adolescents.
-
+    //    En France, la recommandation diffusée par le ministère chargé de la santé dans le cadre du Programme national nutrition santé (PNNS), est de pratiquer l’équivalent d’au moins 30 minutes de marche rapide par jour au minimum 5 fois par semaine pour les adultes et l’équivalent d’au moins 60 minutes par jour pour les enfants et adolescents.
+    
     
     //MARK: - Création de l'objectif
     
-    func createObjectifRepas() {
-        let newObjectif : Objectif = Objectif(
+    func createObjectifRepas() async {
+        let newObjectif : ObjectifDTO = ObjectifDTO(
             id: UUID(),
             objectifGlobal: objectifGlobal,
             dateDebut: Date(),
             dateFin: dateCible() ?? nil,
             typeObjectif: .repas,
-            poidsCible: 0,
+            poidsCible: nil,
             caloriesParJour: caloriesParJour ?? caloriesCiblesCalculees(),
             proteines: proteines ?? proteinesCiblesCalculees(),
             glucides: glucides ?? glucidesCiblesCalculees(),
             lipides: lipides ?? lipidesCiblesCalculees(),
             minsActivité: nil,
             caloriesBruleesParJour: nil,
-            nbEntrainementsHebdo: nil
+            nbEntrainementsHebdo: nil)
+        
+        objectifData.append(newObjectif)
+        
+        do {
+            _ = try await service.createObjectif(newObjectif)
+        }catch{
+            print("erreur dans la creation de l'objectif repas, error : \(error)")
+        }
+    }
+    
+    func createObjectifActivite() async {
+        let newObjectif : ObjectifDTO = ObjectifDTO(
+            id: UUID(),
+            objectifGlobal: objectifGlobal,
+            dateDebut: Date(),
+            dateFin: dateCible() ?? nil,
+            typeObjectif: .activite,
+            poidsCible: nil,
+            caloriesParJour: nil,
+            proteines: nil,
+            glucides: nil,
+            lipides: nil,
+            minsActivité: dureeActivite ?? 30,
+            caloriesBruleesParJour: caloriesBruleesParJour ?? caloriesCiblesBruleesCalculees(),
+            nbEntrainementsHebdo: nbEntrainementsHebdo ?? 5
         )
         objectifData.append(newObjectif)
-    }
         
-        func createObjectifActivite() {
-            let newObjectif : Objectif = Objectif(
-                id: UUID(),
-                objectifGlobal: objectifGlobal,
-                dateDebut: Date(),
-                dateFin: dateCible() ?? nil,
-                typeObjectif: .activite,
-                poidsCible: nil,
-                caloriesParJour: nil,
-                proteines: nil,
-                glucides: nil,
-                lipides: nil,
-                minsActivité: dureeActivite ?? 30,
-                caloriesBruleesParJour: caloriesBruleesParJour ?? caloriesCiblesBruleesCalculees(),
-                nbEntrainementsHebdo: nbEntrainementsHebdo ?? 5
-                )
-            objectifData.append(newObjectif)
+        do {
+            _ = try await service.createObjectif(newObjectif)
+        }catch {
+            print("errur lors de la création de l'objectif activite, error : \(error)")
+        }
+    }
+    
+    var isValidObjectif : Bool {
+        return !objectifData.isEmpty
+    }
+    
+    //MARK: - Call API Back Front
+    
+    func fetchAllObjectifs() async {
+        do {
+            objectifData = try await service.getAllObjectifs()
+            print("objectifs fetches : \(objectifData)")
+        }catch{
+            print ("erreur dans le chargement des objectifs")
+        }
+    }
+    
+    var lastObjectifRepas: ObjectifDTO? {
+        objectifData.last(where: { $0.typeObjectif == .repas })
+    }
+
+    var lastObjectifActivite: ObjectifDTO? {
+        objectifData.last(where: { $0.typeObjectif == .activite })
     }
 }

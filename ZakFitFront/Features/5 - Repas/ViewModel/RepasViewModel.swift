@@ -14,9 +14,9 @@ class RepasViewModel {
     
     //MARK: - Repas Aliments Data
     
-    var repasData : [Repas] = [repas1]
-    var alimentData : [Aliment] = []
-    var consoData : [Conso] = []
+    var repasData : [RepasDTO] = []
+    var alimentData : [AlimentDTO] = []
+    var consoData : [ConsoDTO] = []
     
     //MARK: - Ajouter Repas
     
@@ -164,7 +164,7 @@ class RepasViewModel {
         return totalLipides
     }
     
-    func calculerMacrosTotales(for consos: [Conso]) -> (calories: Double, proteines: Double, glucides: Double, lipides: Double) {
+    func calculerMacrosTotales(for consos: [ConsoDTO]) -> (calories: Double, proteines: Double, glucides: Double, lipides: Double) {
         var totalCalories = 0.0
         var totalProteines = 0.0
         var totalGlucides = 0.0
@@ -189,29 +189,57 @@ class RepasViewModel {
     
     //MARK: - Ajouter aliment consommé
     
-    func AddAlimentConsommé() {
-        let newConso = Conso(
+    func AddAlimentConsommé() async {
+        let newConso = ConsoDTO(
             aliment: selectedAliment?.description ?? "-",
             portion : selectedPortion ?? .parDefault,
             quantite: qteAliment ?? 0,
-            calories: calculerCaloriesTotales(),
+            calories: caloriesParPortion ?? calculerCaloriesTotales(),
             proteines: calculerProteinesTotales(),
             glucides: calculerGlucidesTotales(),
             lipides: calculerLipidesTotales()
         )
         consoData.append(newConso)
+        
+        do {
+            _ = try await consoService.createConso(newConso)
+        }catch {
+            print("erreur lors de la création de la conso, error : \(error)")
+        }
     }
-    func createAlimentConsommé() {
-        let newConso = Conso(
+    
+    func createAlimentConsommé() async {
+        let newConso = ConsoDTO(
             aliment: nomAlimentACreer,
             portion : selectedPortion ?? .parDefault,
             quantite: qteAliment ?? 0,
-            calories: calculerCaloriesTotales(),
+            calories: caloriesParPortion ?? calculerCaloriesTotales(),
             proteines: calculerProteinesTotales(),
             glucides: calculerGlucidesTotales(),
             lipides: calculerLipidesTotales()
         )
         consoData.append(newConso)
+        
+        let newAliment = AlimentDTO(
+            nom : nomAlimentACreer,
+            portion : selectedPortion ?? .parDefault,
+            calories : caloriesParPortion ?? 0,
+            proteines : 0,
+            glucides : 0,
+            lipides : 0
+            )
+        
+        do {
+            _ = try await consoService.createConso(newConso)
+        }catch {
+            print("erreur lors de la création de la conso, error : \(error)")
+        }
+        do {
+            _ = try await alimentService.createAliment(newAliment)
+        }catch {
+            print("erreur lors de la création de l'aliment dans la BDD, error : \(error)")
+        }
+        
     }
     
     func isValidAddConso() -> Bool {
@@ -242,8 +270,8 @@ class RepasViewModel {
     
     //MARK: - Créer un repas
     
-    func createRepas() {
-        let newRepas = Repas(
+    func createRepas() async {
+        let newRepas = RepasDTO(
             id : UUID(),
             typeRepas: selectedRepas ?? .encas,
             date: dateRepas,
@@ -251,6 +279,12 @@ class RepasViewModel {
             consos: consoData
         )
         repasData.append(newRepas)
+        
+        do {
+            _ = try await repasService.createRepas(newRepas)
+        }catch {
+            print("erreur lors de la création du repas, error : \(error)")
+        }
     }
     
     func isValidCreateRepas() -> Bool {
@@ -261,7 +295,7 @@ class RepasViewModel {
     }
     //MARK: - RepasList - Repas du Jour (DayRepas)
     
-    var repasDuJour: [Repas] {
+    var repasDuJour: [RepasDTO] {
         repasData.filter { repas in
             Calendar.current.isDate(repas.date, inSameDayAs: Date())
         }
@@ -277,7 +311,7 @@ class RepasViewModel {
     
     var selectedDate : Date = Date()
     
-    var repasJourSelectionne: [Repas] {
+    var repasJourSelectionne: [RepasDTO] {
         repasData.filter { repas in
             Calendar.current.isDate(repas.date, inSameDayAs: selectedDate)
         }
@@ -309,7 +343,7 @@ class RepasViewModel {
         selectedDate = Calendar.current.date(byAdding: .weekOfYear, value: -1, to: selectedDate)!
     }
     
-    var repasSemaineSelectionne: [Repas] {
+    var repasSemaineSelectionne: [RepasDTO] {
         repasData.filter { repas in
             Calendar.current.isDate(repas.date, equalTo: selectedDate, toGranularity: .weekOfYear)
         }
@@ -337,7 +371,7 @@ class RepasViewModel {
     var filterAliment: String = ""
     
     // Résultat filtré
-    var repasFiltres: [Repas] {
+    var repasFiltres: [RepasDTO] {
         repasData.filter { repas in
             
             // Filtre sur type de repas
@@ -406,6 +440,47 @@ class RepasViewModel {
         } else {
             let daysAgo = timeAgo / day
             return "il y a \(daysAgo) jour\(daysAgo > 1 ? "s" : "")"
+        }
+    }
+    
+    // MARK: - Call API : Données Back / Front
+    
+    //Aliments :
+    private let alimentService = AlimentService()
+    
+    //Recupérer les aliments
+    func fetchAliments() async {
+        do {
+            alimentData = try await alimentService.getAllAliment()
+            print("Aliment récupérés : \(alimentData)")
+        } catch {
+            print("Erreur dans le chargement des aliments: \(error)")
+        }
+    }
+    
+    //Consos :
+    private let consoService = ConsoService()
+    
+    //Recupérer les consos
+    func fetchConsos() async {
+        do {
+            consoData = try await consoService.getAllConsos()
+            print("Consos récupérés : \(consoData)")
+        } catch {
+            print("Erreur dans le chargement des consos: \(error)")
+        }
+    }
+    
+    //Repas :
+    private let repasService = RepasService()
+    
+    //Recupérer les repas
+    func fetchRepas() async {
+        do {
+            repasData = try await repasService.getAllRepas()
+            print("Repas récupérés : \(repasData)")
+        } catch {
+            print("Erreur dans le chargement des repas: \(error)")
         }
     }
     

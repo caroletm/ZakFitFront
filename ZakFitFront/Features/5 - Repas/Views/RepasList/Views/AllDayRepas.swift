@@ -52,6 +52,13 @@ struct AllDayRepas: View {
                 }
             }
         }
+        .onAppear {
+            Task {
+                await repasVM.fetchRepas()
+                await repasVM.fetchConsos()
+                await repasVM.fetchAliments()
+            }
+        }
     }
 }
 

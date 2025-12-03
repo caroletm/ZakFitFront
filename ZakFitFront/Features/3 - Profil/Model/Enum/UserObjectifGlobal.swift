@@ -5,7 +5,7 @@
 //  Created by caroletm on 25/11/2025.
 //
 
-enum UserObjectifGlobal: String, CaseIterable {
+enum UserObjectifGlobal: String, CaseIterable, Codable {
     case parDefault
     case perte
     case gain

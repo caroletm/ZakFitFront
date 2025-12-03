@@ -5,7 +5,7 @@
 //  Created by caroletm on 27/11/2025.
 //
 
-enum TypeRepas: String, CaseIterable {
+enum TypeRepas: String, CaseIterable, Codable, Hashable {
     
     case petitDejeuner
     case dejeuner

@@ -12,7 +12,7 @@ struct DetailRepas: View {
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(RepasViewModel.self) var repasVM
     
-    var repas: Repas
+    var repas: RepasDTO
     
     var body: some View {
         NavigationView {
@@ -115,6 +115,13 @@ struct DetailRepas: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                Task {
+                    await repasVM.fetchRepas()
+                    await repasVM.fetchConsos()
+                    await repasVM.fetchAliments()
+                }
+            }
         }
     }
 }
