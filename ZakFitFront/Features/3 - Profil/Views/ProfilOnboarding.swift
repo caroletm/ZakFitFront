@@ -11,6 +11,7 @@ struct ProfilOnboarding: View {
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(UserViewModel.self) var userVM
     @Environment(ObjectifViewModel.self) var objectifVM
+    @Environment(AuthViewModel.self) var authVM
     
     var body: some View {
         
@@ -176,8 +177,15 @@ struct ProfilOnboarding: View {
                         .padding([.horizontal, .top], 10)
                         
                         BoutonOrange(text: "Valider", width: 115, height: 50) {
-                            navigationVM.path = NavigationPath()
-                        }.padding()
+                            Task {
+                                await authVM.saveProfileOnboarding()
+                            }
+                
+                        }.padding(5)
+                        BoutonSouligne(text: "Annuler", color: .black, fontSize: 16, fontWeight: .bold) {
+                            authVM.logout()
+                            authVM.firstConnection = false
+                        }
                     }
                 }
                 .navigationBarTitleDisplayMode(.inline)
@@ -193,4 +201,5 @@ struct ProfilOnboarding: View {
         .environment(NavigationViewModel())
         .environment(userVM)
         .environment(ObjectifViewModel(userVM: userVM))
+        .environment(AuthViewModel(userVM: userVM))
 }

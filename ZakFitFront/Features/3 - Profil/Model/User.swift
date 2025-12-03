@@ -16,14 +16,13 @@ class User : Identifiable,Hashable {
     var nom : String
     var prenom : String
     var taille : Int
-    var poids : Int
+    var poids : Double
     var sexe : UserGender
     var dateNaissance : Date
-    var age : Int
     var foodPreferences : UserPreferences
     var activityLevel : UserActivityLevel
     
-    init(id: UUID, image: String, username: String, email: String, motDePasse: String, nom: String, prenom: String, taille: Int, poids: Int, sexe: UserGender, dateNaissance : Date, age: Int, foodPreferences : UserPreferences, activityLevel : UserActivityLevel) {
+    init(id: UUID, image: String, username: String, email: String, motDePasse: String, nom: String, prenom: String, taille: Int, poids: Double, sexe: UserGender, dateNaissance : Date, foodPreferences : UserPreferences, activityLevel : UserActivityLevel) {
         self.id = id
         self.image = image
         self.username = username
@@ -35,7 +34,6 @@ class User : Identifiable,Hashable {
         self.poids = poids
         self.sexe = sexe
         self.dateNaissance = dateNaissance
-        self.age = age
         self.foodPreferences = foodPreferences
         self.activityLevel = activityLevel
     }
@@ -51,4 +49,4 @@ static func == (lhs: User, rhs: User) -> Bool {
 }
 // MARK: - User Fake Database
 
-let firstUser = User(id: UUID(), image: "profilGrey",username: "caroletrem", email: "carole.trem@email.com", motDePasse: "cacao123", nom: "Trem", prenom: "Carole", taille: 155, poids: 59, sexe: .female, dateNaissance: Date(), age: 33, foodPreferences: .none, activityLevel: .high)
+let firstUser = User(id: UUID(), image: "profilGrey",username: "caroletrem", email: "carole.trem@email.com", motDePasse: "cacao123", nom: "Trem", prenom: "Carole", taille: 155, poids: 59, sexe: .female, dateNaissance: Date(), foodPreferences: .none, activityLevel: .high)

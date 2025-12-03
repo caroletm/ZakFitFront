@@ -19,7 +19,7 @@ enum UserObjectifGlobal: String, CaseIterable {
         case .perte:
             return "Perte de poids"
         case .gain:
-            return "Prise de poids"
+            return "Prise de masse"
         case .maintien:
             return "Maintien du poids"
         }

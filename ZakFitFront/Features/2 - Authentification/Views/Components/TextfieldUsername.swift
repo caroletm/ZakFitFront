@@ -29,7 +29,8 @@ struct TextFieldUsername: View {
 }
 
 #Preview {
+    let userVM = UserViewModel()
     TextFieldUsername()
-        .environment(AuthViewModel())
-        .environment(UserViewModel())
+        .environment(AuthViewModel(userVM: userVM))
+        .environment(userVM)
 }

@@ -5,7 +5,7 @@
 //  Created by caroletm on 21/11/2025.
 //
 
-enum UserActivityLevel: String, CaseIterable {
+enum UserActivityLevel: String, CaseIterable, Codable {
     
     case parDefault
     case low

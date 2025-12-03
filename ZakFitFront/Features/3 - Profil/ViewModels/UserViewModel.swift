@@ -16,8 +16,9 @@ class UserViewModel {
     //MARK: - DataUser
     
     var nomUtilisateur: String = ""
-    var motDePasse: String = ""
     var email: String = ""
+    var motDePasse: String = ""
+    var motDePasseConfirm: String = ""
     var image : String? = nil
     var nom = ""
     var prenom = ""
@@ -39,6 +40,4 @@ class UserViewModel {
         formatter.dateFormat = "dd/MM/yyyy"
         return formatter.string(from: date)
     }
-    
-
 }
