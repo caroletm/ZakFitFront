@@ -21,6 +21,7 @@ struct AjoutAliment: View {
     
     @State var qteAlimentString: String = ""
     @State var caloriesParPortionString: String = ""
+    @FocusState private var isKeyboardActive: Bool
 
     var body: some View {
         
@@ -109,6 +110,7 @@ struct AjoutAliment: View {
                         Spacer()
                         TextField("", text: $qteAlimentString)
                             .keyboardType(.numberPad)
+                            .focused($isKeyboardActive)
                             .padding(8)
                             .font(.system(size: 16, weight: .regular))
                             .foregroundStyle(.black)
@@ -231,6 +233,9 @@ struct AjoutAliment: View {
                     await repasVM.fetchConsos()
                     await repasVM.fetchAliments()
                 }
+            }
+            .onTapGesture {
+                isKeyboardActive = false
             }
         }
     }

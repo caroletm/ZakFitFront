@@ -15,6 +15,7 @@ struct AjoutRepas: View {
     @State var showAjouterModal : Bool = false
     @Binding var showRepasModal : Bool
     @State var showAlertNoValid : Bool = false
+    @State var showPremiumPage : Bool = false
     
     enum AjoutRepasOrigin {
         case dashboard
@@ -22,8 +23,6 @@ struct AjoutRepas: View {
     }
     
     let origin: AjoutRepasOrigin
-    
-  
     
     var body: some View {
         
@@ -84,7 +83,11 @@ struct AjoutRepas: View {
                     
                     HStack (spacing: 20) {
                         BoutonScanAjout(image: "barcode.viewfinder", text: "Numérise le code barre", colorText: Color.greyDark, colorButton: Color.greyLight200) {
-                            showScanModal.toggle()
+                            showScanModal = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                showScanModal = false
+                                showPremiumPage = true
+                            }
                         }
                         BoutonScanAjout(image: "plus.square", text: "Ajoute un aliment", colorText: Color.orangeLight300, colorButton: Color.orangeLight100) {
                             showAjouterModal.toggle()
@@ -165,6 +168,9 @@ struct AjoutRepas: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text("Vous n'avez pas rempli tous les champs!")
+        }
+        .fullScreenCover(isPresented: $showPremiumPage) {
+            PremiumPage(showPremiumPage: $showPremiumPage)
         }
         .navigationBarBackButtonHidden(true)
     }

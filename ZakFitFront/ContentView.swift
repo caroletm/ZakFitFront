@@ -66,7 +66,7 @@ struct ContentView: View {
                       case .activitesList:
                           ActivitesList()
                       case .stats:
-                          Stats()
+                          Suivi()
                       case .historique:
                           Historique()
                       case .notifications:
@@ -83,6 +83,8 @@ struct ContentView: View {
                           FiltrerRepas()
                       case .activiteFiltres:
                           FiltrerActivite()
+                      case .FAQ:
+                          FAQ()
                       }
                   }
               }

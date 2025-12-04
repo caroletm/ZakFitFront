@@ -17,6 +17,7 @@ struct Dashboard : View {
     
     @State var showRepasModal: Bool = false
     @State var showActiviteModal: Bool = false
+    @State var showNotificationBadge: Bool = true
     
     var body: some View {
         
@@ -34,6 +35,7 @@ struct Dashboard : View {
                             .font(.system(size: 24, weight: .semibold))
                         Spacer()
                         Button {
+                            showNotificationBadge.toggle()
                             navigationVM.path.append(AppRoute.notifications)
                         }label:{
                             Image(systemName: "bell")
@@ -41,7 +43,17 @@ struct Dashboard : View {
                                 .scaledToFit()
                                 .frame(width: 24, height: 24)
                                 .foregroundStyle(Color.black)
+                                .overlay(
+                                    showNotificationBadge ?
+                                    ZStack {
+                                        Circle()
+                                            .frame(width: 23, height: 23)
+                                            .foregroundStyle(Color.red)
+                                        Text("\(notifications.count)")
+                                            .foregroundStyle(.white)
+                                    }.offset(x: 10, y: -10) : nil)
                         }
+                        
                     }.padding(EdgeInsets(top: 10, leading: 20, bottom: 20, trailing: 20))
                     
                     HStack {
@@ -123,6 +135,7 @@ struct Dashboard : View {
                     
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
         }
         .sheet(isPresented: $showRepasModal){
             AjoutRepas(showRepasModal: $showRepasModal, origin: .dashboard)

@@ -144,7 +144,7 @@ struct FiltrerActivite: View {
             .padding(.top, 40)
             .toolbar {
                 ToolbarItem (placement: .principal) {
-                    Text("Filtrer mes repas")
+                    Text("Filtrer mes activités")
                         .font(.system(size: 24, weight: .bold))
                 }
             }

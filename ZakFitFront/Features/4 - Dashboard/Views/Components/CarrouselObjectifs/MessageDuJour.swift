@@ -18,12 +18,20 @@ struct MessageDuJour: View {
                 .foregroundStyle(Color.white)
                 .cornerRadius(10)
                 .shadow(radius: 5)
-            
-            Text("\"Bravo ! Vous avez atteint 90 % de votre objectif calorique pour cette semaine !\"")
-                .multilineTextAlignment(.center)
-                .font(.system(size: 20, weight: .bold))
-                .foregroundStyle(Color.greyDark)
-                .frame(width: 320, height: 215)
+            VStack {
+                
+                Text("Message du coach :")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(Color.greyDark)
+                    .offset(x: -90, y: -40)
+                
+                
+                Text("\"Bravo ! Vous avez atteint 90 % de votre objectif de durée d'activité pour cette semaine !\"")
+                    .multilineTextAlignment(.center)
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundStyle(Color.greyDark)
+                
+            }.frame(width: 320, height: 215)
         }
     }
 }

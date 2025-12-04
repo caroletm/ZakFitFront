@@ -217,6 +217,12 @@ class ActiviteViewModel {
             if activite.caloriesBrulees < minCaloriesBrulees {
                 return false
             }
+            
+            // Filtre sur date
+            if !Calendar.current.isDate(activite.date, inSameDayAs: dateActivite) {
+                      return false
+                  }
+            
             return true
         }
         switch sortOrder {
@@ -228,13 +234,14 @@ class ActiviteViewModel {
     }
     
     var isFilterActive : Bool {
-        selectedActivite != nil || minCaloriesBrulees != 0 || minDuree != 0
+        selectedActivite != nil || minCaloriesBrulees != 0 || minDuree != 0 || !Calendar.current.isDate(dateActivite, inSameDayAs: Date())
     }
     
     func resetFilter() {
         selectedActivite = nil
         minCaloriesBrulees = 0
         minDuree = 0
+        dateActivite = Date()
     }
     
     //MARK: - Trier les activites

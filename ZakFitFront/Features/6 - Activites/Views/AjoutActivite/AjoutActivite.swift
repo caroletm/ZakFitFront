@@ -17,6 +17,7 @@ struct AjoutActivite: View {
     @Binding var showActiviteModal : Bool
     @State var caloriesBruleesString : String = ""
     @State var showAlertNoValid : Bool = false
+    @FocusState private var isKeyboardActive: Bool
     
     enum AjoutActiviteOrigin {
         case dashboard
@@ -116,6 +117,7 @@ struct AjoutActivite: View {
                     
                     TextField("\(String(format: "%.0f", activiteVM.caloriesBruleesCalculees()))", text: $caloriesBruleesString)
                         .keyboardType(.numberPad)
+                        .focused($isKeyboardActive)
                         .padding(8)
                         .font(.system(size: 16, weight: .bold))
                         .foregroundStyle(.orangeLight300)
@@ -210,6 +212,9 @@ struct AjoutActivite: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text("Vous n'avez pas rempli tous les champs!")
+        }
+        .onTapGesture {
+            isKeyboardActive = false
         }
     }
 }

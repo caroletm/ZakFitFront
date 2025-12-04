@@ -70,7 +70,7 @@ struct BoutonResumeSemaine: View {
                     Spacer()
                     
                     HStack {
-                        Image(systemName: isPositive ? "arrow.down.circle.fill" :"arrow.up.circle.fill")
+                        Image(systemName: isPositive ? "arrow.up.circle.fill" :"arrow.down.circle.fill")
                             .font(.system(size: 24, weight: .bold))
                         VStack() {
                             Text("\(String(format: "%.0f", difference))")

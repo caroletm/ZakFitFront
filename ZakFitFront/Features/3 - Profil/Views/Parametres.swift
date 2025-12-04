@@ -41,8 +41,13 @@ struct Parametres : View {
                 VStack (alignment :.leading, spacing : 20) {
                     Text("Aide et support")
                         .font(.system(size: 20, weight: .bold))
-                    Text("FAQ")
-                        .font(.system(size: 16, weight: .medium))
+                    Button {
+                        navigationVM.path.append(AppRoute.FAQ)
+                    }label:{
+                        Text("FAQ")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundStyle(Color.black)
+                    }
                     Text("Contactez-nous")
                         .font(.system(size: 16, weight: .medium))
                 }

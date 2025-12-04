@@ -19,6 +19,7 @@ struct Objectifs : View {
     @State var nbEntrainementsHebdoString : String = ""
     @State var objectifPoidsCibleString : String = ""
     @State var alertObjectifCree : Bool = false
+    @FocusState private var isKeyboardActive: Bool
     
     var body: some View {
         
@@ -59,6 +60,7 @@ struct Objectifs : View {
                                 text: $objectifPoidsCibleString
                             )
                             .keyboardType(.numberPad)
+                            .focused($isKeyboardActive)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
@@ -106,6 +108,7 @@ struct Objectifs : View {
                                 text: $caloriesParJourString
                             )
                             .keyboardType(.numberPad)
+                            .focused($isKeyboardActive)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
@@ -137,6 +140,7 @@ struct Objectifs : View {
                                 text: $caloriesBruleesParJourString
                             )
                             .keyboardType(.numberPad)
+                            .focused($isKeyboardActive)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.orangeLight300)
@@ -194,6 +198,7 @@ struct Objectifs : View {
                                 text: $dureeActiviteString
                             )
                             .keyboardType(.numberPad)
+                            .focused($isKeyboardActive)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.greyDark)
@@ -221,6 +226,7 @@ struct Objectifs : View {
                                 text: $nbEntrainementsHebdoString
                             )
                             .keyboardType(.numberPad)
+                            .focused($isKeyboardActive)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.greyDark)
@@ -316,6 +322,9 @@ struct Objectifs : View {
                 nbEntrainementsHebdoString = objectifVM.nbEntrainementsHebdo != nil
                     ? "\(objectifVM.nbEntrainementsHebdo!)"
                     : ""
+            }
+            .onTapGesture {
+                isKeyboardActive = false
             }
         }
     }

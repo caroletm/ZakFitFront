@@ -16,7 +16,8 @@ struct ProfilOnboarding: View {
     @State var showAlert: Bool = false
     @State var tailleString : String = ""
     @State var poidsString : String = ""
-    
+    @FocusState private var isKeyboardActive: Bool
+
     var body: some View {
         
         @Bindable var userVM = userVM
@@ -83,6 +84,7 @@ struct ProfilOnboarding: View {
                                 text: $tailleString
                             )
                             .keyboardType(.numberPad)
+                            .focused($isKeyboardActive)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.greyDark)
@@ -113,6 +115,7 @@ struct ProfilOnboarding: View {
                                 text: $poidsString
                             )
                             .keyboardType(.numberPad)
+                            .focused($isKeyboardActive)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.greyDark)
@@ -276,6 +279,9 @@ struct ProfilOnboarding: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text("Vous n'avez pas rempli tous les champs!")
+            }
+            .onTapGesture {
+                isKeyboardActive = false
             }
         .navigationBarBackButtonHidden(true)
             

@@ -25,7 +25,7 @@ struct TabBarView: View {
                 ActivitesList()
             }
             Tab("Suivi", systemImage: "chart.line.uptrend.xyaxis") {
-                Stats()
+                Suivi()
             }
         }
         .padding(.horizontal, 10)
