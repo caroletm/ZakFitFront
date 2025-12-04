@@ -10,13 +10,15 @@ import SwiftUI
 struct ListeDesAliments: View {
     @Environment(RepasViewModel.self) var repasVM
     
+  
+    
     var body: some View {
         VStack (alignment :.leading){
             Text("Liste des aliments")
                 .font(.system(size: 16, weight: .bold))
             ScrollView {
                 
-                ForEach(repasVM.consoData, id: \.id) { conso in
+                ForEach(repasVM.consosTemp, id: \.id) { conso in
                     
                     VStack  {
                         HStack {

@@ -37,8 +37,4 @@ struct ObjectifService {
         return objectifCreated
     }
 
-//    func updateObjectif(_ id: UUID, dto: ObjectifUpdateDTO) async throws -> ObjectifDTO {
-//        return try await APIService.shared.patch("/objectif/\(id)", body: dto)
-//    }
-
 }

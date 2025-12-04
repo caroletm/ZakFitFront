@@ -19,6 +19,7 @@ struct ObjectifsAvances: View {
     var body: some View {
         
         @Bindable var objectifVM = objectifVM
+
         
         NavigationView {
             
@@ -35,7 +36,12 @@ struct ObjectifsAvances: View {
                                 .font(.caption)
                         }
                         Spacer()
-                        TextField("\(String(format: "%.1f",objectifVM.proteinesCiblesCalculees()))", text: $proteinesString)
+                        TextField(
+                            objectifVM.proteines == nil
+                                ? String(format: "%.0f", objectifVM.proteinesCiblesCalculees())
+                                : String(format: "%.0f", objectifVM.proteines ?? 0),
+                            text: $proteinesString
+                        )
                             .keyboardType(.numberPad)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
@@ -61,7 +67,12 @@ struct ObjectifsAvances: View {
                                 .font(.caption)
                         }
                         Spacer()
-                        TextField("\(String(format: "%.1f", objectifVM.glucidesCiblesCalculees()))", text: $glucidesString)
+                        TextField(
+                            objectifVM.glucides == nil
+                                ? String(format: "%.0f", objectifVM.glucidesCiblesCalculees())
+                                : String(format: "%.0f", objectifVM.glucides ?? 0),
+                            text: $glucidesString
+                        )
                             .keyboardType(.numberPad)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
@@ -87,7 +98,12 @@ struct ObjectifsAvances: View {
                                 .font(.caption)
                         }
                         Spacer()
-                        TextField("\(String(format: "%.1f",objectifVM.lipidesCiblesCalculees()))", text: $lipidesString)
+                        TextField(
+                            objectifVM.lipides == nil
+                                ? String(format: "%.0f", objectifVM.lipidesCiblesCalculees())
+                                : String(format: "%.0f", objectifVM.lipides ?? 0),
+                            text: $lipidesString
+                        )
                             .keyboardType(.numberPad)
                             .padding(8)
                             .font(.system(size: 16, weight: .bold))
@@ -123,6 +139,28 @@ struct ObjectifsAvances: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .onAppear() {
+                Task {
+                    await objectifVM.fetchAllObjectifs()
+                }
+                if let p = objectifVM.proteines {
+                    proteinesString = String(format: "%.0f", p)
+                } else {
+                    proteinesString = ""
+                }
+
+                if let g = objectifVM.glucides {
+                    glucidesString = String(format: "%.0f", g)
+                } else {
+                    glucidesString = ""
+                }
+
+                if let l = objectifVM.lipides {
+                    lipidesString = String(format: "%.0f", l)
+                } else {
+                    lipidesString = ""
+                }
+            }
         }
     }
 }

@@ -208,6 +208,7 @@ struct ProfilOnboarding: View {
                     if let currentUser = authVM.currentUser {
                            userVM.update(from: currentUser)
                        }
+                    await objectifVM.fetchAllObjectifs()
                 }
         }
             .alert("Champs manquants", isPresented: $showAlert) {

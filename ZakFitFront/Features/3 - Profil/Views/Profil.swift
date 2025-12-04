@@ -11,6 +11,7 @@ struct Profil: View {
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(UserViewModel.self) var userVM
     @Environment(ObjectifViewModel.self) var objectifVM
+    @Environment(AuthViewModel.self) var authVM
     
     var body: some View {
         
@@ -164,6 +165,15 @@ struct Profil: View {
                 }
                 .navigationBarTitleDisplayMode(.inline)
             }
+            .onAppear() {
+                Task {
+                    await authVM.fetchDataUser()
+                    if let currentUser = authVM.currentUser {
+                           userVM.update(from: currentUser)
+                       }
+                    await objectifVM.fetchAllObjectifs()
+                }
+        }
             .padding(.top, 20)
         }
     }
@@ -175,4 +185,5 @@ struct Profil: View {
         .environment(NavigationViewModel())
         .environment(UserViewModel())
         .environment(ObjectifViewModel(userVM: userVM))
+        .environment(AuthViewModel(userVM: userVM))
 }

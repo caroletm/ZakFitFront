@@ -23,6 +23,10 @@ class ActiviteViewModel {
     
     var activiteData: [ActiviteDTO] = []
     
+    var lastActivite : ActiviteDTO? {
+        return activiteData.sorted(by: { $0.date < $1.date }).last
+    }
+    
     //MARK: - Ajouter Activite
     
     var dateActivite: Date = Date()

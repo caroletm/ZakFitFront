@@ -32,6 +32,10 @@ struct CaloriesDuJour: View {
         return max(goal - consumed, 0)
     }
     
+    var lastObjectif : ObjectifDTO? {
+        objectifVM.objectifData.last
+    }
+    
     var body: some View {
         
         ZStack {
@@ -93,7 +97,7 @@ struct CaloriesDuJour: View {
                             VStack(alignment: .leading){
                                 Text("Objectif quotidien")
                                     .font(.system(size: 12, weight: .medium))
-                                Text("\(String(format: "%0.f", objectifVM.caloriesCiblesCalculees()))")
+                                Text("\(String(format: "%0.f", lastObjectif?.caloriesParJour ??  objectifVM.caloriesCiblesCalculees()))")
                                     .font(.system(size: 14, weight: .bold))
                             }
                         }

@@ -10,6 +10,7 @@ import SwiftUI
 public struct AlimentPicker: View {
     
     @Environment(NavigationViewModel.self) var navigationVM
+    @Environment(RepasViewModel.self) var repasVM
     
     @Binding var showAlimentPicker: Bool
     @Binding var selectedAliment: Aliments?
@@ -31,12 +32,17 @@ public struct AlimentPicker: View {
             .padding()
                 
                 Picker("Aliment", selection: $selectedAliment) {
-                    ForEach(Aliments.allCases, id: \.self) { aliment in
-                        Text(aliment.description).tag(Optional(aliment))
+                    ForEach(repasVM.alimentData, id: \.self) { aliment in
+                        Text(aliment.nom).tag(Optional(aliment))
                     }
                 }
                 .pickerStyle(.wheel)
 
+        }
+        .onAppear {
+            Task {
+                await repasVM.fetchAliments()
+            }
         }
     }
 }
@@ -44,6 +50,5 @@ public struct AlimentPicker: View {
 #Preview {
     AlimentPicker(showAlimentPicker: .constant(true), selectedAliment: .constant(.pomme))
         .environment(NavigationViewModel())
-//        .environment(userVM)
-//        .environment(ObjectifViewModel(userVM: userVM))
+        .environment(RepasViewModel())
 }

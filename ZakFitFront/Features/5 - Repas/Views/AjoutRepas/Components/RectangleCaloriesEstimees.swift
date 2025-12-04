@@ -24,7 +24,7 @@ struct RectangleCaloriesEstimees: View {
                 Text("Calories estimées")
                     .font(.system(size: 12, weight: .bold))
                     .foregroundColor(Color.black)
-                Text("\(String(format: "%.0f",repasVM.calculerCaloriesTotalesRepas()))")
+                Text("\(String(format: "%.0f",repasVM.calculerCaloriesTotalesRepasTemp()))")
                     .font(.system(size: 32, weight: .bold))
                     .foregroundColor(Color.orangeLight300)
                 Text("calories")

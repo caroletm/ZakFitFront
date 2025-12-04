@@ -12,6 +12,7 @@ struct MacrosDuJour: View {
     @Environment(RepasViewModel.self) var repasVM
     @Environment(ActiviteViewModel.self) var activiteVM
     @Environment(ObjectifViewModel.self) var objectifVM
+
     
     struct CalorieData: Identifiable {
         let id = UUID()
@@ -29,14 +30,15 @@ struct MacrosDuJour: View {
         "Lipides": .orangeLight100
     ]
     
+    
     var restantsProteines : Double {
-        return max(objectifVM.proteines ?? objectifVM.proteinesCiblesCalculees() - proteines, 0)
+        return max(objectifVM.lastObjectif?.proteines ?? objectifVM.proteinesCiblesCalculees() - proteines, 0)
     }
     var restantsGlucides : Double {
-        return max(objectifVM.glucides ?? objectifVM.glucidesCiblesCalculees() - glucides, 0)
+        return max(objectifVM.lastObjectif?.glucides ?? objectifVM.glucidesCiblesCalculees() - glucides, 0)
     }
     var restantsLipides : Double {
-        return max(objectifVM.lipides ?? objectifVM.lipidesCiblesCalculees() - lipides, 0)
+        return max(objectifVM.lastObjectif?.lipides ?? objectifVM.lipidesCiblesCalculees() - lipides, 0)
     }
     
     var body: some View {
@@ -53,11 +55,11 @@ struct MacrosDuJour: View {
                 VStack (alignment: .leading, spacing: 5) {
                     Text("Apports nutritionnels")
                         .font(.system(size: 16, weight: .semibold))
-                    Text("Restants = Objectif - Macronotriments consommés")
+                    Text("Restants = Objectif - Macronutriments consommés")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundStyle(Color.greyDark)
                 }.offset(x: 0, y: -10)
-                
+            
                 HStack {
                     
                     ZStack {
@@ -129,6 +131,11 @@ struct MacrosDuJour: View {
                     }
                     .offset(x: -60, y: 0)
                 }
+            }
+        }
+        .onAppear() {
+            Task {
+                await objectifVM.fetchAllObjectifs()
             }
         }
     }

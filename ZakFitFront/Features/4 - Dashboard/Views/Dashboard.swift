@@ -47,6 +47,11 @@ struct Dashboard : View {
                     HStack {
                         Text("Aujourd'hui")
                             .font(.system(size: 20, weight: .semibold))
+                        Button {
+                            print("\(objectifVM.objectifData)")
+                        }label: {
+                            Text("test")
+                        }
                         Spacer()
                         Button {
                             navigationVM.path.append(AppRoute.historique)
@@ -79,7 +84,7 @@ struct Dashboard : View {
                         Text("Dernier repas")
                             .font(.system(size: 20, weight: .semibold))
                         if !repasVM.repasData.isEmpty {
-                            BoutonLastRepas(repas: repasVM.repasData.last!)
+                            BoutonLastRepas(repas: repasVM.lastRepas!)
                                 .padding(EdgeInsets(top: 5, leading: 0, bottom: 20, trailing: 0))
                         }else {
                             Text("Vous n'avez pas encore ajouté de repas")

@@ -38,7 +38,7 @@ struct ConsoService {
         return activiteCreated
     }
     
-//        func deleteActivite(_ id: UUID, dto: ActiviteUpdateDTO) async throws -> ActiviteDTO {
-//            return try await APIService.shared.delete("/objectif/\(id)", body: dto)
-//        }
+    func deleteAllConsos() async throws {
+        try await APIService.shared.delete("/conso")
+    }
 }

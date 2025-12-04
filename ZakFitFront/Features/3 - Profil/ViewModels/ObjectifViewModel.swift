@@ -194,53 +194,28 @@ class ObjectifViewModel {
     
     //MARK: - Création de l'objectif
     
-    func createObjectifRepas() async {
+    func createObjectif() async {
         let newObjectif : ObjectifDTO = ObjectifDTO(
             id: UUID(),
             objectifGlobal: objectifGlobal,
             dateDebut: Date(),
             dateFin: dateCible() ?? nil,
             typeObjectif: .repas,
-            poidsCible: nil,
+            poidsCible: poidsCible,
             caloriesParJour: caloriesParJour ?? caloriesCiblesCalculees(),
             proteines: proteines ?? proteinesCiblesCalculees(),
             glucides: glucides ?? glucidesCiblesCalculees(),
             lipides: lipides ?? lipidesCiblesCalculees(),
-            minsActivité: nil,
-            caloriesBruleesParJour: nil,
-            nbEntrainementsHebdo: nil)
+            minsActivité: dureeActivite ?? 30,
+            caloriesBruleesParJour: caloriesBruleesParJour ?? caloriesCiblesBruleesCalculees(),
+            nbEntrainementsHebdo: nbEntrainementsHebdo ?? 5)
         
         objectifData.append(newObjectif)
         
         do {
             _ = try await service.createObjectif(newObjectif)
         }catch{
-            print("erreur dans la creation de l'objectif repas, error : \(error)")
-        }
-    }
-    
-    func createObjectifActivite() async {
-        let newObjectif : ObjectifDTO = ObjectifDTO(
-            id: UUID(),
-            objectifGlobal: objectifGlobal,
-            dateDebut: Date(),
-            dateFin: dateCible() ?? nil,
-            typeObjectif: .activite,
-            poidsCible: nil,
-            caloriesParJour: nil,
-            proteines: nil,
-            glucides: nil,
-            lipides: nil,
-            minsActivité: dureeActivite ?? 30,
-            caloriesBruleesParJour: caloriesBruleesParJour ?? caloriesCiblesBruleesCalculees(),
-            nbEntrainementsHebdo: nbEntrainementsHebdo ?? 5
-        )
-        objectifData.append(newObjectif)
-        
-        do {
-            _ = try await service.createObjectif(newObjectif)
-        }catch {
-            print("errur lors de la création de l'objectif activite, error : \(error)")
+            print("erreur dans la creation de l'objectif , error : \(error)")
         }
     }
     
@@ -252,18 +227,37 @@ class ObjectifViewModel {
     
     func fetchAllObjectifs() async {
         do {
-            objectifData = try await service.getAllObjectifs()
-            print("objectifs fetches : \(objectifData)")
+            let objectifs = try await service.getAllObjectifs()
+                  await MainActor.run {
+                      self.objectifData = objectifs
+                      self.loadFromLastObjectif()
+                  }
         }catch{
             print ("erreur dans le chargement des objectifs")
         }
     }
     
-    var lastObjectifRepas: ObjectifDTO? {
-        objectifData.last(where: { $0.typeObjectif == .repas })
+    var lastObjectif : ObjectifDTO? {
+        return objectifData.last
     }
-
-    var lastObjectifActivite: ObjectifDTO? {
-        objectifData.last(where: { $0.typeObjectif == .activite })
+    
+    func loadFromLastObjectif() {
+        guard let last = lastObjectif else { return }
+        
+        self.objectifGlobal = last.objectifGlobal
+        self.dateDebut = last.dateDebut
+        self.poidsCible = last.poidsCible
+        self.caloriesParJour = last.caloriesParJour
+        self.proteines = last.proteines
+        self.glucides = last.glucides
+        self.lipides = last.lipides
+        
+        self.dureeActivite = last.minsActivité
+        self.caloriesBruleesParJour = last.caloriesBruleesParJour
+        self.nbEntrainementsHebdo = last.nbEntrainementsHebdo
+        
+        self.nbDuree = nil        // tu peux déduire la durée si tu veux
+        self.uniteDuree = nil     // mais tu ne l’enregistres pas dans ton DTO
     }
+    
 }

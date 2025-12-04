@@ -211,9 +211,9 @@ struct Objectifs : View {
                     HStack {
                         Spacer()
                         BoutonOrange(text: "Valider", width: 115, height: 50) {
-//                            Task {
-//                                await objectifVM.createObjectif()
-//                            }
+                            Task {
+                                await objectifVM.createObjectif()
+                            }
                             navigationVM.path = NavigationPath()
                         }.padding()
                         

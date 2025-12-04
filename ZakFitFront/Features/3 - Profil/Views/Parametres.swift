@@ -11,6 +11,7 @@ struct Parametres : View {
     
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(UserViewModel.self) var userVM
+    @Environment(AuthViewModel.self) var authVM
     
     var body: some View {
         
@@ -72,11 +73,15 @@ struct Parametres : View {
                 }
                 .padding()
                 
-                Text("Se déconnecter")
-                    .font(.system(size: 16, weight: .heavy))
-                    .foregroundStyle(.red)
-                    .underline()
-                    .padding()
+                Button {
+                    authVM.logout()
+                }label:{
+                    Text("Se déconnecter")
+                        .font(.system(size: 16, weight: .heavy))
+                        .foregroundStyle(.red)
+                        .underline()
+                        .padding()
+                }
                 
                 Spacer()
             }
@@ -91,7 +96,9 @@ struct Parametres : View {
 }
 
 #Preview {
+    let userVM = UserViewModel()
     Parametres()
         .environment(NavigationViewModel())
-        .environment(UserViewModel())
+        .environment(userVM)
+        .environment(AuthViewModel(userVM:userVM))
 }

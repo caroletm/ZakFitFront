@@ -181,7 +181,6 @@ struct AjoutAliment: View {
                                 Task {
                                     await repasVM.AddAlimentConsommé()
                                 }
-                                
                                 showAjouterModal.toggle()
                                 
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
