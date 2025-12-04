@@ -59,7 +59,7 @@ struct AjoutAliment: View {
                                         .frame(width: 100, height: 30)
                                         .foregroundStyle(Color.white)
                                         .cornerRadius(15)
-                                    Text("\(repasVM.selectedAliment?.description ?? "")")
+                                    Text("\(repasVM.selectedAliment?.nom ?? "")")
                                         .font(.system(size: 16, weight: .regular))
                                         .foregroundStyle(.black)
                                 }
@@ -188,7 +188,7 @@ struct AjoutAliment: View {
                                      }
                                 
                             }else {
-                                print("FAIL /\n selectedAliment: \(repasVM.selectedAliment ?? .parDefault)\nnomAlimentACreer: \(repasVM.nomAlimentACreer)\nqteAliment: \(repasVM.qteAliment ?? 999)\nselectedPortion: \(repasVM.selectedPortion ?? .kilo)\ncaloriesTotales: \(repasVM.calculerCaloriesTotales())")
+                                print("FAIL /\n selectedAliment: \(repasVM.selectedAliment?.nom ?? "")\nomAlimentACreer: \(repasVM.nomAlimentACreer)\nqteAliment: \(repasVM.qteAliment ?? 999)\nselectedPortion: \(repasVM.selectedPortion ?? .kilo)\ncaloriesTotales: \(repasVM.calculerCaloriesTotales())")
                             }
                           
                         }.padding(5)
@@ -207,7 +207,7 @@ struct AjoutAliment: View {
                                          repasVM.resetAlimentPickers()
                                      }
                             }else{
-                                print("FAIL /\n selectedAliment: \(repasVM.selectedAliment ?? .parDefault)\nnomAlimentACreer: \(repasVM.nomAlimentACreer)\nqteAliment: \(repasVM.qteAliment ?? 999)\nselectedPortion: \(repasVM.selectedPortion ?? .kilo)\ncaloriesTotales: \(repasVM.calculerCaloriesTotales())")
+                                print("FAIL /\n selectedAliment: \(repasVM.selectedAliment?.nom ?? "")\nnomAlimentACreer: \(repasVM.nomAlimentACreer)\nqteAliment: \(repasVM.qteAliment ?? 999)\nselectedPortion: \(repasVM.selectedPortion ?? .kilo)\ncaloriesTotales: \(repasVM.calculerCaloriesTotales())")
                             }
                         }
                         .padding(5)

@@ -132,6 +132,24 @@ class ActiviteViewModel {
         activitesSemaineSelectionne.reduce(0) { $0 + $1.duree }
         }
     
+    //MARK: - Calculer activites par jour par semaine selectionnée
+    
+    func totalMinutes(for day: Date) -> Int {
+        activiteData.filter { Calendar.current.isDate($0.date, inSameDayAs: day) }
+            .map { $0.duree }
+                 .reduce(0, +)
+    }
+
+    func totalCalories(for day: Date) -> Double {
+        activiteData.filter { Calendar.current.isDate($0.date, inSameDayAs: day) }
+            .map { $0.caloriesBrulees }
+                 .reduce(0, +)
+    }
+    
+    func hasActivite(on date: Date) -> Bool {
+        activiteData.contains { Calendar.current.isDate($0.date, inSameDayAs: date) }
+    }
+    
     //MARK: - Calculer nb d'entrainements
     
     var nbEntrainementsJour: Int {
@@ -279,6 +297,11 @@ class ActiviteViewModel {
             print("Erreur dans le chargement des activites: \(error)")
         }
     }
-    
-    
+}
+
+extension Calendar {
+    func daysOfWeek(containing date: Date) -> [Date] {
+        let startOfWeek = self.date(from: self.dateComponents([.calendar, .yearForWeekOfYear, .weekOfYear], from: date))!
+        return (0..<7).compactMap { self.date(byAdding: .day, value: $0, to: startOfWeek) }
+    }
 }

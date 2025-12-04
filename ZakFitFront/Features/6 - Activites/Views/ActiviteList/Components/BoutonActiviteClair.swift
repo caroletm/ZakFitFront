@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BoutonActivite: View {
+struct BoutonActiviteClair: View {
     @Environment(NavigationViewModel.self) var navigationVM
     @Environment(ActiviteViewModel.self) var activiteVM
     
@@ -19,24 +19,23 @@ struct BoutonActivite: View {
         } label: {
             ZStack {
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(
-                        LinearGradient(
-                            colors: [.greyLight100, .greyDark],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
+                    .fill(Color.greyLight100)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(style: StrokeStyle(lineWidth: 1))
+                            .foregroundStyle(Color.greyDark)
                     )
                 
                 VStack(alignment: .leading) {
                    
                     Text("Le \(activiteVM.dateFormatter(activite.date))")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(.greyDark)
+                        .foregroundStyle(.orangeLight300)
                 
                     HStack {
                         Image(systemName: "\(activite.typeActivite.imageName)")
                             .font(.system(size: 32))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.greyDark)
                         
                         Spacer()
                         
@@ -47,7 +46,7 @@ struct BoutonActivite: View {
                                 Text("minutes")
                                     .font(.system(size: 14, weight: .bold))
                             }
-                            .foregroundStyle(.greyDark)
+                            .foregroundStyle(.orangeLight300)
                             
                             HStack(alignment: .firstTextBaseline) {
                                 Text("\(String(format: "%.0f", activite.caloriesBrulees))")
@@ -55,13 +54,13 @@ struct BoutonActivite: View {
                                 Text("calories brûlées")
                                     .font(.system(size: 8, weight: .bold))
                             }
-                            .foregroundStyle(.white)
+                            .foregroundStyle(.greyDark)
                         }
                     }
                     
                     Text("\(activite.typeActivite.description)")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.greyDark)
                 }
                 .padding()
                 .frame(width: 336, height: 115)
@@ -73,7 +72,7 @@ struct BoutonActivite: View {
 
 #Preview {
     let userVM = UserViewModel()
-    BoutonActivite(activite: activite1)
+    BoutonActiviteClair(activite: activite1)
         .environment(NavigationViewModel())
         .environment(ActiviteViewModel(userVM : userVM))
 }

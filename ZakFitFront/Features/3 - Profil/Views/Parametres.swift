@@ -75,6 +75,7 @@ struct Parametres : View {
                 
                 Button {
                     authVM.logout()
+                    navigationVM.path = NavigationPath()
                 }label:{
                     Text("Se déconnecter")
                         .font(.system(size: 16, weight: .heavy))

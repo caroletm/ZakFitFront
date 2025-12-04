@@ -14,10 +14,13 @@ struct HistoSemaineSelectionne: View {
     @Environment(ActiviteViewModel.self) var activiteVM
     @Environment(ObjectifViewModel.self) var objectifVM
     
+    
     var body: some View {
         
         @Bindable var repasVM = repasVM
         @Bindable var activiteVM = activiteVM
+        
+   
         
         VStack {
             
@@ -28,6 +31,7 @@ struct HistoSemaineSelectionne: View {
             
             WindowSemaineCalories()
                 .padding()
+            
             
             ScrollView {
                 HStack{
@@ -45,29 +49,25 @@ struct HistoSemaineSelectionne: View {
                 }
                 .padding(.vertical)
                 
+                let daysOfWeek = Calendar.current.daysOfWeek(containing: activiteVM.selectedDate)
                 
-                VStack (spacing: 10) {
-                    HStack{
-                        Text("Lundi 17 Novembre :")
-                            .font(.system(size: 16, weight: .bold))
-                        Spacer()
-                    }  .padding(.horizontal)
+                let fullDays = daysOfWeek.filter { day in
+                    repasVM.hasRepas(on: day) || activiteVM.hasActivite(on: day)
+                }
+
+                ForEach(fullDays, id: \.self) { day in
                     
-                    BoutonResumeSemaine()
-                    HStack{
-                        Text("Mardi 18 Novembre :")
-                            .font(.system(size: 16, weight: .bold))
-                        Spacer()
-                    }  .padding(.horizontal)
-                    
-                    BoutonResumeSemaine()
-                    HStack{
-                        Text("Mercredi 19 Novembre :")
-                            .font(.system(size: 16, weight: .bold))
-                        Spacer()
-                    }  .padding(.horizontal)
-                    
-                    BoutonResumeSemaine()
+                    VStack(alignment: .center, spacing: 6) {
+
+                        HStack{
+                            Text(repasVM.dateFormatterLong(day))
+                                .font(.system(size: 16, weight: .bold))
+                            Spacer()
+                        }
+                        .padding(.horizontal)
+
+                        BoutonResumeSemaine(day: day)
+                    }
                 }
             }
         }

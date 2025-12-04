@@ -49,16 +49,24 @@ class AuthViewModel {
     
     //Checker si c'est la 1ere connexion
     func checkFirstConnection() {
-        if userVM.taille == 0 ||
-           userVM.poids == 0 ||
-            userVM.nom.isEmpty ||
-            userVM.prenom.isEmpty ||
-           userVM.sexe == .other {
-            isFirstConnexion = true
-            showProfilOnboarding = true
-        } else {
-            isFirstConnexion = false
-        }
+        guard let user = currentUser else {
+              isFirstConnexion = true
+              showProfilOnboarding = true
+              return
+          }
+
+          if user.nom.isEmpty ||
+             user.prenom.isEmpty ||
+             user.taille == 0 ||
+             user.poids == 0 ||
+             user.sexe == .other {
+              
+              isFirstConnexion = true
+              showProfilOnboarding = true
+          } else {
+              isFirstConnexion = false
+              showProfilOnboarding = false
+          }
     }
     
     //Mettre a jour le profil
@@ -95,6 +103,7 @@ class AuthViewModel {
         }
     }
     
+    //charger les données du user depuis le back
     func fetchDataUser() async {
         
         guard let user = currentUser else {
@@ -130,6 +139,7 @@ class AuthViewModel {
     // MARK: - Chargement du profil utilisateur
     /// Charge le profil utilisateur à partir du token JWT stocké.
     /// Si le token est invalide ou expiré, l'utilisateur est déconnecté.
+   
     @MainActor
     func loadUserProfile() async {
         guard let token = authToken else {
@@ -141,8 +151,8 @@ class AuthViewModel {
         do {
             currentUser = try await userService.getProfile(token: token)
             isAuthenticated = true
-            showLogin = false
-            showSignUp = false
+//            showLogin = false
+//            showSignUp = false
             print("Profil chargé: \(currentUser?.nom ?? "Unknown")")
         } catch {
             // Token invalide ou expiré
@@ -156,6 +166,7 @@ class AuthViewModel {
     
     //MARK: - Login Page
     
+    //se connecter
     func signIn() async {
         guard !userVM.email.isEmpty, !userVM.motDePasse.isEmpty else {
             errorMessage = "Email ou mot de passe vide"
@@ -173,12 +184,15 @@ class AuthViewModel {
             print("Token reçu: \(token)")
             
             // Charger le profil utilisateur
-            let profile = try await userService.getProfile(token: token)
-            currentUser = profile
-            print("Profil chargé: \(profile)")
+            currentUser = try await userService.getProfile(token: token)
+            print("Profil chargé: \(String(describing: currentUser?.username))")
             
             // Vérifier première connexion
             checkFirstConnection()
+            userVM.update(from: currentUser!)
+
+            showLogin = false
+            showSignUp = false
             
             // Réinitialiser le mot de passe local
             userVM.motDePasse = ""
@@ -252,6 +266,8 @@ class AuthViewModel {
             
             // Vérifier première connexion
             checkFirstConnection()
+            showLogin = false
+            showSignUp = false
             
             // Réinitialiser le mot de passe
             userVM.motDePasse = ""

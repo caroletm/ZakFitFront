@@ -36,5 +36,9 @@ struct ObjectifService {
         let objectifCreated: ObjectifDTO = try await APIService.shared.post("/objectif", body: dto, token: token)
         return objectifCreated
     }
+    
+    func deleteAllObjectifs() async throws {
+        try await APIService.shared.delete("/objectif")
+    }
 
 }

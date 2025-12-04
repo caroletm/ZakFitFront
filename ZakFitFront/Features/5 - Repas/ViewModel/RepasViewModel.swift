@@ -368,6 +368,22 @@ class RepasViewModel {
         repasSemaineSelectionne.reduce(0) { $0 + $1.calories }
     }
     
+    //MARK: - Calculer repas par jour par semaine selectionnée
+    
+    func totalCalories(for day: Date) -> Double {
+        repasData.filter { Calendar.current.isDate($0.date, inSameDayAs: day) }
+            .map { $0.calories }
+             .reduce(0, +)
+    }
+
+    func nbRepas(for day: Date) -> Int {
+        repasData.filter { Calendar.current.isDate($0.date, inSameDayAs: day) }.count
+    }
+    
+    func hasRepas(on date: Date) -> Bool {
+        repasData.contains { Calendar.current.isDate($0.date, inSameDayAs: date) }
+    }
+    
     //MARK: - Calculer nb de repas
     
     var nbRepasJourSelectionne: Int {
@@ -385,21 +401,29 @@ class RepasViewModel {
     var minCalories: Double = 0
     var filterAliment: String = ""
     
+    //trier les repas
+    enum SortOrder {
+        case recentFirst
+        case oldestFirst
+    }
+    
+    var sortOrder: SortOrder = .recentFirst
+    
+    
     // Résultat filtré
     var repasFiltres: [RepasDTO] {
-        repasData.filter { repas in
             
-            // Filtre sur type de repas
+      
+        let filtres = repasData.filter { repas in
+            
             if let type = selectedRepas, repas.typeRepas != type {
                 return false
             }
             
-            // Filtre sur calories max
             if repas.calories < minCalories {
                 return false
             }
-            
-            // Filtre sur aliment contenu
+
             if !filterAliment.isEmpty {
                 let match = repas.consos.contains { conso in
                     conso.aliment.description.lowercased()
@@ -409,6 +433,14 @@ class RepasViewModel {
             }
             
             return true
+        }
+        
+        //trier les resultats
+        switch sortOrder {
+        case .recentFirst:
+            return filtres.sorted { $0.date > $1.date }
+        case .oldestFirst:
+            return filtres.sorted { $0.date < $1.date }
         }
     }
     

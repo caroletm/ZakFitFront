@@ -14,6 +14,8 @@ struct ProfilOnboarding: View {
     @Environment(AuthViewModel.self) var authVM
     
     @State var showAlert: Bool = false
+    @State var tailleString : String = ""
+    @State var poidsString : String = ""
     
     var body: some View {
         
@@ -70,28 +72,62 @@ struct ProfilOnboarding: View {
                         .padding(.horizontal)
                         
                         HStack {
-                            Text("Taille")
+                            Text("Taille (en cm)")
                                 .font(.system(size: 16, weight: .bold))
                                 .foregroundStyle(.orangeLight300)
                             Spacer()
-                            Picker("Taille", selection: $userVM.taille) {
-                                ForEach(100...200, id: \.self) {
-                                    Text("\($0) cm").tag($0 as Int?)
+                            TextField(
+                                userVM.taille == nil
+                                    ? String(format: "%.0f", 0)
+                                : String(format: "%.0f", userVM.taille ?? 0),
+                                text: $tailleString
+                            )
+                            .keyboardType(.numberPad)
+                            .padding(8)
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(.greyDark)
+                            .background(Color.greyLight50)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 60, height: 40)
+                            .cornerRadius(10)
+                            .onChange(of: tailleString) {
+                                tailleString = tailleString.filter { $0.isNumber }
+                                if tailleString.isEmpty {
+                                    userVM.taille = nil
+                                } else {
+                                    userVM.taille = Int(tailleString)
                                 }
-                            }.pickerStyle(.automatic)
+                            }
                         }
                         .padding(.horizontal)
                         
                         HStack {
-                            Text("Poids")
+                            Text("Poids (en kg)")
                                 .font(.system(size: 16, weight: .bold))
                                 .foregroundStyle(.orangeLight300)
                             Spacer()
-                            Picker("Poids", selection: $userVM.poids) {
-                                ForEach(30...200, id: \.self) { value in
-                                    Text("\(value) kg").tag(Double(value) as Double?)
+                            TextField(
+                                userVM.poids == nil
+                                    ? String(format: "%.0f", 0)
+                                : String(format: "%.0f", userVM.poids ?? 0),
+                                text: $poidsString
+                            )
+                            .keyboardType(.numberPad)
+                            .padding(8)
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(.greyDark)
+                            .background(Color.greyLight50)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 60, height: 40)
+                            .cornerRadius(10)
+                            .onChange(of: poidsString) {
+                                poidsString = poidsString.filter { $0.isNumber }
+                                if poidsString.isEmpty {
+                                    userVM.poids = nil
+                                } else {
+                                    userVM.poids = Double(poidsString)
                                 }
-                            }.pickerStyle(.automatic)
+                            }
                         }
                         .padding(.horizontal)
                         
@@ -166,21 +202,34 @@ struct ProfilOnboarding: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding([.horizontal, .bottom], 10)
                         
-                        VStack(alignment: .leading){
-                            Text("Objectifs de santé")
-                                .font(.system(size: 16, weight: .bold))
+                        VStack(alignment: .center, spacing: 12) {
+                            Text("Objectifs de santé (requis)")
+                                .font(.system(size: 18, weight: .bold))
                                 .foregroundStyle(.orangeLight300)
-                            BoutonSouligne (text: "Renseigner mes objectifs", color: .black, fontSize: 16, fontWeight: .bold) {
-                                Task {
-                                    await authVM.updateProfile()
-                                }
+
+                            Text("Pour personnaliser ton programme, indique tes objectifs.")
+                                .font(.system(size: 14))
+                                .foregroundStyle(.black)
+    
+
+                            BoutonSouligne(text: "Renseigner mes objectifs", color: .black, fontSize: 16, fontWeight: .bold) {
+                                Task { await authVM.updateProfile() }
                                 navigationVM.path.append(AppRoute.objectifs)
                             }
-                            .padding(.vertical,5)
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding([.horizontal, .top], 10)
+                        .padding(20)
+                        .background(Color.orangeLight50)
+                        .cornerRadius(15)
+                        .shadow(radius: 5)
+                        .padding(.horizontal)
+                        .padding(.vertical, 20)
                         
+//                        Button {
+//                            print("profil valide : \(authVM.isValidProfile) objectif valide \(objectifVM.isValidObjectif)")
+//                            print("OBJECTIFS DU BACK :", objectifVM.objectifData)
+//                        }label :{
+//                            Text("test")
+//                        }
                         BoutonOrange(text: "Valider", width: 115, height: 50) {
                             
                             if authVM.isValidProfile && objectifVM.isValidObjectif {
@@ -189,11 +238,15 @@ struct ProfilOnboarding: View {
                                     authVM.isAuthenticated = true
                                     authVM.isFirstConnexion = false
                                 }
-                           }else{
+                           }
+                            else{
                                showAlert = true
                            }
                 
-                        }.padding(5)
+                        }
+                        .disabled(!authVM.isValidProfile || !objectifVM.isValidObjectif)
+                        .opacity((authVM.isValidProfile && objectifVM.isValidObjectif) ? 1 : 0.5)
+                        .padding(5)
                         BoutonSouligne(text: "Annuler", color: .black, fontSize: 16, fontWeight: .bold) {
                             authVM.logout()
                             authVM.firstConnection = false
@@ -210,14 +263,22 @@ struct ProfilOnboarding: View {
                        }
                     await objectifVM.fetchAllObjectifs()
                 }
-        }
+                
+                print("is first connexion : \(authVM.isFirstConnexion)")
+                print("user.Taille : \(String(describing: userVM.taille))")
+                print("user.poids : \(String(describing: userVM.poids))")
+                print("user.nom : \(userVM.nom)")
+                print("user.prenom : \(userVM.prenom)")
+                print("user.sexe : \(String(describing: userVM.sexe))")
+                
+            }
             .alert("Champs manquants", isPresented: $showAlert) {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text("Vous n'avez pas rempli tous les champs!")
             }
         .navigationBarBackButtonHidden(true)
-   
+            
         }
     }
 }

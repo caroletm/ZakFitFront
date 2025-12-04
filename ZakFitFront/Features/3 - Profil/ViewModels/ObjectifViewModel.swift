@@ -231,14 +231,28 @@ class ObjectifViewModel {
                   await MainActor.run {
                       self.objectifData = objectifs
                       self.loadFromLastObjectif()
+                      print("Objectifs reçus du back :", objectifs)
                   }
         }catch{
             print ("erreur dans le chargement des objectifs")
         }
     }
     
-    var lastObjectif : ObjectifDTO? {
-        return objectifData.last
+    func deleteAllObjectifs() async {
+        do {
+            try await service.deleteAllObjectifs()
+            await MainActor.run {
+                self.objectifData.removeAll()
+            }
+        }catch{
+            print ("erreur dans la suppression des objectifs")
+        }
+    }
+    
+    var lastObjectif: ObjectifDTO? {
+        objectifData
+            .sorted(by: { ($0.dateDebut) > ($1.dateDebut) })
+            .first
     }
     
     func loadFromLastObjectif() {
@@ -256,7 +270,7 @@ class ObjectifViewModel {
         self.caloriesBruleesParJour = last.caloriesBruleesParJour
         self.nbEntrainementsHebdo = last.nbEntrainementsHebdo
         
-        self.nbDuree = nil        // tu peux déduire la durée si tu veux
+        self.nbDuree = nil
         self.uniteDuree = nil     // mais tu ne l’enregistres pas dans ton DTO
     }
     

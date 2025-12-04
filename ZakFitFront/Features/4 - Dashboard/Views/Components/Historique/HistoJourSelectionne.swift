@@ -55,7 +55,7 @@ struct HistoJourSelectionne: View {
                         BoutonRepas(repas: repas)
                     }
                     ForEach(activiteVM.activitesDuJourSelectionne, id: \.self) { activite in
-                        BoutonActivite(activite : activite)
+                        BoutonActiviteClair(activite : activite)
                     }
                 }
             }

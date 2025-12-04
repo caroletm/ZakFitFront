@@ -9,7 +9,20 @@ import SwiftUI
 
 struct BoutonResumeSemaine: View {
     
+    @Environment(RepasViewModel.self) var repasVM
+    @Environment(ActiviteViewModel.self) var activiteVM
+    
+    var day : Date
+    
     var body: some View {
+        
+        let caloriesRepas = repasVM.totalCalories(for: day)
+        let nbRepas = repasVM.nbRepas(for: day)
+        let minsActivite = activiteVM.totalMinutes(for: day)
+        let caloriesBrulees = activiteVM.totalCalories(for: day)
+        
+        let difference = caloriesRepas - caloriesBrulees
+        let isPositive = difference >= 0
         
         Button {
             
@@ -32,9 +45,9 @@ struct BoutonResumeSemaine: View {
                                 .frame(width: 37, height: 40)
                                 .foregroundStyle(.greyDark)
                             VStack (alignment : .leading) {
-                                Text("3 repas")
+                                Text("\(nbRepas) repas")
                                     .font(.system(size: 16, weight: .bold))
-                                Text("2100 calories")
+                                Text("\(String(format :"%.0f", caloriesRepas)) calories")
                                     .font(.system(size: 12, weight: .bold))
                             }.foregroundStyle(Color.black)
                             
@@ -47,19 +60,20 @@ struct BoutonResumeSemaine: View {
                                 .frame(width: 37, height: 40)
                                 .foregroundStyle(.greyDark)
                             VStack (alignment : .leading) {
-                                Text("40 mins d'activité")
+                                Text("\(minsActivite) mins d'activité")
                                     .font(.system(size: 16, weight: .bold))
-                                Text("2100 calories brûlées")
+                                Text("\(String(format :"%.0f", caloriesBrulees)) calories brûlées")
                                     .font(.system(size: 12, weight: .bold))
                             }.foregroundStyle(Color.black)
                         }
                     }
                     Spacer()
+                    
                     HStack {
-                        Image(systemName: "arrow.up.circle.fill")
+                        Image(systemName: isPositive ? "arrow.down.circle.fill" :"arrow.up.circle.fill")
                             .font(.system(size: 24, weight: .bold))
                         VStack() {
-                            Text("1850")
+                            Text("\(String(format: "%.0f", difference))")
                                 .font(.system(size: 16, weight: .bold))
                             Text("calories")
                                 .font(.system(size: 16, weight: .bold))
@@ -76,5 +90,8 @@ struct BoutonResumeSemaine: View {
 }
 
 #Preview {
-    BoutonResumeSemaine()
+    let userVM = UserViewModel()
+    BoutonResumeSemaine(day: Date())
+        .environment(RepasViewModel())
+        .environment(ActiviteViewModel(userVM: userVM))
 }

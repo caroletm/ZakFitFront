@@ -47,11 +47,13 @@ struct Dashboard : View {
                     HStack {
                         Text("Aujourd'hui")
                             .font(.system(size: 20, weight: .semibold))
-                        Button {
-                            print("\(objectifVM.objectifData)")
-                        }label: {
-                            Text("test")
-                        }
+//                        Button {
+//                            Task {
+//                                await objectifVM.deleteAllObjectifs()
+//                            }
+//                        }label: {
+//                            Text("test")
+//                        }
                         Spacer()
                         Button {
                             navigationVM.path.append(AppRoute.historique)

@@ -17,6 +17,8 @@ struct Objectifs : View {
     @State var caloriesBruleesParJourString : String = ""
     @State var dureeActiviteString : String = ""
     @State var nbEntrainementsHebdoString : String = ""
+    @State var objectifPoidsCibleString : String = ""
+    @State var alertObjectifCree : Bool = false
     
     var body: some View {
         
@@ -50,11 +52,28 @@ struct Objectifs : View {
                         HStack {
                             Text("Objectif de poids cible :")
                             Spacer()
-                            Picker("Poids", selection: $objectifVM.poidsCible) {
-                                ForEach(40...200, id: \.self) { value in
-                                    Text("\(value) kg").tag(Double(value) as Double?)
+                            TextField(
+                                objectifVM.poidsCible == nil
+                                    ? String(format: "%.0f", 0)
+                                    : String(format: "%.0f", objectifVM.poidsCible ?? 0),
+                                text: $objectifPoidsCibleString
+                            )
+                            .keyboardType(.numberPad)
+                            .padding(8)
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(.orangeLight300)
+                            .background(Color.orangeLight100)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 60, height: 40)
+                            .cornerRadius(10)
+                            .onChange(of: objectifPoidsCibleString) {
+                                objectifPoidsCibleString = objectifPoidsCibleString.filter { $0.isNumber }
+                                if objectifPoidsCibleString.isEmpty {
+                                    objectifVM.poidsCible = nil
+                                } else {
+                                    objectifVM.poidsCible = Double(objectifPoidsCibleString)
                                 }
-                            }.pickerStyle(.automatic)
+                            }
                         }
                         
                         HStack {
@@ -80,19 +99,28 @@ struct Objectifs : View {
                                     .font(.caption)
                             }
                             Spacer()
-                            TextField("\(String(format: "%.0f", objectifVM.caloriesCiblesCalculees()))", text: $caloriesParJourString)
-                                .keyboardType(.numberPad)
-                                .padding(8)
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundStyle(.orangeLight300)
-                                .background(Color.orangeLight100)
-                                .multilineTextAlignment(.center)
-                                .frame(width: 80, height: 40)
-                                .cornerRadius(10)
-                                .onChange(of: caloriesParJourString) {
-                                    caloriesParJourString = caloriesParJourString.filter { $0.isNumber }
+                            TextField(
+                                objectifVM.caloriesParJour == nil
+                                    ? String(format: "%.0f", objectifVM.caloriesCiblesCalculees())
+                                    : String(format: "%.0f", objectifVM.caloriesParJour ?? 0),
+                                text: $caloriesParJourString
+                            )
+                            .keyboardType(.numberPad)
+                            .padding(8)
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(.orangeLight300)
+                            .background(Color.orangeLight100)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 80, height: 40)
+                            .cornerRadius(10)
+                            .onChange(of: caloriesParJourString) {
+                                caloriesParJourString = caloriesParJourString.filter { $0.isNumber }
+                                if caloriesParJourString.isEmpty {
+                                    objectifVM.caloriesParJour = nil
+                                } else {
                                     objectifVM.caloriesParJour = Double(caloriesParJourString)
                                 }
+                            }
                         }.padding(.vertical)
                         
                         HStack {
@@ -102,19 +130,28 @@ struct Objectifs : View {
                                     .font(.caption)
                             }
                             Spacer()
-                            TextField("\(String(format: "%.0f", objectifVM.caloriesCiblesBruleesCalculees()))", text: $caloriesBruleesParJourString)
-                                .keyboardType(.numberPad)
-                                .padding(8)
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundStyle(.orangeLight300)
-                                .background(Color.orangeLight100)
-                                .multilineTextAlignment(.center)
-                                .frame(width: 80, height: 40)
-                                .cornerRadius(10)
-                                .onChange(of: caloriesBruleesParJourString) {
-                                    caloriesBruleesParJourString = caloriesBruleesParJourString.filter { $0.isNumber }
+                            TextField(
+                                objectifVM.caloriesBruleesParJour == nil
+                                    ? String(format: "%.0f", objectifVM.caloriesCiblesBruleesCalculees())
+                                    : String(format: "%.0f", objectifVM.caloriesBruleesParJour ?? 0),
+                                text: $caloriesBruleesParJourString
+                            )
+                            .keyboardType(.numberPad)
+                            .padding(8)
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(.orangeLight300)
+                            .background(Color.orangeLight100)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 80, height: 40)
+                            .cornerRadius(10)
+                            .onChange(of: caloriesBruleesParJourString) {
+                                caloriesBruleesParJourString = caloriesBruleesParJourString.filter { $0.isNumber }
+                                if caloriesBruleesParJourString.isEmpty {
+                                    objectifVM.caloriesBruleesParJour = nil
+                                } else {
                                     objectifVM.caloriesBruleesParJour = Double(caloriesBruleesParJourString)
                                 }
+                            }
                         }.padding(.vertical)
                         
                         Button {
@@ -150,37 +187,55 @@ struct Objectifs : View {
                                     .font(.caption)
                             }
                             Spacer()
-                            TextField("\(objectifVM.dureeActivite ?? 30)", text: $dureeActiviteString)
-                                .keyboardType(.numberPad)
-                                .padding(8)
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundStyle(.greyDark)
-                                .background(.greyLight100)
-                                .multilineTextAlignment(.center)
-                                .frame(width: 60, height: 40)
-                                .cornerRadius(10)
-                                .onChange(of: dureeActiviteString) {
-                                    dureeActiviteString = dureeActiviteString.filter { $0.isNumber }
+                            TextField(
+                                objectifVM.dureeActivite == nil
+                                    ? "30"
+                                    : "\(objectifVM.dureeActivite ?? 30)",
+                                text: $dureeActiviteString
+                            )
+                            .keyboardType(.numberPad)
+                            .padding(8)
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(.greyDark)
+                            .background(.greyLight100)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 60, height: 40)
+                            .cornerRadius(10)
+                            .onChange(of: dureeActiviteString) {
+                                dureeActiviteString = dureeActiviteString.filter { $0.isNumber }
+                                if dureeActiviteString.isEmpty {
+                                    objectifVM.dureeActivite = nil
+                                } else {
                                     objectifVM.dureeActivite = Int(dureeActiviteString)
                                 }
+                            }
                         }
                         
                         HStack {
                             Text("Nombre d'entrainements hebdomadaires: ")
                             Spacer()
-                            TextField("\(objectifVM.nbEntrainementsHebdo ?? 5)", text: $nbEntrainementsHebdoString)
-                                .keyboardType(.numberPad)
-                                .padding(8)
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundStyle(.greyDark)
-                                .background(.greyLight100)
-                                .multilineTextAlignment(.center)
-                                .frame(width: 60, height: 40)
-                                .cornerRadius(10)
-                                .onChange(of: nbEntrainementsHebdoString) {
-                                    nbEntrainementsHebdoString = nbEntrainementsHebdoString.filter { $0.isNumber }
+                            TextField(
+                                objectifVM.nbEntrainementsHebdo == nil
+                                    ? "5"
+                                    : "\(objectifVM.nbEntrainementsHebdo ?? 5)",
+                                text: $nbEntrainementsHebdoString
+                            )
+                            .keyboardType(.numberPad)
+                            .padding(8)
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(.greyDark)
+                            .background(.greyLight100)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 60, height: 40)
+                            .cornerRadius(10)
+                            .onChange(of: nbEntrainementsHebdoString) {
+                                nbEntrainementsHebdoString = nbEntrainementsHebdoString.filter { $0.isNumber }
+                                if nbEntrainementsHebdoString.isEmpty {
+                                    objectifVM.nbEntrainementsHebdo = nil
+                                } else {
                                     objectifVM.nbEntrainementsHebdo = Int(nbEntrainementsHebdoString)
                                 }
+                            }
                         }.padding(.vertical)
                         
                         Divider()
@@ -214,7 +269,10 @@ struct Objectifs : View {
                             Task {
                                 await objectifVM.createObjectif()
                             }
+                            alertObjectifCree.toggle()
                             navigationVM.path = NavigationPath()
+                            print("objectif créé : \(String(describing: objectifVM.lastObjectif))")
+                            
                         }.padding()
                         
                         Spacer()
@@ -234,11 +292,30 @@ struct Objectifs : View {
                     DureePicker(showPicker: $objectifVM.showPicker)
                         .presentationDetents([.fraction(0.3)])
                 }
-            }
-            .onAppear() {
-                Task {
-                    await objectifVM.fetchAllObjectifs()
+                .alert("Objectif créé", isPresented: $alertObjectifCree) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    VStack{
+                        Text("Votre objectif a bien été créé")
+                    }
                 }
+            }
+            .onAppear {
+                objectifPoidsCibleString = objectifVM.poidsCible != nil
+                    ? String(format: "%.0f", objectifVM.poidsCible!)
+                    : ""
+                caloriesParJourString = objectifVM.caloriesParJour != nil
+                    ? String(format: "%.0f", objectifVM.caloriesParJour!)
+                    : ""
+                caloriesBruleesParJourString = objectifVM.caloriesBruleesParJour != nil
+                    ? String(format: "%.0f", objectifVM.caloriesBruleesParJour!)
+                    : ""
+                dureeActiviteString = objectifVM.dureeActivite != nil
+                    ? "\(objectifVM.dureeActivite!)"
+                    : ""
+                nbEntrainementsHebdoString = objectifVM.nbEntrainementsHebdo != nil
+                    ? "\(objectifVM.nbEntrainementsHebdo!)"
+                    : ""
             }
         }
     }

@@ -117,7 +117,7 @@ struct FiltrerActivite: View {
                     }
                     .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                     
-                    Slider(value: $activiteVM.minCaloriesBrulees, in: 0...5000)
+                    Slider(value: $activiteVM.minCaloriesBrulees, in: 0...2000)
                         .padding(EdgeInsets(top: 10, leading: 50, bottom: 10, trailing: 50))
                 }
                 
