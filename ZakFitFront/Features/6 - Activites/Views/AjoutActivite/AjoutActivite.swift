@@ -16,6 +16,7 @@ struct AjoutActivite: View {
     @State var showPickerDebut : Bool = false
     @Binding var showActiviteModal : Bool
     @State var caloriesBruleesString : String = ""
+    @State var showAlertNoValid : Bool = false
     
     enum AjoutActiviteOrigin {
         case dashboard
@@ -159,6 +160,8 @@ struct AjoutActivite: View {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                             activiteVM.resetActivitePicker()
                         }
+                    }else {
+                        showAlertNoValid.toggle()
                     }
                     
                 }.padding(.bottom,5)
@@ -202,6 +205,11 @@ struct AjoutActivite: View {
             }
             .presentationDetents([.fraction(0.3)])
             .pickerStyle(.wheel)
+        }
+        .alert("Validation impossible", isPresented: $showAlertNoValid) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Vous n'avez pas rempli tous les champs!")
         }
     }
 }

@@ -14,6 +14,7 @@ struct AjoutRepas: View {
     @State var showScanModal : Bool = false
     @State var showAjouterModal : Bool = false
     @Binding var showRepasModal : Bool
+    @State var showAlertNoValid : Bool = false
     
     enum AjoutRepasOrigin {
         case dashboard
@@ -21,6 +22,8 @@ struct AjoutRepas: View {
     }
     
     let origin: AjoutRepasOrigin
+    
+  
     
     var body: some View {
         
@@ -104,30 +107,35 @@ struct AjoutRepas: View {
                             await repasVM.createRepas()
                         }
                         
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            repasVM.resetRepasPicker()
+                        }
+                        
                         switch origin {
                         case .dashboard:
                             showRepasModal = false
                         case .repasList:
                             navigationVM.path.removeLast()
                         }
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            repasVM.resetRepasPicker()
-                        }
+                    
+                    }else{
+                        showAlertNoValid.toggle()
                     }
                 }.padding(.bottom,5)
                 
                 BoutonSouligne(text: "Annuler", color: Color.black, fontSize: 16, fontWeight: .bold) {
                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        repasVM.resetRepasPicker()
+                    }
+                 
+                        
                     switch origin {
                           case .dashboard:
                               showRepasModal = false
                           case .repasList:
                               navigationVM.path.removeLast()
                           }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        repasVM.resetRepasPicker()
-                    }
                 }
             }
             
@@ -152,6 +160,11 @@ struct AjoutRepas: View {
         .sheet(isPresented: $showAjouterModal) {
             AjoutAliment(showAjouterModal: $showAjouterModal)
                 .presentationDetents([.fraction(0.8)])
+        }
+        .alert("Validation impossible", isPresented: $showAlertNoValid) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Vous n'avez pas rempli tous les champs!")
         }
         .navigationBarBackButtonHidden(true)
     }

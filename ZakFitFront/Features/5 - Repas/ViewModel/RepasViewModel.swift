@@ -17,6 +17,11 @@ class RepasViewModel {
     var repasData : [RepasDTO] = []
     var alimentData : [AlimentDTO] = []
     var consoData : [ConsoDTO] = []
+    var consosTemp : [ConsoDTO] = []
+    
+    var lastRepas : RepasDTO? {
+        return repasData.sorted(by: { $0.date < $1.date }).last
+    }
     
     //MARK: - Ajouter Repas
     
@@ -26,7 +31,7 @@ class RepasViewModel {
     //MARK: - Ajouter Aliment
     
     var nomAlimentACreer : String = ""
-    var selectedAliment : Aliments? = nil
+    var selectedAliment : AlimentDTO? = nil
     var selectedPortion: Portion? = nil
     var qteAliment : Int? = nil
     var caloriesParPortion : Double? = nil
@@ -39,10 +44,10 @@ class RepasViewModel {
     
     func calculerCaloriesParPortion() -> Double {
         
-        let aliment: Aliments = selectedAliment ?? .parDefault
+        guard let aliment = selectedAliment else { return 0 }
         let portion: Portion = selectedPortion ?? .unite
         
-        let base = Double(aliment.nutriments.calories)
+        let base = aliment.calories
 
           switch portion {
           case .unite, .verre, .tasse, .tranche, .cuillere:
@@ -66,20 +71,28 @@ class RepasViewModel {
         return calculerCaloriesParPortion() * Double(qteAliment ?? 0)
     }
     
-    func calculerCaloriesTotalesRepas() -> Double {
+//    func calculerCaloriesTotalesRepas() -> Double {
+//        var totalCalories: Double = 0
+//        for conso in consoData {
+//            totalCalories += conso.calories
+//        }
+//        return totalCalories
+//    }
+    
+    func calculerCaloriesTotalesRepasTemp() -> Double {
         var totalCalories: Double = 0
-        for conso in consoData {
+        for conso in consosTemp {
             totalCalories += conso.calories
         }
         return totalCalories
     }
     
     func calculerProteinesTotales() -> Double {
-        let aliment: Aliments = selectedAliment ?? .parDefault
+        guard let aliment = selectedAliment else { return 0 }
         let portion: Portion = selectedPortion ?? .unite
         let quantite : Int = qteAliment ?? 0
         
-        let base = aliment.nutriments.proteines
+        let base = aliment.proteines
         
         switch portion {
         case .unite, .verre, .tasse, .tranche, .cuillere:
@@ -97,11 +110,11 @@ class RepasViewModel {
     }
     
     func calculerGlucidesTotales() -> Double {
-        let aliment: Aliments = selectedAliment ?? .parDefault
+        guard let aliment = selectedAliment else { return 0 }
         let portion: Portion = selectedPortion ?? .unite
         let quantite : Int = qteAliment ?? 0
         
-        let base = aliment.nutriments.glucides
+        let base = aliment.glucides
         
         switch portion {
         case .unite, .verre, .tasse, .tranche, .cuillere:
@@ -119,11 +132,11 @@ class RepasViewModel {
     }
     
     func calculerLipidesTotales() -> Double {
-        let aliment: Aliments = selectedAliment ?? .parDefault
+        guard let aliment = selectedAliment else { return 0 }
         let portion: Portion = selectedPortion ?? .unite
         let quantite : Int = qteAliment ?? 0
         
-        let base = aliment.nutriments.lipides
+        let base = aliment.lipides
         
         switch portion {
         case .unite, .verre, .tasse, .tranche, .cuillere:
@@ -142,7 +155,7 @@ class RepasViewModel {
     
     func calculerProteinesTotalesRepas() -> Double {
         var totalProteines: Double = 0
-        for conso in consoData {
+        for conso in consosTemp {
             totalProteines += conso.proteines
         }
         return totalProteines
@@ -150,7 +163,7 @@ class RepasViewModel {
     
     func calculerGlucidesTotalesRepas() -> Double {
         var totalGlucides: Double = 0
-        for conso in consoData {
+        for conso in consosTemp {
             totalGlucides += conso.glucides
         }
         return totalGlucides
@@ -158,7 +171,7 @@ class RepasViewModel {
     
     func calculerLipidesTotalesRepas() -> Double {
         var totalLipides: Double = 0
-        for conso in consoData {
+        for conso in consosTemp {
             totalLipides += conso.lipides
         }
         return totalLipides
@@ -190,8 +203,9 @@ class RepasViewModel {
     //MARK: - Ajouter aliment consommé
     
     func AddAlimentConsommé() async {
+        
         let newConso = ConsoDTO(
-            aliment: selectedAliment?.description ?? "-",
+            aliment: selectedAliment?.nom ?? "",
             portion : selectedPortion ?? .parDefault,
             quantite: qteAliment ?? 0,
             calories: caloriesParPortion ?? calculerCaloriesTotales(),
@@ -200,6 +214,7 @@ class RepasViewModel {
             lipides: calculerLipidesTotales()
         )
         consoData.append(newConso)
+        consosTemp.append(newConso)
         
         do {
             _ = try await consoService.createConso(newConso)
@@ -219,6 +234,7 @@ class RepasViewModel {
             lipides: calculerLipidesTotales()
         )
         consoData.append(newConso)
+        consosTemp.append(newConso)
         
         let newAliment = AlimentDTO(
             nom : nomAlimentACreer,
@@ -264,7 +280,7 @@ class RepasViewModel {
     
     func resetRepasPicker() {
         selectedRepas = nil
-        consoData.removeAll()
+        consosTemp.removeAll()
     }
     
     
@@ -275,8 +291,8 @@ class RepasViewModel {
             id : UUID(),
             typeRepas: selectedRepas ?? .encas,
             date: dateRepas,
-            calories: calculerCaloriesTotalesRepas(),
-            consos: consoData
+            calories: calculerCaloriesTotalesRepasTemp(),
+            consos: consosTemp
         )
         repasData.append(newRepas)
         
@@ -289,8 +305,8 @@ class RepasViewModel {
     
     func isValidCreateRepas() -> Bool {
         return selectedRepas != nil
-            && !consoData.isEmpty
-            && calculerCaloriesTotalesRepas() > 0
+            && !consosTemp.isEmpty
+            && calculerCaloriesTotalesRepasTemp() > 0
             && dateRepas <= Date()
     }
     //MARK: - RepasList - Repas du Jour (DayRepas)
@@ -304,7 +320,6 @@ class RepasViewModel {
     var totalCaloriesJour: Double {
         repasDuJour.reduce(0) { $0 + $1.calories }
     }
-    
 
     
     //MARK: - Calculer calories repas par jour sélectionné (Historique)
@@ -471,6 +486,16 @@ class RepasViewModel {
         }
     }
     
+    //supprimer toutes les consos
+    func deleteAllConsos() async {
+        do {
+            try await consoService.deleteAllConsos()
+            print("Toutes les consos ont été supprimées")
+        } catch {
+            print("Erreur lors de la suppression des consos: \(error)")
+        }
+    }
+    
     //Repas :
     private let repasService = RepasService()
     
@@ -483,5 +508,6 @@ class RepasViewModel {
             print("Erreur dans le chargement des repas: \(error)")
         }
     }
+    
     
 }
